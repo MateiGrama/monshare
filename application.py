@@ -1,21 +1,28 @@
 import json
+import pyodbc
+
 from flask import Flask
 from flask import request
 
 app = Flask(__name__)
 
+connectionString = "Driver={ODBC Driver 13 for SQL Server};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+cnxn = pyodbc.connect(connectionString)
+cursor = cnxn.cursor()
+
 @app.route("/")
 def hello():
-    return "Buenos dias!"
+    cursor.execute("select * from Users")
+    row = cursor.fetchone()
+    
+    return "Buenos dias, " +  str(row[1])
 
 
 @app.route("/login")
 def login():
     username = request.args.get('username')
     password = request.args.get('password')
-
     result= {"text": "test request & response for" + username}
-
     return json.dumps(result)
 
 
@@ -24,7 +31,5 @@ def register():
     username = request.args.get('username')
     firstname = request.args.get('firstname')
     lastname = request.args.get('lastname')
-
-
     return json.dumps(result)
 
