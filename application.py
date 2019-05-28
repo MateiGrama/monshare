@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return a
+    return 'asd'
     cursor.execute("select * from Users")
     row = cursor.fetchone()
     
