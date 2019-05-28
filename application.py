@@ -6,12 +6,13 @@ from flask import request
 
 app = Flask(__name__)
 
-connectionString = "Driver={ODBC Driver 13 for SQL Server};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
-cnxn = pyodbc.connect(connectionString)
-cursor = cnxn.cursor()
+#connectionString = "Driver={ODBC Driver 13 for SQL Server};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+#cnxn = pyodbc.connect(connectionString)
+#cursor = cnxn.cursor()
 
 @app.route("/")
 def hello():
+    return a
     cursor.execute("select * from Users")
     row = cursor.fetchone()
     
