@@ -20,11 +20,12 @@ cnxn = pyodbc.connect(con_string)
 
 @app.route("/")
 def hello():
-    cursor.execute("select * from Users")
-    row = cursor.fetchone()
-    
-    return "Buenos dias, " +  str(row[1])
-    #return "Buenos dias!"
+    try:
+        cursor.execute("select * from Users")
+        row = cursor.fetchone()
+        return "Buenos dias, " +  str(row[1])
+    except:
+        return "nu a mers, dar ajunge aici."
 
 
 @app.route("/login")
