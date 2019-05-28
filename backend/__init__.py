@@ -6,14 +6,10 @@ from flask import request
 
 app = Flask(__name__)
 
-"""
-#connectionString = "Driver={ODBC Driver 13 for SQL Server};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
-#cnxn = pyodbc.connect(connectionString)
-"""
-
 drivers = [item for item in pyodbc.drivers()]
 driver = drivers[-1]
-con_string = f'DRIVER={driver};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+con_string = "DRIVER={};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;".format(driver)
+print(con_string)
 cnxn = pyodbc.connect(con_string)
 cursor = cnxn.cursor()
     
