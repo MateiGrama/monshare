@@ -10,20 +10,14 @@ app = Flask(__name__)
 #connectionString = "Driver={ODBC Driver 13 for SQL Server};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
 #cnxn = pyodbc.connect(connectionString)
 """
-result = 0
-try:
-    drivers = [item for item in pyodbc.drivers()]
-    driver = drivers[-1]
-    result+= result
-    print("driver:{}".format(driver))
-    con_string = f'DRIVER={driver};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
-    print(con_string)
-    result+= result
-    cnxn = pyodbc.connect(con_string)
-    cursor = cnxn.cursor()
-    result+= result
-except:
-   result += 100     
+drivers = [item for item in pyodbc.drivers()]
+driver = drivers[-1]
+result+= result
+con_string = f'DRIVER={driver};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+result+= result
+cnxn = pyodbc.connect(con_string)
+cursor = cnxn.cursor()
+result+= result
     
 @app.route("/")
 def hello():
@@ -32,7 +26,7 @@ def hello():
         row = cursor.fetchone()
         return "Buenos dias, " +  str(row[1])
     except:
-        return "nu a mers, dar ajunge aici: " + result
+        return "nu a mers, but routed correctly to hello."
 
 
 @app.route("/login")
