@@ -22,7 +22,9 @@ try:
     cnxn = pyodbc.connect(con_string)
     cursor = cnxn.cursor()
     result+= result
-
+except:
+   result += 100     
+    
 @app.route("/")
 def hello():
     try:
@@ -30,7 +32,7 @@ def hello():
         row = cursor.fetchone()
         return "Buenos dias, " +  str(row[1])
     except:
-        return "nu a mers, dar ajunge aici:" + result
+        return "nu a mers, dar ajunge aici: " + result
 
 
 @app.route("/login")
