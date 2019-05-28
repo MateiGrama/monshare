@@ -20,7 +20,6 @@ cnxn = pyodbc.connect(con_string)
 
 @app.route("/")
 def hello():
-    return 'asd'
     cursor.execute("select * from Users")
     row = cursor.fetchone()
     
