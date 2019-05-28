@@ -5,18 +5,23 @@ from flask import Flask
 from flask import request
 
 app = Flask(__name__)
+
 """
 #connectionString = "Driver={ODBC Driver 13 for SQL Server};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
 #cnxn = pyodbc.connect(connectionString)
-#cursor = cnxn.cursor()
 """
-drivers = [item for item in pyodbc.drivers()]
-driver = drivers[-1]
-print("driver:{}".format(driver))
-con_string = f'DRIVER={driver};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
-print(con_string)
-cnxn = pyodbc.connect(con_string)
-
+result = 0
+try:
+    drivers = [item for item in pyodbc.drivers()]
+    driver = drivers[-1]
+    result+= result
+    print("driver:{}".format(driver))
+    con_string = f'DRIVER={driver};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+    print(con_string)
+    result+= result
+    cnxn = pyodbc.connect(con_string)
+    cursor = cnxn.cursor()
+    result+= result
 
 @app.route("/")
 def hello():
@@ -25,7 +30,7 @@ def hello():
         row = cursor.fetchone()
         return "Buenos dias, " +  str(row[1])
     except:
-        return "nu a mers, dar ajunge aici."
+        return "nu a mers, dar ajunge aici:" + result
 
 
 @app.route("/login")
