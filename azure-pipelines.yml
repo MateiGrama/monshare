@@ -9,30 +9,36 @@ jobs:
     outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
   steps:
   - task: NuGetToolInstaller@0
+
   - task: NuGetCommand@2
     inputs:
       restoreSolution: '**/*.sln'
+
   - task: XamarinAndroid@1
     inputs:
       projectFile: '**/*droid*.csproj'
       outputDirectory: '$(outputDirectory)'
       configuration: '$(buildConfiguration)'
+
   - task: DownloadSecureFile@1
     inputs:
       secureFile: 'monshare.keystore'
+      
   - task: AndroidSigning@3
     inputs:
       apkFiles: '**/*.apk'
       apksignerKeystoreFile: 'monshare.keystore'
-      apksignerKeystorePassword: 'HoneyBadger1234'
+      apksignerKeystorePassword: '$(keystore-password)'
       apksignerKeystoreAlias: 'monshare'
-      apksignerKeyPassword: 'HoneyBadger1234'
+      apksignerKeyPassword: '$(key-password)'
       zipalign: false
+
   - task: CopyFiles@2
     inputs:
-      Contents: '**'
+      Contents: '**/*.apk'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
       OverWrite: true
+
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
@@ -40,29 +46,29 @@ jobs:
       publishLocation: 'Container'
 
 
-- job: iOS
-  pool:
-    vmImage: 'macOS-10.13'
-  variables:
-    buildConfiguration: 'Debug'
-  steps:
-  - task: NuGetToolInstaller@0
-  - task: NuGetCommand@2
-    inputs:
-      restoreSolution: '**/*.sln'
-  - task: XamariniOS@2
-    inputs:
-      solutionFile: '**/*iOS.csproj'
-      configuration: '$(buildConfiguration)'
-      buildForSimulator: true
-      packageApp: false
-  - task: CopyFiles@2
-    inputs:
-      Contents: '**'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)'
-      OverWrite: true
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'iosapp'
-      publishLocation: 'Container'
+# - job: iOS
+#   pool:
+#     vmImage: 'macOS-10.13'
+#   variables:
+#     buildConfiguration: 'Debug'
+#   steps:
+#   - task: NuGetToolInstaller@0
+#   - task: NuGetCommand@2
+#     inputs:
+#       restoreSolution: '**/*.sln'
+#   - task: XamariniOS@2
+#     inputs:
+#       solutionFile: '**/*iOS.csproj'
+#       configuration: '$(buildConfiguration)'
+#       buildForSimulator: true
+#       packageApp: false
+#   - task: CopyFiles@2
+#     inputs:
+#       Contents: '**'
+#       TargetFolder: '$(Build.ArtifactStagingDirectory)'
+#       OverWrite: true
+#   - task: PublishBuildArtifacts@1
+#     inputs:
+#       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#       ArtifactName: 'iosapp'
+#       publishLocation: 'Container'
