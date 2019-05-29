@@ -4,6 +4,7 @@ variables:
   WebAppName: 'monshare'
 
 trigger:
+- master
 - backend
 
 pool:
