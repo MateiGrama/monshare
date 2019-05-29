@@ -19,11 +19,11 @@ jobs:
       configuration: '$(buildConfiguration)'
   - task: DownloadSecureFile@1
     inputs:
-      secureFile: 'monshare.keystore'
+      secureFile: 'keystore.jks'
   - task: AndroidSigning@3
     inputs:
       apkFiles: '**/*.apk'
-      apksignerKeystoreFile: 'monshare.keystore'
+      apksignerKeystoreFile: 'keystore.jks'
       apksignerKeystorePassword: '$(keystore-password)'
       apksignerKeystoreAlias: '$(keystore-alias)'
       apksignerKeyPassword: '$(key-password)'
