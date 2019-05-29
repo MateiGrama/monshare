@@ -5,7 +5,7 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   variables:
-    buildConfiguration: 'Release'
+    buildConfiguration: 'Debug'
     outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
   steps:
   - task: NuGetToolInstaller@0
@@ -17,21 +17,17 @@ jobs:
       projectFile: '**/*droid*.csproj'
       outputDirectory: '$(outputDirectory)'
       configuration: '$(buildConfiguration)'
-
   - task: DownloadSecureFile@1
     inputs:
       secureFile: 'monshare.keystore'
-  
   - task: AndroidSigning@3
     inputs:
       apkFiles: '**/*.apk'
       apksignerKeystoreFile: 'monshare.keystore'
-      apksignerKeystorePassword: 'HoneyBadger1234'
-      apksignerKeystoreAlias: 'monshare'
-      apksignerKeyPassword: 'HoneyBadger1234'
+      apksignerKeystorePassword: '$(keystore-password)'
+      apksignerKeystoreAlias: '$(key-alias)'
+      apksignerKeyPassword: '$(keystore-password)'
       zipalign: false
-  
-
   - task: CopyFiles@2
     inputs:
       Contents: '**'
@@ -48,7 +44,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.13'
   variables:
-    buildConfiguration: 'Release'
+    buildConfiguration: 'Debug'
   steps:
   - task: NuGetToolInstaller@0
   - task: NuGetCommand@2
