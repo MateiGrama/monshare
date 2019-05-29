@@ -68,7 +68,7 @@ def upload_file():
         if 'file' not in request.files:
             file.write("no file uploaded\n")
             return "no file uploaded"
-        file = request.files['file']
+        file = request.files['upload_file']
         if file.filename == '':
             file.write("no file\n")
             return "no file"
