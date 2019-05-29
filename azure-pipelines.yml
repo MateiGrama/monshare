@@ -36,6 +36,10 @@ jobs:
       packageApp: false
 
 - job: publishArtifacts
+  dependsOn: 
+    - Android
+    - iOS
+  condition: succeeded() 
   steps:
   - task: PublishBuildArtifacts@1
     inputs:
