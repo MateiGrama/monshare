@@ -19,6 +19,7 @@ steps:
 - script: |
     python3.7 -m venv antenv3.7
     source antenv3.7/bin/activate
+    pip3.7 install --upgrade pip
     pip3.7 install setuptools
     pip3.7 install -r requirements.txt
 
