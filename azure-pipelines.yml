@@ -5,7 +5,6 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   variables:
-    group: APK_signature
     buildConfiguration: 'Debug'
     outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
   steps:
@@ -29,9 +28,9 @@ jobs:
     inputs:
       apkFiles: '**/*.apk'
       apksignerKeystoreFile: 'monshare.keystore'
-      apksignerKeystorePassword: '$(keystore-password)'
+      apksignerKeystorePassword: 'HoneyBadger1234'
       apksignerKeystoreAlias: 'monshare'
-      apksignerKeyPassword: '$(key-password)'
+      apksignerKeyPassword: 'HoneyBadger1234'
       zipalign: false
 
   - task: CopyFiles@2
