@@ -65,7 +65,7 @@ def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
 
-        if 'file' not in request.files:
+        if 'upload_file' not in request.files:
             file.write("no file uploaded\n")
             return "no file uploaded"
         file = request.files['upload_file']
