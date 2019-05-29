@@ -24,9 +24,9 @@ jobs:
     inputs:
       apkFiles: '**/*.apk'
       apksignerKeystoreFile: 'monshare.keystore'
-      apksignerKeystorePassword: $(keystore-password)
-      apksignerKeystoreAlias: $(key-alias)
-      apksignerKeyPassword: $(keystore-password)
+      apksignerKeystorePassword: 'HoneyBadger1234'
+      apksignerKeystoreAlias: 'monshare'
+      apksignerKeyPassword: 'HoneyBadger1234'
       zipalign: false
   - task: CopyFiles@2
     inputs:
