@@ -54,21 +54,26 @@ def register():
 
 @app.route('/uploadAPK', methods=['POST'])
 def upload_file():
+    file = open('logs.txt','w')
+    
+    file.write("request de upload\n" + json.dumps(request) + '\n')
 
     if(request.args.get('key')!= 'muieDragnea'):
+        file.write("n-ai parola, nu pui sus.\n")
         return "n-ai parola, nu pui sus."
 
     if request.method == 'POST':
         # check if the post request has the file part
+
         if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+            file.write("no file uploaded\n")
+            return "no file uploaded"
         file = request.files['file']
         if file.filename == '':
-            flash('No file selected for uploading')
-            return redirect(request.url)
+            file.write("no file\n")
+            return "no file"
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            flash('File(s) successfully uploaded')
-            return redirect('/')
+            file.write("File(s) successfully uploaded\n")
+            return "success"
