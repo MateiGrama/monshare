@@ -17,6 +17,9 @@ jobs:
       projectFile: '**/*droid*.csproj'
       outputDirectory: '$(outputDirectory)'
       configuration: '$(buildConfiguration)'
+  - task: DownloadSecureFile@1
+    inputs:
+      secureFile: 'monshare.keystore'
   - task: AndroidSigning@3
     inputs:
       apkFiles: '**/*.apk'
