@@ -5,7 +5,6 @@ variables:
 
 trigger:
 - master
-- backend
 
 pool:
   name: Hosted Ubuntu 1604
