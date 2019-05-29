@@ -20,15 +20,15 @@ jobs:
 
   - task: DownloadSecureFile@1
     inputs:
-      secureFile: 'monshare.keystore'
+      secureFile: 'keystore.jks'
 
   - task: AndroidSigning@3
     inputs:
       apkFiles: '**/*.apk'
-      apksignerKeystoreFile: 'monshare.keystore'
-      apksignerKeystorePassword: '$(keystore-password)'
-      apksignerKeystoreAlias: '$(key-alias)'
-      apksignerKeyPassword: '$(key-password)'
+      apksignerKeystoreFile: 'keystore.jks'
+      apksignerKeystorePassword: 'HoneyBadger1234'
+      apksignerKeystoreAlias: 'monshare'
+      apksignerKeyPassword: 'HoneyBadger1234'
       zipalign: false
 
   - task: CopyFiles@2
