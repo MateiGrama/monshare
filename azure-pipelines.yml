@@ -17,6 +17,14 @@ jobs:
       projectFile: '**/*droid*.csproj'
       outputDirectory: '$(outputDirectory)'
       configuration: '$(buildConfiguration)'
+  - task: AndroidSigning@3
+    inputs:
+      apkFiles: '**/*.apk'
+      apksignerKeystoreFile: 'monshare.keystore'
+      apksignerKeystorePassword: '$(keystore-password)'
+      apksignerKeystoreAlias: '$(keystore-alias)'
+      apksignerKeyPassword: '$(key-password)'
+      zipalign: false
   - task: CopyFiles@2
     inputs:
       Contents: '**'
