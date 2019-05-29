@@ -17,6 +17,11 @@ jobs:
       projectFile: '**/*droid*.csproj'
       outputDirectory: '$(outputDirectory)'
       configuration: '$(buildConfiguration)'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'apkapp'
+      publishLocation: 'Container'
 
 - job: iOS
   pool:
@@ -34,15 +39,8 @@ jobs:
       configuration: '$(buildConfiguration)'
       buildForSimulator: true
       packageApp: false
-
-- job: publishArtifacts
-  dependsOn: 
-    - Android
-    - iOS
-  condition: succeeded() 
-  steps:
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'drop'
+      ArtifactName: 'iosapp'
       publishLocation: 'Container'
