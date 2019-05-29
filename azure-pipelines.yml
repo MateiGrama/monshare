@@ -4,7 +4,7 @@ variables:
   WebAppName: 'monshare'
 
 trigger:
-- master
+- backend
 
 pool:
   name: Hosted Ubuntu 1604
@@ -12,14 +12,14 @@ pool:
 steps:
 - task: UsePythonVersion@0
   inputs:
-    versionSpec: '3.6'
+    versionSpec: '3.7'
     architecture: 'x64'
 
 - script: |
-    python3.6 -m venv antenv3.6
-    source antenv3.6/bin/activate
-    pip3.6 install setuptools
-    pip3.6 install -r requirements.txt
+    python3.7 -m venv antenv3.7
+    source antenv3.7/bin/activate
+    pip3.7 install setuptools
+    pip3.7 install -r requirements.txt
 
   # The displayName is shows in the pipeline UI when a build runs
   displayName: 'Install Dependencies'
@@ -37,7 +37,7 @@ steps:
   displayName: Azure App Service Deploy
   inputs:
     appType: webAppLinux
-    RuntimeStack: 'PYTHON|3.6'
+    RuntimeStack: 'PYTHON|3.7'
     ConnectedServiceName: $(ConnectedServiceName)
     WebAppName: $(WebAppName)
     Package: '$(Build.ArtifactStagingDirectory)/Application$(Build.BuildId).zip'
