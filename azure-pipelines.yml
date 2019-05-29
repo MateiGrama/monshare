@@ -5,6 +5,7 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   variables:
+    group: APK_signature
     buildConfiguration: 'Debug'
     outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
   steps:
