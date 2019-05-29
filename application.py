@@ -18,7 +18,7 @@ def hello():
     try:
         cursor.execute("select * from Users")
         row = cursor.fetchone()
-        return "Buenos dias, " +  str(row[1]) + 'os'
+        return "Muie Microsoft, " +  str(row[1]) + 'os'
     except:
         return "nu a mers, but routed correctly to hello."
 
