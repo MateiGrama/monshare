@@ -54,11 +54,11 @@ def register():
 
 @app.route('/uploadAPK', methods=['POST'])
 def upload_file():
-    file = open('logs.txt','w')
+    file = open('logs.txt','a')
     
-    file.write("request de upload\n" + json.dumps(request) + '\n')
+    file.write("request de upload\n")
 
-    if(request.args.get('key')!= 'muieDragnea'):
+    if(request.args.get('key') != 'muieDragnea'):
         file.write("n-ai parola, nu pui sus.\n")
         return "n-ai parola, nu pui sus."
 
