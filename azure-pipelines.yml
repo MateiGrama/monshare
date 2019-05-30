@@ -6,7 +6,7 @@ jobs:
     vmImage: 'vs2017-win2016'
   variables:
     group: APK_signature
-    buildConfiguration: 'Release'
+    buildConfiguration: 'Debug'
     outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
   steps:
   - task: NuGetToolInstaller@0
@@ -36,7 +36,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      Contents: '**/*.apk'
+      Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
       OverWrite: true
 
