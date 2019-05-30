@@ -85,17 +85,19 @@ def getGroupsAround():
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
-    
+    line = 0
     try:
        if check_login(user_id, session_id):
            return authentification_failed()
-
+       line += 1
        cursor.execute("select * from groups")
+       line += 1       
        rows = cursor.fetchall()
+       line += 1       
        return group_list_to_json(rows)
        
     except:
-        return error_status_response("error while getting all groups")
+        return error_status_response("error while getting all groups; line:" + str(line))
         
 
 @app.route("/joinGroup")
