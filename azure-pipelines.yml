@@ -24,8 +24,10 @@ jobs:
     inputs:
       solution: '**/*droid*.csproj'
       vsVersion: '15.0'
-      msbuildArgs: '/t:SignAndroidPackage /p:Configuration=Release'
+      msbuildArgs: '/t:SignAndroidPackage /p:Configuration=Debug'
       configuration: '$(buildConfiguration)'
+
+
 
   - task: CopyFiles@2
     inputs:
