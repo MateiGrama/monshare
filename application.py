@@ -77,7 +77,7 @@ def createGroup():
         return error_status_response("error while inserting group in db; line: " + str(line))
 
 
-line = 0    
+global line = 0    
 @app.route("/getGroupsAround")
 def getGroupsAround():
     user_id = request.args.get('user_id')
