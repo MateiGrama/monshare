@@ -92,9 +92,10 @@ def getGroupsAround():
        line += 1
        cursor.execute("select * from groups")
        line += 1       
+       columns = [column_description[0] for column_description in cursor.description]
        rows = cursor.fetchall()
        line += 1       
-       return group_list_to_json(rows, [column[0] for column in cursor.description])
+       return group_list_to_json(rows, columns)
        
     except:
         return error_status_response("error while getting all groups; line:" + str(line))
@@ -113,7 +114,7 @@ def group_list_to_json(rows, columns):
     for row in rows:
         groups.append(dict(zip(columns, row)))
     line += 1
-    result = {'status':'success' , 'groups' : str(json.dumps(groups))}
+    result = {'status':'success' , 'groups' : json.dumps(groups)}
     line += 1
     return json.dumps(result)
 
