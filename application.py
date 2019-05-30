@@ -68,7 +68,7 @@ def createGroup():
         if not cursor.fetchall():
             return error_status_response("user has not got a valid session id")
         line += 1
-        result = cursor.execute("insert into groups (title, description,creationdatetime, ownerId) values ({},{},GETDATE(), {})".format(group_name, group_description ,user_id))
+        result = cursor.execute("insert into groups (title, description,creationdatetime, ownerId) values ('{}','{}',GETDATE(), {})".format(group_name, group_description ,user_id))
         line += 1
         if result:
             return success_status()
