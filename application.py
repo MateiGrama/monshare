@@ -106,22 +106,17 @@ def leaveGroup():
 
 def group_list_to_json(rows, columns):
     try:
-        line = 0
         groups = []
         for row in rows:
-            if (row[3]):
+            if (not row[3] is None):
                 row[3] = row[3].strftime('%Y-%m-%dT%H:%M:%S.%f')
-            if (row[4]):
+            if (not row[4] is None):
                 row[4] = row[4].strftime('%Y-%m-%dT%H:%M:%S.%f')
             groups.append(dict(zip(columns, row)))
-        line += 1
-        u = json.dumps(groups)
-        line += 1
         result = {'status':'success' , 'groups' : json.dumps(groups)}
-        line += 1
         return json.dumps(result)
     except:
-        return error_status_response("error while generating json for rows; line:" + str(line) + str(groups))
+        return error_status_response("error while generating json for rows; line:" + str(line))
 
 def check_login(user_id, session_id):
     cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
