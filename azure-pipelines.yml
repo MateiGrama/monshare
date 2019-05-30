@@ -18,7 +18,6 @@ jobs:
   - task: VSBuild@1
     inputs:
       solution: '**/*droid*.csproj'
-      platform: 'Android'
       configuration: '$(buildConfiguration)'
       msbuildArchitecture: 'x64'
 
