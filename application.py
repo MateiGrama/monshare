@@ -64,10 +64,9 @@ def createGroup():
     
     line = 0
     try:
-        cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
-        line += 1
-        if not cursor.fetchall():
-            return error_status_response("user has not got a valid session id")
+        if not check_login(user_id, session_id):
+            return authentification_failed()
+        
         line += 1
         result = cursor.execute("insert into groups (title, description,creationdatetime, ownerId) values ('{}','{}',GETDATE(), {})".format(group_name, group_description ,user_id))
         cnxn.commit()
@@ -83,13 +82,10 @@ def createGroup():
 def getGroupsAround():
     ser_id = request.args.get('user_id')
     session_id = request.args.get('session_id')
-    group_name = request.args.get('group_name')
-    group_description = request.args.get('group_description')
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
     
-    line = 0
     try:
        if not check_login(user_id, session_id):
            return authentification_failed()
