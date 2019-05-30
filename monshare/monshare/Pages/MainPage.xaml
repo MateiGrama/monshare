@@ -8,9 +8,16 @@
 
     <StackLayout>
         <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+        <ListView  x:Name="GroupsListView"
+            IsGroupingEnabled="true">
+                <ListView.ItemTemplate>
+                 <DataTemplate>
+                    <TextCell Text="{Binding title}"
+                         Detail="{Binding description}" />
+                  </DataTemplate>
+                </ListView.ItemTemplate>
+        </ListView>
+
         <Button Clicked="CreateGroupButtonPressed"
                 Text="Create Group">
         </Button>

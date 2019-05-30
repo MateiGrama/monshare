@@ -1,4 +1,6 @@
-﻿using monshare.Pages;
+﻿using monshare.Models;
+using monshare.Pages;
+using monshare.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +24,20 @@ namespace monshare
         public async void CreateGroupButtonPressed(object sender, EventArgs args)
         {
             await Navigation.PushAsync(new CreateGroupPage());
+        }
+
+        protected override void OnAppearing()
+        {
+            refreshMyGroupsAsync();
+        }
+
+        private async void refreshMyGroupsAsync()
+        {
+            List<Group> groups = await ServerCommunication.GetMyGroupsAsync();
+
+            GroupsListView.ItemsSource = groups.Select(x => x.title);
+
+
         }
     }
 }

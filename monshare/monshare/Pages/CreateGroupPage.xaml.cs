@@ -17,6 +17,7 @@ namespace monshare.Pages
 
         private async void CreateGroupClicked(object sender, EventArgs e)
         {
+    
             string groupTitle = title.Text ?? "";
             string groupDescription = description.Text ?? "";
             string rangeString = System.Text.RegularExpressions.Regex.Replace(range.SelectedItem.ToString() ?? "", "[^0-9.]", "");
