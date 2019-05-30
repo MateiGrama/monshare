@@ -116,7 +116,7 @@ def group_list_to_json(rows, columns):
         line += 1
         return json.dumps(result)
     except:
-        return error_status_response("error while generating json for rows; line:" + str(line) + groups)
+        return error_status_response("error while generating json for rows; line:" + str(line) + str(groups))
 
 def check_login(user_id, session_id):
     cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
