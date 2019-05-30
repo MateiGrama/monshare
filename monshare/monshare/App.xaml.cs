@@ -1,9 +1,9 @@
 ﻿using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using monshare.Services;
 using monshare.Views;
 
-[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace monshare
 {
     public partial class App : Application
@@ -13,7 +13,7 @@ namespace monshare
         {
             InitializeComponent();
 
-
+            DependencyService.Register<MockDataStore>();
             MainPage = new MainPage();
         }
 
