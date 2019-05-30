@@ -7,6 +7,8 @@ from werkzeug.utils import secure_filename
 from flask import request
 
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
+FAIL_STATUS = "fail"
+SUCCESS_STATUS = "success"
 
 app = Flask(__name__)
 
@@ -22,9 +24,6 @@ print(con_string)
 cnxn = pyodbc.connect(con_string)
 cursor = cnxn.cursor()
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-    
 
 @app.route("/")
 def hello():
@@ -46,34 +45,54 @@ def login():
 
 @app.route("/register")
 def register():
-    username = request.args.get('username')
+    email = request.args.get('email')
     firstname = request.args.get('firstname')
     lastname = request.args.get('lastname')
     return "register"
 
 
-@app.route('/uploadAPK', methods=['POST'])
-def upload_file():
-    file = open('logs.txt','a')
+
+@app.route("/createGroup")
+def createGroup():
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    group_name = request.args.get('group_name')
+    group_description = request.args.get('group_description')
+
+    if not user_id or not session_id:
+        return error_status_response("invalid id or sessionid")
+
     
-    file.write("request de upload\n")
+    cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
+    
+    if not cursor.fetchall():
+        return error_status_response("user has not got a valid session id")
 
-    if(request.args.get('key') != 'muieDragnea'):
-        file.write("n-ai parola, nu pui sus.\n")
-        return "n-ai parola, nu pui sus."
+    result = cursor.execute("insert into groups (title, description,creationdatetime, ownerId) values ({},{},GETDATE(), {})".format(group_name, group_description ,user_id))
 
-    if request.method == 'POST':
-        # check if the post request has the file part
+    if result:
+        return success_status()
+    
+    return error_status_response("error while inserting group in db")
 
-        if 'upload_file' not in request.files:
-            file.write("no file uploaded\n")
-            return "no file uploaded"
-        file = request.files['upload_file']
-        if file.filename == '':
-            file.write("no file\n")
-            return "no file"
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            file.write("File(s) successfully uploaded\n")
-            return "success"
+
+    
+@app.route("/getGroupsAround")
+def getGroupsAround():
+    pass
+
+@app.route("/joinGroup")
+def joinGroup():
+    pass 
+@app.route("/leaveGroup")
+def leaveGroup():
+    pass
+
+
+def success_status():
+   result = {"status" : SUCCESS_STATUS}
+   return json.dumps(result)
+
+def error_status_response(msg):
+   result = { "message" : msg , "status" : FAIL_STATUS}
+   return json.dumps(result)
