@@ -11,6 +11,9 @@
         <Label Text="Welcome to Xamarin.Forms!" 
            HorizontalOptions="Center"
            VerticalOptions="CenterAndExpand" />
+        <Button Clicked="CreateGroupButtonPressed"
+                Text="Create Group">
+        </Button>
     </StackLayout>
 
 </ContentPage>

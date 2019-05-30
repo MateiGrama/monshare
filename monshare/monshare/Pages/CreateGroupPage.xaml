@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="monshare.Pages.CreateGroupPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Frame HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="CenterAndExpand">
+                <StackLayout>
+                    <Entry x:Name="title"
+                           Placeholder="Enter group name"
+                           HorizontalOptions="FillAndExpand"/>
+
+                    <Editor x:Name="description" 
+                            Placeholder="Add a short description"
+                            HorizontalOptions="FillAndExpand"/>
+
+                    <Picker x:Name="range"
+                            Title="Select a range"
+                            HorizontalOptions="FillAndExpand">
+                
+                        <Picker.Items>
+                            <x:String>500m</x:String>
+                            <x:String>1km</x:String>
+                            <x:String>1.5km</x:String>
+                            <x:String>2km</x:String>
+                        </Picker.Items>
+                    </Picker>
+
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="FillAndExpand">
+                        <Label Text="Keep it alive until:"/>
+                        <TimePicker x:Name="timePicker"
+                                    Time="11:00"/>
+
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            <Button Text="Done"/>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

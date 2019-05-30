@@ -1,4 +1,5 @@
-﻿using System;
+﻿using monshare.Pages;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,6 +17,11 @@ namespace monshare
         public MainPage()
         {
             InitializeComponent();
+        }
+
+        public async void CreateGroupButtonPressed(object sender, EventArgs args)
+        {
+            await Navigation.PushAsync(new CreateGroupPage());
         }
     }
 }
