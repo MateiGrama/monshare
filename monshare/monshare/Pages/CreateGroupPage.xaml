@@ -37,9 +37,24 @@
                                     Time="11:00"/>
 
                     </StackLayout>
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="FillAndExpand">
+                        <Label Text="Target number of people:"/>
+                        <Picker x:Name="targetNoPeople"
+                            Title="Target number"
+                            HorizontalOptions="FillAndExpand">
+                            <Picker.Items>
+                                <x:String>5</x:String>
+                                <x:String>10</x:String>
+                                <x:String>15</x:String>
+                                <x:String>20</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </StackLayout>
                 </StackLayout>
             </Frame>
-            <Button Text="Done"/>
+            <Button Text="Done"
+                    Clicked="CreateGroupClicked"/>
 
         </StackLayout>
     </ContentPage.Content>

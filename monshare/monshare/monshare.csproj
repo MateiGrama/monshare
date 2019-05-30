@@ -11,6 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
+    <PackageReference Include="System.Json" Version="4.5.0" />
     <PackageReference Include="Xamarin.Forms" Version="4.0.0.425677" />
     <PackageReference Include="Xamarin.Essentials" Version="1.1.0" />
   </ItemGroup>
