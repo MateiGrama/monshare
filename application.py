@@ -76,8 +76,7 @@ def createGroup():
     except:
         return error_status_response("error while inserting group in db; line: " + str(line))
 
-
-global line = 0    
+   
 @app.route("/getGroupsAround")
 def getGroupsAround():
     user_id = request.args.get('user_id')
@@ -85,21 +84,17 @@ def getGroupsAround():
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
-    global line = 0
     try:
        if check_login(user_id, session_id):
            return authentification_failed()
-       line += 1
        cursor.execute("select * from groups")
-       line += 1       
        columns = [column_description[0] for column_description in cursor.description]
        rows = cursor.fetchall()
-       line += 1       
-       return group_list_to_json(rows, columns)
-
     except:
         return error_status_response("error while getting all groups; line:" + str(line))
-        
+    
+    return group_list_to_json(rows, columns)
+
 
 @app.route("/joinGroup")
 def joinGroup():
@@ -109,15 +104,17 @@ def leaveGroup():
     pass
 
 def group_list_to_json(rows, columns):
-    global line += 1
-    groups = []
-    for row in rows:
-        groups.append(dict(zip(columns, row)))
-    line += 1
-    result = {'status':'success' , 'groups' : json.dumps(groups)}
-    line += 1
-    return json.dumps(result)
-
+    try:
+        line = 0
+        groups = []
+        for row in rows:
+            groups.append(dict(zip(columns, row)))
+        line += 1
+        result = {'status':'success' , 'groups' : json.dumps(groups)}
+        line += 1
+        return json.dumps(result)
+    except:
+        return error_status_response("error while generating json for rows; line:" + str(line))
 
 def check_login(user_id, session_id):
     cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
