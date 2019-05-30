@@ -14,6 +14,12 @@ jobs:
   - task: NuGetCommand@2
     inputs:
       restoreSolution: '**/*.sln'
+
+  - task: VSBuild@1
+    inputs:
+      solution: '**/*Monshare.csproj'
+      configuration: '$(buildConfiguration)'
+      msbuildArchitecture: 'x64'
   
   - task: VSBuild@1
     inputs:
