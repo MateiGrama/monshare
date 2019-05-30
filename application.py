@@ -110,11 +110,13 @@ def group_list_to_json(rows, columns):
         for row in rows:
             groups.append(dict(zip(columns, row)))
         line += 1
+        u = json.dumps(groups)
+        line += 1
         result = {'status':'success' , 'groups' : json.dumps(groups)}
         line += 1
         return json.dumps(result)
     except:
-        return error_status_response("error while generating json for rows; line:" + str(line))
+        return error_status_response("error while generating json for rows; line:" + str(line) + groups)
 
 def check_login(user_id, session_id):
     cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
