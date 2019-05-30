@@ -5,7 +5,6 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   variables:
-    group: APK_signature
     buildConfiguration: 'Debug'
     outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
   steps:
@@ -20,12 +19,6 @@ jobs:
       solution: '**/*Monshare.csproj'
       configuration: '$(buildConfiguration)'
       msbuildArchitecture: 'x64'
-  
-  # - task: VSBuild@1
-  #   inputs:
-  #     solution: ''
-  #     configuration: '$(buildConfiguration)'
-  #     msbuildArchitecture: 'x64'
 
   - task: VSBuild@1
     inputs:
@@ -34,32 +27,9 @@ jobs:
       msbuildArgs: '/t:SignAndroidPackage /p:Configuration=Release'
       configuration: '$(buildConfiguration)'
 
-  # - script: '"C:/Program Files/Android/jdk/microsoft_dist_openjdk_1.8.0.25/bin/java.exe" -Xmx1G -jar "C:/Program Files (x86)/Android/android-sdk/build-tools/27.0.3/lib/dx.jar" --dex --no-strict --output obj/Release/81/android/bin d:/a/1/s/Monshare/Monshare/Monshare.Android/obj/Release/81/android/bin/classes.zip "C:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/Common7/IDE/ReferenceAssemblies/Microsoft/Framework/MonoAndroid/v8.1/mono.android.jar" obj/Release/81/lp/0/jl/formsviewgroup.jar obj/Release/81/lp/10/jl/bin/classes.jar obj/Release/81/lp/11/jl/bin/classes.jar obj/Release/81/lp/12/jl/bin/classes.jar obj/Release/81/lp/13/jl/bin/classes.jar obj/Release/81/lp/14/jl/bin/classes.jar obj/Release/81/lp/15/jl/bin/classes.jar obj/Release/81/lp/16/jl/bin/classes.jar obj/Release/81/lp/17/jl/bin/classes.jar obj/Release/81/lp/18/jl/bin/classes.jar obj/Release/81/lp/19/jl/bin/classes.jar obj/Release/81/lp/20/jl/bin/classes.jar obj/Release/81/lp/21/jl/bin/classes.jar obj/Release/81/lp/3/jl/arch-core-common.jar obj/Release/81/lp/4/jl/arch-lifecycle-common.jar obj/Release/81/lp/5/jl/bin/classes.jar obj/Release/81/lp/6/jl/bin/classes.jar obj/Release/81/lp/8/jl/bin/classes.jar obj/Release/81/lp/9/jl/bin/classes.jar '
-
-  # - script : '"C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/MSBuild/Xamarin/Android/mono-symbolicate" store-symbols "bin/Release/com.companyname.monshare.apk.mSYM" "obj/Release/81/android/assets"'
-
-  # - task: XamarinAndroid@1
-  #   inputs:
-  #     projectFile: '**/*droid*.csproj'
-  #     outputDirectory: '$(outputDirectory)'
-  #     configuration: '$(buildConfiguration)'
-
-  # - task: DownloadSecureFile@1
-  #   inputs:
-  #     secureFile: 'monshare.keystore'
-      
-  # - task: AndroidSigning@3
-  #   inputs:
-  #     apkFiles: '**/*.apk'
-  #     apksignerKeystoreFile: 'monshare.keystore'
-  #     apksignerKeystorePassword: 'HoneyBadger1234'
-  #     apksignerKeystoreAlias: 'monshare'
-  #     apksignerKeyPassword: 'HoneyBadger1234'
-  #     zipalign: false
-
   - task: CopyFiles@2
     inputs:
-      Contents: '**'
+      Contents: '**/*Signed*.apk'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
       OverWrite: true
 
@@ -68,7 +38,6 @@ jobs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       ArtifactName: 'apkapp'
       publishLocation: 'Container'
-
 
 # - job: iOS
 #   pool:
