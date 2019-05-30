@@ -123,7 +123,7 @@ def group_list_to_json(rows):
     return json.dumps(result)
 
 
-def leaveGroup():
+def check_login(user_id, session_id):
     cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
     return not cursor.fetchall()
 
