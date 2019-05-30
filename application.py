@@ -5,6 +5,7 @@ import os
 from flask import Flask, flash, request, redirect, render_template
 from werkzeug.utils import secure_filename
 from flask import request
+import datetime
 
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 FAIL_STATUS = "fail"
@@ -108,6 +109,10 @@ def group_list_to_json(rows, columns):
         line = 0
         groups = []
         for row in rows:
+            if (row[3]):
+                row[3] = row[3].strftime('%Y-%m-%dT%H:%M:%S.%f')
+            if (row[4]):
+                row[4] = row[4].strftime('%Y-%m-%dT%H:%M:%S.%f')
             groups.append(dict(zip(columns, row)))
         line += 1
         u = json.dumps(groups)
