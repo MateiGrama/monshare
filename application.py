@@ -85,7 +85,7 @@ def getGroupsAround():
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
-    line = 0
+    global line = 0
     try:
        if check_login(user_id, session_id):
            return authentification_failed()
@@ -109,7 +109,7 @@ def leaveGroup():
     pass
 
 def group_list_to_json(rows, columns):
-    line += 1
+    global line += 1
     groups = []
     for row in rows:
         groups.append(dict(zip(columns, row)))
