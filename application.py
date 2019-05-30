@@ -80,7 +80,7 @@ def createGroup():
     
 @app.route("/getGroupsAround")
 def getGroupsAround():
-    ser_id = request.args.get('user_id')
+    user_id = request.args.get('user_id')
     session_id = request.args.get('session_id')
 
     if not user_id or not session_id:
