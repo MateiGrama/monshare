@@ -27,7 +27,6 @@ jobs:
       
   - task: AndroidSigning@3
     inputs:
-      apksign: false 
       apkFiles: '**/*.apk'
       apksignerKeystoreFile: 'monshare.keystore'
       apksignerKeystorePassword: 'HoneyBadger1234'
