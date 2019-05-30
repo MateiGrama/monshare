@@ -61,19 +61,20 @@ def createGroup():
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
+    line = 0
+    try:
+        cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
+        line += 1
+        if not cursor.fetchall():
+            return error_status_response("user has not got a valid session id")
+        line += 1
+        result = cursor.execute("insert into groups (title, description,creationdatetime, ownerId) values ({},{},GETDATE(), {})".format(group_name, group_description ,user_id))
+        line += 1
+        if result:
+            return success_status()
 
-    
-    cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
-    
-    if not cursor.fetchall():
-        return error_status_response("user has not got a valid session id")
-
-    result = cursor.execute("insert into groups (title, description,creationdatetime, ownerId) values ({},{},GETDATE(), {})".format(group_name, group_description ,user_id))
-
-    if result:
-        return success_status()
-    
-    return error_status_response("error while inserting group in db")
+    except:
+        return error_status_response("error while inserting group in db; line: " + str(line))
 
 
     
