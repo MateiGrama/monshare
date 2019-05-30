@@ -113,7 +113,7 @@ def group_list_to_json(rows, columns):
             if (not row[4] is None):
                 row[4] = row[4].strftime('%Y-%m-%dT%H:%M:%S.%f')
             groups.append(dict(zip(columns, row)))
-        result = {'status':'success' , 'groups' : json.dumps(groups)}
+        result = {'status':'success' , 'groups' : groups}
         return json.dumps(result)
     except:
         return error_status_response("error while generating json for rows; line:" + str(line))
