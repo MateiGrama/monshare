@@ -94,7 +94,7 @@ def getGroupsAround():
        line += 1       
        rows = cursor.fetchall()
        line += 1       
-       return group_list_to_json(rows)
+       return group_list_to_json(rows, [column[0] for column in cursor.description])
        
     except:
         return error_status_response("error while getting all groups; line:" + str(line))
@@ -107,21 +107,12 @@ def joinGroup():
 def leaveGroup():
     pass
 
-def group_list_to_json(rows):
+def group_list_to_json(rows, columns):
     groups = []
     for row in rows:
-        groups.append({
-            'groupd_id': row[0],
-            'title' : row[1],
-            'description': row[2],
-            'creation_datetime': row[3],
-            'end_datetime': row[4],
-            'min_members' : row[5],
-            'max_members' : row[6],
-            'owner_id' : row[7]
-        })
+        groups.append(dict(zip(columns, row)))
 
-    result = {'status':'success' , 'groups' : json.dumps(groups)}
+    result = {'status':'success' , 'groups' : str(json.dumps(groups))}
     return json.dumps(result)
 
 
