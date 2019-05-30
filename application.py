@@ -121,7 +121,7 @@ def group_list_to_json(rows):
             'owner_id' : row[7]
         })
 
-    result = {'status':'success' , 'groups' : groups}
+    result = {'status':'success' , 'groups' : json.dumps(groups)}
     return json.dumps(result)
 
 
