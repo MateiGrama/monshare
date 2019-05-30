@@ -64,7 +64,7 @@ def createGroup():
     
     line = 0
     try:
-        if not check_login(user_id, session_id):
+        if check_login(user_id, session_id):
             return authentification_failed()
         
         line += 1
@@ -87,7 +87,7 @@ def getGroupsAround():
         return error_status_response("invalid id or sessionid")
     
     try:
-       if not check_login(user_id, session_id):
+       if check_login(user_id, session_id):
            return authentification_failed()
 
        cursor.execute("select * from groups")
