@@ -27,18 +27,18 @@ jobs:
   #     outputDirectory: '$(outputDirectory)'
   #     configuration: '$(buildConfiguration)'
 
-  - task: DownloadSecureFile@1
-    inputs:
-      secureFile: 'monshare.keystore'
+  # - task: DownloadSecureFile@1
+  #   inputs:
+  #     secureFile: 'monshare.keystore'
       
-  - task: AndroidSigning@3
-    inputs:
-      apkFiles: '**/*.apk'
-      apksignerKeystoreFile: 'monshare.keystore'
-      apksignerKeystorePassword: 'HoneyBadger1234'
-      apksignerKeystoreAlias: 'monshare'
-      apksignerKeyPassword: 'HoneyBadger1234'
-      zipalign: false
+  # - task: AndroidSigning@3
+  #   inputs:
+  #     apkFiles: '**/*.apk'
+  #     apksignerKeystoreFile: 'monshare.keystore'
+  #     apksignerKeystorePassword: 'HoneyBadger1234'
+  #     apksignerKeystoreAlias: 'monshare'
+  #     apksignerKeyPassword: 'HoneyBadger1234'
+  #     zipalign: false
 
   - task: CopyFiles@2
     inputs:
