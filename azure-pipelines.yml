@@ -30,7 +30,7 @@ jobs:
       apkFiles: '**/*.apk'
       apksignerKeystoreFile: 'monshare.keystore'
       apksignerKeystorePassword: 'HoneyBadger1234'
-      apksignerKeystoreAlias: "$(key-alias)"
+      apksignerKeystoreAlias: 'monshare'
       apksignerKeyPassword: 'HoneyBadger1234'
       zipalign: false
 
