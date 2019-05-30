@@ -108,11 +108,13 @@ def leaveGroup():
     pass
 
 def group_list_to_json(rows, columns):
+    line += 1
     groups = []
     for row in rows:
         groups.append(dict(zip(columns, row)))
-
+    line += 1
     result = {'status':'success' , 'groups' : str(json.dumps(groups))}
+    line += 1
     return json.dumps(result)
 
 
