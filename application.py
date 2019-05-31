@@ -30,8 +30,6 @@ def login():
     email = request.args.get('email')
     password_hash = request.args.get('password_hash')
 
-    line = 0
-
     if not email or not password_hash:
         return error_status_response("No email or password provided.")
 
@@ -39,28 +37,25 @@ def login():
     try:
         cursor.execute("SELECT SessionId, PasswordHash FROM users WHERE email = '{}';".format(email));
         user_details = cursor.fetchone()
-        line += 1
+
         if not user_details:
             return error_status_response("No user registered with the given email address.")
-        line += 1
         if not user_details.PasswordHash == password_hash:
             return error_status_response("Wrong password provided.")
-        line += 1
+
         cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(int(user_details.SessionId) + 1, email))
-        line += 1
+
         # Return success result
         cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
-        line += 1
         user_details = cursor.fetchone()
-        line += 1
 
         result = {"status": SUCCESS_STATUS, "user": {"user_id": user_details.UserId,
                                                      "session_id": user_details.SessionId,
                                                      "first_name": user_details.FirstName,
                                                      "last_name": user_details.LastName}}
-        line += 1
+                                                     
     except:
-        return error_status_response("error while processing login request" + str(line))
+        return error_status_response("error while processing login request")
     return json.dumps(result)
 
 
