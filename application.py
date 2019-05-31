@@ -99,7 +99,7 @@ def register():
             return error_status_response("Email already in use.")
         line += 1
 
-        cursor.execute("INSERT INTO u sers (firstname, lastname, passwordhash, sessionId, email) values ('{}','{}','{}','{}','{}')".format(first_name, last_name, password_hash, getRandomSSID(), email))
+        cursor.execute("INSERT INTO users (firstname, lastname, passwordhash, sessionId, email) values ('{}','{}','{}','{}','{}')".format(first_name, last_name, password_hash, getRandomSSID(), email))
         connection.commit()
         line += 1
 
