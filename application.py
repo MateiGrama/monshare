@@ -28,12 +28,7 @@ cursor = cnxn.cursor()
 
 @app.route("/")
 def hello():
-    try:
-        cursor.execute("select * from Users")
-        row = cursor.fetchone()
-        return "User of the month: " +  str(row[1])
-    except:
-        return "Problem connecting to the db."
+    return "Welcome to Monshare!"
 
 
 @app.route("/login")
