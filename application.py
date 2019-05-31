@@ -1,11 +1,10 @@
 import json
 import pyodbc
-import os
 
 from flask import Flask, flash, request, redirect, render_template
-from werkzeug.utils import secure_filename
 from flask import request
-import datetime
+from utils import keys
+from utils import db_functionalities
 
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 FAIL_STATUS = "fail"
@@ -13,29 +12,20 @@ SUCCESS_STATUS = "success"
 
 app = Flask(__name__)
 
-app.secret_key = "secret key"
+app.secret_key = keys.secret_key
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-ALLOWED_EXTENSIONS = set(['.apk'])
+ALLOWED_EXTENSIONS = {'.apk'}
 
-drivers = [item for item in pyodbc.drivers()]
-driver = drivers[-1]
-con_string = "DRIVER={};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;Uid=BoneyHadger@webapp-db-sv;Pwd=HoneyBadger123$;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;".format(driver)
-print(con_string)
-cnxn = pyodbc.connect(con_string)
-cursor = cnxn.cursor()
-
-
-@app.route("/")
-def hello():
-    return "Welcome to Monshare!"
+connection = pyodbc.connect(db_functionalities.get_connection_string(pyodbc.drivers()[-1]))
+cursor = connection.cursor()
 
 
 @app.route("/login")
 def login():
     username = request.args.get('username')
     password = request.args.get('password')
-    result= {"text": "test request & response for" + username}
+    result = {"text": "test request & response for" + username}
     return json.dumps(result)
 
 
@@ -45,7 +35,6 @@ def register():
     firstname = request.args.get('firstname')
     lastname = request.args.get('lastname')
     return "register"
-
 
 
 @app.route("/createGroup")
@@ -61,17 +50,20 @@ def createGroup():
     try:
         if check_login(user_id, session_id):
             return authentification_failed()
-         
-        result = cursor.execute("insert into groups (title, description,creationdatetime, ownerId) values ('{}','{}',GETDATE(), {})".format(group_name, group_description ,user_id))
-        cnxn.commit()
-       
-       if result:
+
+        result = cursor.execute(
+            """insert into groups (title, description, creationdatetime, ownerId) 
+               values ('{}','{}',GETDATE(), {})""".format(group_name, group_description, user_id))
+        connection.commit()
+
+        if result:
             return success_status()
 
     except:
         return error_status_response("error while inserting group in db")
 
-   
+
+
 @app.route("/getGroupsAround")
 def getGroupsAround():
     user_id = request.args.get('user_id')
@@ -80,23 +72,26 @@ def getGroupsAround():
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
     try:
-       if check_login(user_id, session_id):
-           return authentification_failed()
-       cursor.execute("select * from groups")
-       columns = [column_description[0] for column_description in cursor.description]
-       rows = cursor.fetchall()
+        if check_login(user_id, session_id):
+            return authentification_failed()
+        cursor.execute("select * from groups")
+        columns = [column_description[0] for column_description in cursor.description]
+        rows = cursor.fetchall()
     except:
         return error_status_response("error while getting all groups")
-    
+
     return group_list_to_json(rows, columns)
 
 
 @app.route("/joinGroup")
 def joinGroup():
-    pass 
+    pass
+
+
 @app.route("/leaveGroup")
 def leaveGroup():
     pass
+
 
 def group_list_to_json(rows, columns):
     try:
@@ -107,22 +102,26 @@ def group_list_to_json(rows, columns):
             if (not row[4] is None):
                 row[4] = row[4].strftime('%Y-%m-%dT%H:%M:%S.%f')
             groups.append(dict(zip(columns, row)))
-        result = {'status':'success' , 'groups' : groups}
+        result = {'status': 'success', 'groups': groups}
         return json.dumps(result)
     except:
         return error_status_response("error while generating json for rows")
+
 
 def check_login(user_id, session_id):
     cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
     return not cursor.fetchall()
 
+
 def authentification_failed():
     return error_status_response("user has not got a valid session id")
 
+
 def success_status():
-   result = {"status" : SUCCESS_STATUS}
-   return json.dumps(result)
+    result = {"status": SUCCESS_STATUS}
+    return json.dumps(result)
+
 
 def error_status_response(msg):
-   result = { "message" : msg , "status" : FAIL_STATUS}
-   return json.dumps(result)
+    result = {"message": msg, "status": FAIL_STATUS}
+    return json.dumps(result)
