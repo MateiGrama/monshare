@@ -70,13 +70,8 @@ def logout():
 
     # Check that the connection is valid
     try:
-        cursor.execute("SELECT SessionId, UserId FROM users WHERE userId = {};".format(user_id));
-        user_details = cursor.fetchone()
-
-        if not user_details:
-            return error_status_response("Incorrect user_id provided.")
-        if not user_details.SessionId == session_id:
-            return error_status_response("session_id does not match the SessionId stored in the database.")
+        if check_login(user_id, session_id):
+            return authentification_failed()
 
         cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(randint(0, 1000000000), user_id))
         connection.commit()
