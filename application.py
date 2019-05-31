@@ -57,20 +57,19 @@ def createGroup():
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
-    
-    line = 0
+
     try:
         if check_login(user_id, session_id):
             return authentification_failed()
-        
-        line += 1
+         
         result = cursor.execute("insert into groups (title, description,creationdatetime, ownerId) values ('{}','{}',GETDATE(), {})".format(group_name, group_description ,user_id))
         cnxn.commit()
-        if result:
+       
+       if result:
             return success_status()
 
     except:
-        return error_status_response("error while inserting group in db; line: " + str(line))
+        return error_status_response("error while inserting group in db")
 
    
 @app.route("/getGroupsAround")
@@ -87,7 +86,7 @@ def getGroupsAround():
        columns = [column_description[0] for column_description in cursor.description]
        rows = cursor.fetchall()
     except:
-        return error_status_response("error while getting all groups; line:" + str(line))
+        return error_status_response("error while getting all groups")
     
     return group_list_to_json(rows, columns)
 
@@ -111,7 +110,7 @@ def group_list_to_json(rows, columns):
         result = {'status':'success' , 'groups' : groups}
         return json.dumps(result)
     except:
-        return error_status_response("error while generating json for rows; line:" + str(line))
+        return error_status_response("error while generating json for rows")
 
 def check_login(user_id, session_id):
     cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
