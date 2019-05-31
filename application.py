@@ -165,20 +165,14 @@ def leave_group(*args):
 
     # If the group has one member and it leaves, delete the group
     if group_has_one_member(group_id):
-        return error_status_response("2")
         delete_group(group_id)
-        return error_status_response("3")
-        return
+        return success_status("You successfully left the group.")
 
-    return error_status_response("4")
     # Remove the user from the group. If the owner leaves, pass the ownership to other member
     if is_group_owner(user_id, group_id):
-        return error_status_response("5")
         pass_ownership(user_id, group_id)
-        return error_status_response("6")
 
     remove_user_from_group(user_id, group_id)
-
     return success_status("You successfully left the group.")
 
 
