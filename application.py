@@ -73,7 +73,7 @@ def logout():
         if check_login(user_id, session_id):
             return authentification_failed()
 
-        cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(randint(0, 1000000000), user_id))
+        cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(getRandomSSID(), user_id))
         connection.commit()
 
     except:
@@ -84,9 +84,35 @@ def logout():
 @app.route("/register")
 def register():
     email = request.args.get('email')
-    firstname = request.args.get('firstname')
-    lastname = request.args.get('lastname')
-    return "register"
+    first_name = request.args.get('first_name')
+    last_name  = request.args.get('last_name')
+    password_hash  = request.args.get('password_hash')
+
+    if not email or not password_hash or not first_name or not last_name:
+        return error_status_response("Provided input is not valid.")
+
+    # Check that user is in database
+    try:
+        cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email));
+        if len(cursor.fetchall()) > 0:
+            return error_status_response("Email already in use.")
+
+        cursor.execute("""INSERT INTO u sers (firstname, lastname, passwordhash, sessionId, email)
+                        values ('{}','{}','{}','{}','{}')""".format(first_name, last_name, password_hash, getRandomSSID(), email))
+        connection.commit()
+
+        # Return success result
+        cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
+        user_details = cursor.fetchone()
+
+        result = {"status": SUCCESS_STATUS, "user": {"user_id": user_details.UserId,
+                                                     "session_id": user_details.SessionId,
+                                                     "first_name": user_details.FirstName,
+                                                     "last_name": user_details.LastName}}
+                                                     
+    except:
+        return error_status_response("error while processing register request")
+    return json.dumps(result)
 
 
 @app.route("/createGroup")
@@ -177,3 +203,6 @@ def success_status():
 def error_status_response(msg):
     result = {"message": msg, "status": FAIL_STATUS}
     return json.dumps(result)
+
+def getRandomSSID():
+    return randint(1,100000000);
