@@ -36,21 +36,21 @@ def login():
     # Check that user is in database
     cursor.execute("SELECT SessionId, PasswordHash FROM users WHERE email = '{}';".format(email));
     useer_details = cursor.fetchone()
-    if not rows:
+    if not useer_details:
         return error_status_response("No user registered with the given email address.")
-    if not row.PasswordHash == password_hash:
+    if not useer_details.PasswordHash == password_hash:
         return error_status_response("Wrong password provided.")
-    cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(row.SessionId + 1, email))
+    cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(useer_details.SessionId + 1, email))
 
     # Return success result
     cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
-    row = cursor.fetchone()
+    useer_details = cursor.fetchone()
 
 
-    result = {"status": SUCCESS_STATUS, "user": {"user_id": row.UserId,
-                                                 "session_id": row.SessionId,
-                                                 "first_name": row.FirstName,
-                                                 "last_name": row.LastName}}
+    result = {"status": SUCCESS_STATUS, "user": {"user_id": useer_details.UserId,
+                                                 "session_id": useer_details.SessionId,
+                                                 "first_name": useer_details.FirstName,
+                                                 "last_name": useer_details.LastName}}
     return json.dumps(result)
 
 
