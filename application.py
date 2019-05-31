@@ -46,7 +46,7 @@ def login():
         if not user_details.PasswordHash == password_hash:
             return error_status_response("Wrong password provided.")
         line += 1
-        cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(user_details.SessionId + 1, email))
+        cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(str(user_details.SessionId + 1), email))
         line += 1
         # Return success result
         cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
