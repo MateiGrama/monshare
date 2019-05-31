@@ -41,29 +41,29 @@ jobs:
       ArtifactName: 'apkapp'
       publishLocation: 'Container'
 
-# - job: iOS
-#   pool:
-#     vmImage: 'macOS-10.13'
-#   variables:
-#     buildConfiguration: 'Debug'
-#   steps:
-#   - task: NuGetToolInstaller@0
-#   - task: NuGetCommand@2
-#     inputs:
-#       restoreSolution: '**/*.sln'
-#   - task: XamariniOS@2
-#     inputs:
-#       solutionFile: '**/*iOS.csproj'
-#       configuration: '$(buildConfiguration)'
-#       buildForSimulator: true
-#       packageApp: false
-#   - task: CopyFiles@2
-#     inputs:
-#       Contents: '**'
-#       TargetFolder: '$(Build.ArtifactStagingDirectory)'
-#       OverWrite: true
-#   - task: PublishBuildArtifacts@1
-#     inputs:
-#       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-#       ArtifactName: 'iosapp'
-#       publishLocation: 'Container'
+- job: iOS
+  pool:
+    vmImage: 'macOS-10.13'
+  variables:
+    buildConfiguration: 'Debug'
+  steps:
+  - task: NuGetToolInstaller@0
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: '**/*.sln'
+  - task: XamariniOS@2
+    inputs:
+      solutionFile: '**/*iOS.csproj'
+      configuration: '$(buildConfiguration)'
+      buildForSimulator: true
+      packageApp: false
+  - task: CopyFiles@2
+    inputs:
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      OverWrite: true
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'iosapp'
+      publishLocation: 'Container'
