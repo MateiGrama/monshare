@@ -23,9 +23,30 @@ cursor = connection.cursor()
 
 @app.route("/login")
 def login():
-    username = request.args.get('username')
-    password = request.args.get('password')
-    result = {"text": "test request & response for" + username}
+    email = request.args.get('email')
+    password_hash = request.args.get('password_hash')
+
+    if not email or not password_hash:
+        return error_status_response("No email or password provided.")
+
+    # Check that user is in database
+    cursor.execute("SELECT SessionId, PasswordHash FROM users WHERE email = '{}';".format(email));
+    useer_details = cursor.fetchone()
+    if not rows:
+        return error_status_response("No user registered with the given email address.")
+    if not row.PasswordHash == password_hash:
+        return error_status_response("Wrong password provided.")
+    cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(row.SessionId + 1, email))
+
+    # Return success result
+    cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
+    row = cursor.fetchone()
+
+
+    result = {"status": SUCCESS_STATUS, "user": {"user_id": row.UserId,
+                                                 "session_id": row.SessionId,
+                                                 "first_name": row.FirstName,
+                                                 "last_name": row.LastName}}
     return json.dumps(result)
 
 
@@ -52,7 +73,7 @@ def createGroup():
             return authentification_failed()
 
         result = cursor.execute(
-            """insert into groups (title, description, creationdatetime, ownerId) 
+            """insert into groups (title, description, creationdatetime, ownerId)
                values ('{}','{}',GETDATE(), {})""".format(group_name, group_description, user_id))
         connection.commit()
 
