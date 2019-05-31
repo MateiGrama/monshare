@@ -34,10 +34,7 @@ namespace monshare
         private async void refreshMyGroupsAsync()
         {
             List<Group> groups = await ServerCommunication.GetMyGroupsAsync();
-
-            GroupsListView.ItemsSource = groups.Select(x => x.title);
-
-
+            GroupsListView.ItemsSource = groups;
         }
     }
 }

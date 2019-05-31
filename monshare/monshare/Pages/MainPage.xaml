@@ -7,15 +7,15 @@
              x:Class="monshare.MainPage">
 
     <StackLayout>
-        <!-- Place new controls here -->
         <ListView  x:Name="GroupsListView"
-            IsGroupingEnabled="true">
-                <ListView.ItemTemplate>
-                 <DataTemplate>
+                   SeparatorVisibility="None"
+                   ItemsSource="{Binding Groups}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
                     <TextCell Text="{Binding title}"
                          Detail="{Binding description}" />
-                  </DataTemplate>
-                </ListView.ItemTemplate>
+                </DataTemplate>
+            </ListView.ItemTemplate>
         </ListView>
 
         <Button Clicked="CreateGroupButtonPressed"
