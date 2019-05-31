@@ -163,7 +163,6 @@ def leave_group(*args):
     if not is_user_member_of_group(user_id, group_id):
         raise "User {} is not a member of the {} group!".format(user_id, group_id)
 
-    return error_status_response("1")
     # If the group has one member and it leaves, delete the group
     if group_has_one_member(group_id):
         return error_status_response("2")
