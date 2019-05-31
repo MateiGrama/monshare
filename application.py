@@ -147,7 +147,7 @@ def joinGroup():
 
 @app.route("/leaveGroup")
 def leave_group(*args):
-    if len(args) is not 0 and len(args) is not 3:
+    if not (len(args) is 0 or len(args) is 3):
         return error_status_response("Incorrect number of arguments."
                                      "Expected 0 or 3, but found {}. {}".format(len(args), args))
 
@@ -161,7 +161,8 @@ def leave_group(*args):
 
     # Raise an error the user is not member of the group
     if not is_user_member_of_group(user_id, group_id):
-        raise "User {} is not a member of the {} group!".format(user_id, group_id)
+        return error_status_response("User {} is not a member of the {} group!".format(user_id, group_id))
+        # raise "User {} is not a member of the {} group!".format(user_id, group_id)
 
     # If the group has one member and it leaves, delete the group
     if group_has_one_member(group_id):
