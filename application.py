@@ -90,28 +90,35 @@ def register():
 
     if not email or not password_hash or not first_name or not last_name:
         return error_status_response("Provided input is not valid.")
-
+    line = 0
     # Check that user is in database
     try:
+        line += 1
         cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email));
         if len(cursor.fetchall()) > 0:
             return error_status_response("Email already in use.")
+        line += 1
 
         cursor.execute("""INSERT INTO u sers (firstname, lastname, passwordhash, sessionId, email)
                         values ('{}','{}','{}','{}','{}')""".format(first_name, last_name, password_hash, getRandomSSID(), email))
         connection.commit()
+        line += 1
 
         # Return success result
         cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
+        line += 1
         user_details = cursor.fetchone()
+        line += 1
 
         result = {"status": SUCCESS_STATUS, "user": {"user_id": user_details.UserId,
                                                      "session_id": user_details.SessionId,
                                                      "first_name": user_details.FirstName,
                                                      "last_name": user_details.LastName}}
+        line += 1
                                                      
+
     except:
-        return error_status_response("error while processing register request")
+        return error_status_response("error while processing register request, line:" + str(line))
     return json.dumps(result)
 
 
