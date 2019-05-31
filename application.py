@@ -95,6 +95,11 @@ def createGroup():
     session_id = request.args.get('session_id')
     group_name = request.args.get('group_name')
     group_description = request.args.get('group_description')
+    target_num = request.args.get('target')
+    lifetime = request.args.get('lifetime')
+    lat = request.args.get('lat')
+    long = request.args.get('long')
+    range = request.args.get('range')
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
