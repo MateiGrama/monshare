@@ -99,8 +99,7 @@ def register():
             return error_status_response("Email already in use.")
         line += 1
 
-        cursor.execute("""INSERT INTO u sers (firstname, lastname, passwordhash, sessionId, email)
-                        values ('{}','{}','{}','{}','{}')""".format(first_name, last_name, password_hash, getRandomSSID(), email))
+        cursor.execute("INSERT INTO u sers (firstname, lastname, passwordhash, sessionId, email) values ('{}','{}','{}','{}','{}')".format(first_name, last_name, password_hash, getRandomSSID(), email))
         connection.commit()
         line += 1
 
@@ -115,7 +114,7 @@ def register():
                                                      "first_name": user_details.FirstName,
                                                      "last_name": user_details.LastName}}
         line += 1
-                                                     
+
 
     except:
         return error_status_response("error while processing register request, line:" + str(line))
@@ -208,7 +207,7 @@ def success_status():
 
 
 def error_status_response(msg):
-    result = {"message": msg, "status": FAIL_STATUS}
+    result = {"description": msg, "status": FAIL_STATUS}
     return json.dumps(result)
 
 def getRandomSSID():
