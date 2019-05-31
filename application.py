@@ -44,7 +44,8 @@ def login():
             return error_status_response("Wrong password provided.")
 
         cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(int(user_details.SessionId) + 1, email))
-
+        connection.commit()
+        
         # Return success result
         cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
         user_details = cursor.fetchone()
@@ -53,7 +54,7 @@ def login():
                                                      "session_id": user_details.SessionId,
                                                      "first_name": user_details.FirstName,
                                                      "last_name": user_details.LastName}}
-                                                     
+
     except:
         return error_status_response("error while processing login request")
     return json.dumps(result)
