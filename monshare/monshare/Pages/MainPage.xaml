@@ -19,9 +19,12 @@
         </ListView>
 
         <Button
-            BackgroundColor="LightSkyBlue"
             Clicked="CreateGroupButtonPressed"
             Text="Create Group">
+        </Button>
+        <Button
+            Clicked="RegisterButtonPressed"
+            Text="Register">
         </Button>
     </StackLayout>
 
