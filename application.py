@@ -30,27 +30,37 @@ def login():
     email = request.args.get('email')
     password_hash = request.args.get('password_hash')
 
+    line = 0
+
     if not email or not password_hash:
         return error_status_response("No email or password provided.")
 
     # Check that user is in database
+    try:
     cursor.execute("SELECT SessionId, PasswordHash FROM users WHERE email = '{}';".format(email));
-    useer_details = cursor.fetchone()
-    if not useer_details:
+    user_details = cursor.fetchone()
+    line += 1
+    if not user_details:
         return error_status_response("No user registered with the given email address.")
-    if not useer_details.PasswordHash == password_hash:
+    line += 1
+    if not user_details.PasswordHash == password_hash:
         return error_status_response("Wrong password provided.")
-    cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(useer_details.SessionId + 1, email))
-
+    line += 1
+    cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(user_details.SessionId + 1, email))
+    line += 1
     # Return success result
     cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
-    useer_details = cursor.fetchone()
+    line += 1
+    user_details = cursor.fetchone()
+    line += 1
 
-
-    result = {"status": SUCCESS_STATUS, "user": {"user_id": useer_details.UserId,
-                                                 "session_id": useer_details.SessionId,
-                                                 "first_name": useer_details.FirstName,
-                                                 "last_name": useer_details.LastName}}
+    result = {"status": SUCCESS_STATUS, "user": {"user_id": user_details.UserId,
+                                                 "session_id": user_details.SessionId,
+                                                 "first_name": user_details.FirstName,
+                                                 "last_name": user_details.LastName}}
+    line += 1
+    except:
+        return error_status_response("error while processing login request" + str(line))
     return json.dumps(result)
 
 
