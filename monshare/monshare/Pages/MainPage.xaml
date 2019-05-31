@@ -18,8 +18,10 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Button Clicked="CreateGroupButtonPressed"
-                Text="Create Group">
+        <Button
+            BackgroundColor="LightSkyBlue"
+            Clicked="CreateGroupButtonPressed"
+            Text="Create Group">
         </Button>
     </StackLayout>
 
