@@ -31,10 +31,57 @@ def welcome_page():
 
 @app.route("/login")
 def login():
-    username = request.args.get('username')
-    password = request.args.get('password')
-    result = {"text": "test request & response for" + username}
+    email = request.args.get('email')
+    password_hash = request.args.get('password_hash')
+
+    if not email or not password_hash:
+        return error_status_response("No email or password provided.")
+
+    # Check that user is in database
+    try:
+        cursor.execute("SELECT SessionId, PasswordHash FROM users WHERE email = '{}';".format(email));
+        user_details = cursor.fetchone()
+
+        if not user_details:
+            return error_status_response("No user registered with the given email address.")
+        if not user_details.PasswordHash == password_hash:
+            return error_status_response("Wrong password provided.")
+
+        cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(int(user_details.SessionId) + 1, email))
+        connection.commit()
+
+        # Return success result
+        cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
+        user_details = cursor.fetchone()
+
+        result = {"status": SUCCESS_STATUS, "user": {"user_id": user_details.UserId,
+                                                     "session_id": user_details.SessionId,
+                                                     "first_name": user_details.FirstName,
+                                                     "last_name": user_details.LastName}}
+
+    except:
+        return error_status_response("error while processing login request")
     return json.dumps(result)
+
+@app.route("/logout")
+def logout():
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+
+    if not user_id or not session_id:
+        return error_status_response("No user_id or session_id provided.")
+
+    # Check that the connection is valid
+    try:
+        if check_login(user_id, session_id):
+            return authentification_failed()
+
+        cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(randint(0, 1000000000), user_id))
+        connection.commit()
+
+    except:
+        return error_status_response("error while processing login request")
+    return success_status()
 
 
 @app.route("/register")
@@ -60,7 +107,7 @@ def createGroup():
             return unauthorized_user()
 
         result = cursor.execute(
-            """insert into groups (title, description, creationdatetime, ownerId) 
+            """insert into groups (title, description, creationdatetime, ownerId)
                values ('{}','{}',GETDATE(), {})""".format(group_name, group_description, user_id))
         connection.commit()
 
