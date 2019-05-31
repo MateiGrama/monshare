@@ -1,4 +1,5 @@
 import json
+from random import randint
 
 import pyodbc
 from flask import Flask
@@ -47,7 +48,8 @@ def login():
         if not user_details.PasswordHash == password_hash:
             return error_status_response("Wrong password provided.")
 
-        cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(int(user_details.SessionId) + 1, email))
+        cursor.execute(
+            "UPDATE users SET sessionId = {} WHERE email = '{}'".format(int(user_details.SessionId) + 1, email))
         connection.commit()
 
         # Return success result
@@ -63,6 +65,7 @@ def login():
         return error_status_response("error while processing login request")
     return json.dumps(result)
 
+
 @app.route("/logout")
 def logout():
     user_id = request.args.get('user_id')
@@ -73,8 +76,8 @@ def logout():
 
     # Check that the connection is valid
     try:
-        if check_login(user_id, session_id):
-            return authentification_failed()
+        if logged_in(user_id, session_id):
+            return unauthorized_user()
 
         cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(randint(0, 1000000000), user_id))
         connection.commit()
@@ -157,14 +160,14 @@ def leave_group(*args):
         return unauthorized_user()
 
     # Raise an error the user is not member of the group
-    if not is_user_member_of_group(user_id, group_id):
-        raise "User {} is not a member of the {} group!".format(user_id, group_id)
+    # if not is_user_member_of_group(user_id, group_id):
+    #     raise "User {} is not a member of the {} group!".format(user_id, group_id)
 
     # If the group has one member and it leaves, delete the group
     if group_has_one_member(group_id):
         delete_group(group_id)
         return
-
+    print("here")
     # Remove the user from the group. If the owner leaves, pass the ownership to other member
     if is_group_owner(user_id, group_id):
         pass_ownership(user_id, group_id)
