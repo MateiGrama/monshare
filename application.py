@@ -61,7 +61,7 @@ def login():
     return json.dumps(result)
 
 @app.route("/logout")
-def login():
+def logout():
     user_id = request.args.get('user_id')
     session_id = request.args.get('session_id')
 
@@ -78,7 +78,7 @@ def login():
         if not user_details.SessionId == session_id:
             return error_status_response("session_id does not match the SessionId stored in the database.")
 
-        cursor.execute("UPDATE users SET sessionId = {} WHERE userId = '{}'".format(randint(0, 1000000000), user_id))
+        cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(randint(0, 1000000000), user_id))
         connection.commit()
 
     except:
