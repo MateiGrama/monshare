@@ -21,6 +21,10 @@ connection = pyodbc.connect(db_functionalities.get_connection_string(pyodbc.driv
 cursor = connection.cursor()
 
 
+@app.route("/")
+def welcome_page():
+    return "Welcome to MonShare"
+
 @app.route("/login")
 def login():
     username = request.args.get('username')
