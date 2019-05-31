@@ -3,6 +3,7 @@ import pyodbc
 
 from flask import Flask, flash, request, redirect, render_template
 from flask import request
+from random import randint
 from utils import keys
 from utils import db_functionalities
 
@@ -45,7 +46,7 @@ def login():
 
         cursor.execute("UPDATE users SET sessionId = {} WHERE email = '{}'".format(int(user_details.SessionId) + 1, email))
         connection.commit()
-        
+
         # Return success result
         cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
         user_details = cursor.fetchone()
@@ -58,6 +59,31 @@ def login():
     except:
         return error_status_response("error while processing login request")
     return json.dumps(result)
+
+@app.route("/logout")
+def logout():
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+
+    if not user_id or not session_id:
+        return error_status_response("No user_id or session_id provided.")
+
+    # Check that the connection is valid
+    try:
+        cursor.execute("SELECT SessionId, UserId FROM users WHERE userId = {};".format(user_id));
+        user_details = cursor.fetchone()
+
+        if not user_details:
+            return error_status_response("Incorrect user_id provided.")
+        if not user_details.SessionId == session_id:
+            return error_status_response("session_id does not match the SessionId stored in the database.")
+
+        cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(randint(0, 1000000000), user_id))
+        connection.commit()
+
+    except:
+        return error_status_response("error while processing login request")
+    return success_status()
 
 
 @app.route("/register")

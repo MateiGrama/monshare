@@ -6,6 +6,8 @@ variables:
 trigger:
 - backend
 - b/login
+- b/logout
+
 pool:
   name: Hosted Ubuntu 1604
 
