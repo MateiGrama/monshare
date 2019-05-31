@@ -31,9 +31,9 @@ def hello():
     try:
         cursor.execute("select * from Users")
         row = cursor.fetchone()
-        return "Muie Microsoft, " +  str(row[1]) + 'os'
+        return "User of the month: " +  str(row[1])
     except:
-        return "nu a mers, but routed correctly to hello."
+        return "Problem connecting to the db."
 
 
 @app.route("/login")
