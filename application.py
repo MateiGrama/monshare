@@ -1,11 +1,13 @@
 import json
-import pyodbc
 
-from flask import Flask, flash, request, redirect, render_template
+import pyodbc
+from flask import Flask
 from flask import request
-from random import randint
-from utils import keys
-from utils import db_functionalities
+
+from utils import keys, db_functionalities
+from utils.db_functionalities import is_user_member_of_group, group_has_one_member, delete_group, is_group_owner, \
+    pass_ownership, remove_user_from_group
+from utils.utils import get_fields
 
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 FAIL_STATUS = "fail"
@@ -25,6 +27,7 @@ cursor = connection.cursor()
 @app.route("/")
 def welcome_page():
     return "Welcome to MonShare"
+
 
 @app.route("/login")
 def login():
@@ -100,8 +103,8 @@ def createGroup():
         return error_status_response("invalid id or sessionid")
 
     try:
-        if check_login(user_id, session_id):
-            return authentification_failed()
+        if logged_in(user_id, session_id):
+            return unauthorized_user()
 
         result = cursor.execute(
             """insert into groups (title, description, creationdatetime, ownerId)
@@ -109,11 +112,10 @@ def createGroup():
         connection.commit()
 
         if result:
-            return success_status()
+            return success_status("Successfully created group!")
 
     except:
         return error_status_response("error while inserting group in db")
-
 
 
 @app.route("/getGroupsAround")
@@ -124,8 +126,8 @@ def getGroupsAround():
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
     try:
-        if check_login(user_id, session_id):
-            return authentification_failed()
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
         cursor.execute("select * from groups")
         columns = [column_description[0] for column_description in cursor.description]
         rows = cursor.fetchall()
@@ -141,7 +143,38 @@ def joinGroup():
 
 
 @app.route("/leaveGroup")
-def leaveGroup():
+def leave_group(*args):
+    if len(args) is not 0 or len(args) is not 3:
+        return error_status_response("Incorrect number of arguments."
+                                     "Expected 0 or 3, but found {}. {}".format(len(args), args))
+
+    if len(args) is 0:
+        user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
+    else:
+        user_id, session_id, group_id = args
+
+    if not logged_in(user_id, session_id):
+        return unauthorized_user()
+
+    # Raise an error the user is not member of the group
+    if not is_user_member_of_group(user_id, group_id):
+        raise "User {} is not a member of the {} group!".format(user_id, group_id)
+
+    # If the group has one member and it leaves, delete the group
+    if group_has_one_member(group_id):
+        delete_group(group_id)
+        return
+
+    # Remove the user from the group. If the owner leaves, pass the ownership to other member
+    if is_group_owner(user_id, group_id):
+        pass_ownership(user_id, group_id)
+    remove_user_from_group(user_id, group_id)
+
+    return success_status("You successfully left the group.")
+
+
+@app.route("/deleteAccount")
+def delete_account():
     pass
 
 
@@ -149,9 +182,9 @@ def group_list_to_json(rows, columns):
     try:
         groups = []
         for row in rows:
-            if (not row[3] is None):
+            if not row[3] is None:
                 row[3] = row[3].strftime('%Y-%m-%dT%H:%M:%S.%f')
-            if (not row[4] is None):
+            if not row[4] is None:
                 row[4] = row[4].strftime('%Y-%m-%dT%H:%M:%S.%f')
             groups.append(dict(zip(columns, row)))
         result = {'status': 'success', 'groups': groups}
@@ -160,17 +193,17 @@ def group_list_to_json(rows, columns):
         return error_status_response("error while generating json for rows")
 
 
-def check_login(user_id, session_id):
+def logged_in(user_id, session_id):
     cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
-    return not cursor.fetchall()
+    return cursor.fetchall()
 
 
-def authentification_failed():
+def unauthorized_user():
     return error_status_response("user has not got a valid session id")
 
 
-def success_status():
-    result = {"status": SUCCESS_STATUS}
+def success_status(msg):
+    result = {"message": msg, "status": SUCCESS_STATUS}
     return json.dumps(result)
 
 
