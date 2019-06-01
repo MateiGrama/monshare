@@ -10,7 +10,7 @@ namespace monshare.Models
     {
         public string  firstName{ get; internal set; }
         public string  lastName{ get; internal set; }
-        public string  userId{ get; internal set; }
+        public int  userId{ get; internal set; }
         public string  email{ get; internal set; }
     }
 }

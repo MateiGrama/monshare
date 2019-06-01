@@ -26,6 +26,11 @@ namespace monshare
             await Navigation.PushAsync(new CreateGroupPage());
         }
 
+        public async void LoginButtonPressed(object sender, EventArgs args)
+        {
+            await Navigation.PushAsync(new LoginPage());
+        }
+
         public async void RegisterButtonPressed(object sender, EventArgs args)
         {
             await Navigation.PushAsync(new RegisterPage());

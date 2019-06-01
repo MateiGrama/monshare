@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace monshare.Utils
@@ -37,5 +38,17 @@ namespace monshare.Utils
                 return false;
             }
         }
+ 
+        public static async void ShowError(string msg, Label errorLabel, int height, int duration)
+        {
+            errorLabel.Text = msg;
+            errorLabel.HeightRequest = height;
+            errorLabel.IsVisible = true;
+            await Task.Delay(duration);
+            errorLabel.Text = "";
+            errorLabel.IsVisible = true;
+            errorLabel.HeightRequest = 0;
+        }
+ 
     }
 }

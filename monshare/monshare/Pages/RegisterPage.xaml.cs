@@ -28,7 +28,7 @@ namespace monshare.Pages
             User APICallResult = await ServerCommunication.Register(
                 email.Text, firstName.Text, lastName.Text, password.Text
                 );
-            bool successfulCall = User.NullInstance == APICallResult;
+            bool successfulCall = User.NullInstance != APICallResult;
 
             await DisplayAlert("Register", (successfulCall ? "" : "not ") + "successful", "OK");
 
@@ -93,15 +93,6 @@ namespace monshare.Pages
             return true;
         }
 
-        private async void showError(string msg)
-        {
-            errorLabel.Text = msg;
-            errorLabel.HeightRequest = 20;
-            errorLabel.IsVisible = true;
-            await Task.Delay(3000);
-            errorLabel.Text = "";
-            errorLabel.IsVisible = true;
-            errorLabel.HeightRequest = 0;
-        }
+        private void showError(string msg) => Utils.Utils.ShowError(msg, errorLabel, 20, 3000);
     }
 }

@@ -4,9 +4,9 @@ using System.Text;
 
 namespace monshare.Utils
 {
-    class NullObject<T>
+    class NullObject<T> where T : new()
     {
-        public static T NullInstance { get; }
+        public static T NullInstance = new T();
         public string message { get; internal set; }
     }
 }
