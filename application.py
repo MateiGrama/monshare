@@ -1,4 +1,5 @@
 import json
+from random import randint
 
 import pyodbc
 from flask import Flask
@@ -9,6 +10,7 @@ from utils.db_functionalities import is_user_member_of_group, group_has_one_memb
     pass_ownership, remove_user_from_group
 from utils.utils import get_fields
 
+DEBUG = True
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 FAIL_STATUS = "fail"
 SUCCESS_STATUS = "success"
@@ -73,8 +75,8 @@ def logout():
 
     # Check that the connection is valid
     try:
-        if check_login(user_id, session_id):
-            return authentification_failed()
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
 
         cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(randint(0, 1000000000), user_id))
         connection.commit()

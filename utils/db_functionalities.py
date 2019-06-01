@@ -2,9 +2,12 @@ from utils.keys import db_password
 
 
 def get_connection_string(driver):
+    from application import DEBUG
+
     return "DRIVER={};Server=tcp:webapp-db-sv.database.windows.net,1433;Database=WebAppDb;" \
            "Uid=BoneyHadger@webapp-db-sv;Pwd={};Encrypt=yes;TrustServerCertificate=no;" \
-           "Connection Timeout=30;".format(driver, db_password)
+           "Connection Timeout=30;".format(driver, db_password) if not DEBUG else \
+           'DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost;DATABASE=monshare-local-db;UID=user;PWD=admin1'
 
 
 def pass_ownership(user_id, group_id):
