@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="monshare.Pages.LoginPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Frame HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="CenterAndExpand"
+                   WidthRequest="300"
+                   Padding="15"
+                   >
+                <StackLayout>
+                    <Entry x:Name="email"
+                           Placeholder="Email"
+                           HorizontalOptions="FillAndExpand"/>
+                    <Entry x:Name="password"
+                           IsPassword="True"
+                           Placeholder="Password"
+                           HorizontalOptions="FillAndExpand"/>
+                   
+                    <Label IsVisible="False"
+                           x:Name="errorLabel"
+                           TextColor="Firebrick"
+                           Text=""
+                           HeightRequest="0"
+                           FontSize="Small"/>
+
+                    <Button Text="Login"
+                            Clicked="LoginClickedAsync"
+                            BackgroundColor="Firebrick"/>
+
+                </StackLayout>
+            </Frame>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
