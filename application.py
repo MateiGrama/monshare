@@ -80,7 +80,7 @@ def logout():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(randint(0, 1000000000), user_id))
+        cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(getRandomSSID(), user_id))
         connection.commit()
 
     except:
@@ -91,9 +91,41 @@ def logout():
 @app.route("/register")
 def register():
     email = request.args.get('email')
-    firstname = request.args.get('firstname')
-    lastname = request.args.get('lastname')
-    return "register"
+    first_name = request.args.get('first_name')
+    last_name  = request.args.get('last_name')
+    password_hash  = request.args.get('password_hash')
+
+    if not email or not password_hash or not first_name or not last_name:
+        return error_status_response("Provided input is not valid.")
+    line = 0
+    # Check that user is in database
+    try:
+        line += 1
+        cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email));
+        if len(cursor.fetchall()) > 0:
+            return error_status_response("Email already in use.")
+        line += 1
+
+        cursor.execute("INSERT INTO users (firstname, lastname, passwordhash, sessionId, email) values ('{}','{}','{}','{}','{}')".format(first_name, last_name, password_hash, getRandomSSID(), email))
+        connection.commit()
+        line += 1
+
+        # Return success result
+        cursor.execute("SELECT * FROM users WHERE email = '{}';".format(email))
+        line += 1
+        user_details = cursor.fetchone()
+        line += 1
+
+        result = {"status": SUCCESS_STATUS, "user": {"user_id": user_details.UserId,
+                                                     "session_id": user_details.SessionId,
+                                                     "first_name": user_details.FirstName,
+                                                     "last_name": user_details.LastName}}
+        line += 1
+
+
+    except:
+        return error_status_response("error while processing register request, line:" + str(line))
+    return json.dumps(result)
 
 
 @app.route("/createGroup")
@@ -215,5 +247,8 @@ def success_status(msg):
 
 
 def error_status_response(msg):
-    result = {"message": msg, "status": FAIL_STATUS}
+    result = {"description": msg, "status": FAIL_STATUS}
     return json.dumps(result)
+
+def getRandomSSID():
+    return randint(1,100000000);
