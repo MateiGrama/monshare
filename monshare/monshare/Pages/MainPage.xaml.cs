@@ -26,11 +26,6 @@ namespace monshare
             await Navigation.PushAsync(new CreateGroupPage());
         }
 
-        public async void RegisterButtonPressed(object sender, EventArgs args)
-        {
-            await Navigation.PushAsync(new RegisterPage());
-        }
-
         protected override void OnAppearing()
         {
             refreshMyGroupsAsync();
