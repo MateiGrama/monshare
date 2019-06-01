@@ -23,6 +23,10 @@
             Text="Create Group">
         </Button>
         <Button
+            Clicked="LoginButtonPressed"
+            Text="Login">
+        </Button>
+        <Button
             Clicked="RegisterButtonPressed"
             Text="Register">
         </Button>
