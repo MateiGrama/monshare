@@ -1,4 +1,3 @@
-from application import cursor
 from utils.keys import db_password
 
 
@@ -66,6 +65,7 @@ def remove_user_from_group(user_id, group_id):
 
 
 def get_groups_of_user(user_id):
+    from application import cursor
     cursor.execute(""" select Groups.GroupId
                        from Groups
                        join UserToGroup on UserToGroup.GroupId = Groups.GroupId
