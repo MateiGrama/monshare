@@ -7,7 +7,7 @@ trigger:
 - backend
 - b/login
 - b/logout
-
+- b/createGroup
 pool:
   name: Hosted Ubuntu 1604
 
