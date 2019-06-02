@@ -124,7 +124,7 @@ namespace monshare.Utils
             List<Group> myGroups = new List<Group>();
 
             var client = new HttpClient();
-            string url = GET_GROUPS_AROUND_API + "?" +
+            string url = GET_MY_GROUPS_API + "?" +
                 "user_id=" + LocalStorage.GetUserId() + "&" +
                 "session_id=" + LocalStorage.GetSessionId();
 
