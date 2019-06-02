@@ -128,7 +128,7 @@ def create_group():
         return error_status_response("invalid id or sessionid")
 
     try:
-        if logged_in(user_id, session_id):
+        if not logged_in(user_id, session_id):
             return unauthorized_user()
 
         result = cursor.execute("""insert into groups (title, description, creationdatetime, ownerId)
@@ -174,7 +174,7 @@ def joinGroup():
         return error_status_response("No group id provided.")
 
     try:
-        if logged_in(user_id, session_id):
+        if not logged_in(user_id, session_id):
             return unauthorized_user()
 
         cursor.execute("SELECT groupId FROM groups WHERE groupId = {};".format(group_id))
