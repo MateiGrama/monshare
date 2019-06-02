@@ -46,9 +46,6 @@ namespace monshare.Utils
                     newUser.firstName = result["user"]["first_name"];
                     newUser.lastName = result["user"]["last_name"];
 
-                    USER_ID = newUser.userId;
-                    SESSION_ID = (int)result["user"]["session_id"];
-
                     await LocalStorage.UpdateCredatialsAsync(result["user"]["user_id"], result["user"]["session_id"]);
                 }
                 else if (result["status"] == FAIL)
