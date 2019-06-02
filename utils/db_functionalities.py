@@ -1,3 +1,4 @@
+from application import cursor
 from utils.keys import db_password
 
 
@@ -62,3 +63,11 @@ def remove_user_from_group(user_id, group_id):
     from application import cursor, connection
     cursor.execute("delete from UserToGroup where UserId = {} and GroupId = {} ".format(user_id, group_id))
     connection.commit()
+
+
+def get_groups_of_user(user_id):
+    cursor.execute(""" select Groups.GroupId
+                       from Groups
+                       join UserToGroup on UserToGroup.GroupId = Groups.GroupId
+                       where UserToGroup.UserId = {}
+                   """.format(user_id))

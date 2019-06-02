@@ -6,7 +6,7 @@ from flask import request
 
 from utils import keys, db_functionalities
 from utils.db_functionalities import is_user_member_of_group, group_has_one_member, delete_group, is_group_owner, \
-    pass_ownership, remove_user_from_group
+    pass_ownership, remove_user_from_group, get_groups_of_user
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_SSID, group_list_to_json
 
@@ -149,8 +149,8 @@ def create_group():
                 1,
                 target_num if target_num else 'null',
                 range if range else 'null'
-                ))
-                
+            ))
+
         connection.commit()
 
         if result:
@@ -161,12 +161,12 @@ def create_group():
 
 
 @app.route("/getGroupsAround")
-def getGroupsAround():
+def get_groups_around():
     user_id = request.args.get('user_id')
     session_id = request.args.get('session_id')
 
-    if not user_id or not session_id:
-        return error_status_response("invalid id or sessionid")
+    if not (user_id and session_id):
+        return error_status_response("invalid id or session id")
     try:
         if not logged_in(user_id, session_id):
             return unauthorized_user()
@@ -175,6 +175,26 @@ def getGroupsAround():
         rows = cursor.fetchall()
     except:
         return error_status_response("error while getting all groups")
+
+    return group_list_to_json(rows, columns)
+
+
+@app.route("/getMyGroups")
+def get_my_groups():
+    user_id, session_id = get_fields('user_id', 'session_id')
+
+    if not (user_id and session_id):
+        return error_status_response("invalid id or session id")
+
+    try:
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
+
+        get_groups_of_user(user_id)
+        columns = [column_description[0] for column_description in cursor.description]
+        rows = cursor.fetchall()
+    except:
+        return error_status_response("Error while getting your groups!")
 
     return group_list_to_json(rows, columns)
 
