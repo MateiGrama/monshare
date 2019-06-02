@@ -77,9 +77,9 @@ def get_groups_of_user(user_id):
 def get_group_members(group_id):
     from application import cursor
     cursor.execute(""" select Users.UserId
-                           from Users
-                           join UserToGroup on UserToGroup.UserId = Users.UserId
-                           where UserToGroup.GroupId = {}
+                       from Users
+                       join UserToGroup on UserToGroup.UserId = Users.UserId
+                       where UserToGroup.GroupId = {}
                        """.format(group_id))
 
 
