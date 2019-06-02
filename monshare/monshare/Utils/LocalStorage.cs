@@ -8,15 +8,17 @@ namespace monshare.Utils
 {
     class LocalStorage
     {
-        private const string USERID = "USERID";
-        private const string SESSIONID = "SSID";
+        private const string USER_ID = "USERID";
+        private const string SESSION_ID = "SSID";
 
-        private const int DEFAULTUSERID = -1;
+        private const int DEFAULT_USER_ID = -1;
+        private const int DEFAULT_SESSION_ID = -1;
 
-        public static async Task UpdateCredatialsAsync(string userId, string ssid)
+
+        public static async Task UpdateCredetialsAsync(string userId, string ssid)
         {
-            Application.Current.Properties[USERID] = userId;
-            Application.Current.Properties[SESSIONID] = ssid;
+            Application.Current.Properties[USER_ID] = userId;
+            Application.Current.Properties[SESSION_ID] = ssid;
             await Application.Current.SavePropertiesAsync();
         }
 
@@ -24,22 +26,22 @@ namespace monshare.Utils
         {
             try
             {
-                return Int32.Parse(Application.Current.Properties[USERID].ToString());
+                return Int32.Parse(Application.Current.Properties[USER_ID].ToString());
             }
             catch { }
 
-            return DEFAULTUSERID;
+            return DEFAULT_USER_ID;
         }
 
         public static int GetSessionId()
         {
             try
             {
-                return Int32.Parse(Application.Current.Properties[SESSIONID].ToString());
+                return Int32.Parse(Application.Current.Properties[SESSION_ID].ToString());
             }
             catch { }
 
-            return DEFAULTUSERID;
+            return DEFAULT_SESSION_ID;
         }
     }
 }
