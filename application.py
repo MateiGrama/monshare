@@ -143,12 +143,6 @@ def create_group():
         return error_status_response("error while inserting group in db")
 
 
-@app.route("/createGroup")
-def create_group():
-    user_id = request.args.get('user_id')
-    session_id = request.args.get('session_id')
-
-
 @app.route("/getGroupsAround")
 def getGroupsAround():
     user_id = request.args.get('user_id')
