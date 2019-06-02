@@ -74,6 +74,15 @@ def get_groups_of_user(user_id):
     return cursor.fetchall()
 
 
+def get_group_members(group_id):
+    from application import cursor
+    cursor.execute(""" select Users.UserId
+                           from Users
+                           join UserToGroup on UserToGroup.UserId = Users.UserId
+                           where UserToGroup.GroupId = {}
+                       """.format(group_id))
+
+
 def remove_user_from_database(user_id):
     from application import cursor, connection
     cursor.execute("delete from Users where UserId = {}".format(user_id))
