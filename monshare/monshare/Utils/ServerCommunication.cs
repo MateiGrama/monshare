@@ -11,9 +11,8 @@ namespace monshare.Utils
     class ServerCommunication
     {
         //TODO:
-        const int SESSION_ID = 1;
-        const int USER_ID = 4;
-
+        public static int SESSION_ID { get; internal set; }
+        public static int USER_ID { get; internal set; }
 
         const string SUCCESS = "success";
         const string FAIL = "fail";
@@ -44,10 +43,12 @@ namespace monshare.Utils
                     newUser = new User();
 
                     newUser.userId = (int)result["user"]["user_id"];
-                    newUser.email = result["user"]["email"];
+                    // newUser.email = result["user"]["email"]; NOT RETURNED BY BACKEND
                     newUser.firstName = result["user"]["first_name"];
                     newUser.lastName = result["user"]["last_name"];
 
+                    USER_ID = newUser.userId;
+                    SESSION_ID = (int) result["user"]["session_id"];
 
                     await LocalStorage.UpdateCredatialsAsync(result["user"]["user_id"], result["user"]["session_id"]);
                 }
@@ -148,8 +149,7 @@ namespace monshare.Utils
                         newGroup.description = group["Description"];
                         newGroup.creationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString());
                         newGroup.endDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString());
-                        newGroup.minMembers = group["MinMembers"] ?? -1;
-                        newGroup.maxMembers = group["MaxMembers"] ?? -1;
+                        newGroup.membersNumber = group["MembersNumber"] ?? -1;
                         newGroup.ownerId = group["ownerId"];
                         myGroups.Add(newGroup);
                     }

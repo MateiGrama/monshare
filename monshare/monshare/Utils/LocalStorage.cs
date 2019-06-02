@@ -16,7 +16,7 @@ namespace monshare.Utils
         public static async Task UpdateCredatialsAsync(string userId, string ssid)
         {
             Application.Current.Properties[USERID] = userId;
-            Application.Current.Properties[SESSIONID] = userId;
+            Application.Current.Properties[SESSIONID] = ssid;
             await Application.Current.SavePropertiesAsync();
         }
 
