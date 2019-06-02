@@ -109,8 +109,20 @@ def createGroup():
             return authentification_failed()
 
         result = cursor.execute(
-            """insert into groups (title, description, creationdatetime, ownerId)
-               values ('{}','{}',GETDATE(), {})""".format(group_name, group_description, user_id))
+            """insert into groups
+               (title, description, creationdatetime, enddatetime, ownerid, lat, long, membersnumber, targetnum, groupRange)
+                values ('{}','{}',GETDATE(), {}, {}, {}, {}, {}, {}, {})""".format(
+                group_name,
+                group_description,
+                'DATEADD(minute, {}, GETDATE())'.format(lifetime) if lifetime else 'null',
+                user_id,
+                lat if lat else 'null',
+                long if long else 'null',
+                1,
+                target_num if target_num else 'null',
+                range if range else 'null'
+                ))
+                
         connection.commit()
 
         if result:
