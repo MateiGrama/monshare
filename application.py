@@ -174,6 +174,10 @@ def joinGroup():
         return error_status_response("No group id provided.")
 
     try:
+        cursor.execute("SELECT groupId FROM groups WHERE groupId = {};".format(group_id))
+        if not cursor.fetchone():
+            return error_status_response("No group with the given group id.")
+
         if logged_in(user_id, session_id):
             return unauthorized_user()
         result = cursor.execute("""insert into userToGroup (userId, GroupId)
