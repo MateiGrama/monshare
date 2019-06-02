@@ -93,3 +93,6 @@ logs.txt
 
 # Ignore Idea generated files
 .idea
+
+.vs
+monshare
