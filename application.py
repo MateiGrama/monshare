@@ -215,7 +215,7 @@ def joinGroup():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
         line += 1
-        cursor.execute("select groupId from groups where groupId={};".format(group_id))
+        cursor.execute("""select groupId from groups where groupId={};""".format(group_id))
         if not cursor.fetchone():
             return error_status_response("No group with the given group id.")
         line += 1
