@@ -71,3 +71,10 @@ def get_groups_of_user(user_id):
                        join UserToGroup on UserToGroup.GroupId = Groups.GroupId
                        where UserToGroup.UserId = {}
                    """.format(user_id))
+    return cursor.fetchall()
+
+
+def remove_user_from_database(user_id):
+    from application import cursor, connection
+    cursor.execute("delete from Users where UserId = {}".format(user_id))
+    connection.commit()
