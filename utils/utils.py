@@ -29,7 +29,6 @@ def group_list_to_json(rows, columns):
 
 def logged_in(user_id, session_id):
     from application import cursor
-
     cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))
     return cursor.fetchall()
 
@@ -48,5 +47,5 @@ def error_status_response(msg):
     return json.dumps(result)
 
 
-def get_random_SSID():
+def get_random_ssid():
     return randint(1, 100000000)

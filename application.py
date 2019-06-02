@@ -6,9 +6,9 @@ from flask import request
 
 from utils import keys, db_functionalities
 from utils.db_functionalities import is_user_member_of_group, group_has_one_member, delete_group, is_group_owner, \
-    pass_ownership, remove_user_from_group, get_groups_of_user
+    pass_ownership, remove_user_from_group, get_groups_of_user, remove_user_from_database
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
-    get_random_SSID, group_list_to_json
+    get_random_ssid, group_list_to_json
 
 DEBUG = False
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
@@ -44,7 +44,7 @@ def register():
 
         cursor.execute("""INSERT INTO users (firstname, lastname, passwordhash, sessionId, email) 
                           values ('{}','{}','{}','{}','{}')
-                       """.format(first_name, last_name, password_hash, get_random_SSID(), email))
+                       """.format(first_name, last_name, password_hash, get_random_ssid(), email))
         connection.commit()
 
         # Return success result
@@ -109,7 +109,7 @@ def logout():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(get_random_SSID(), user_id))
+        cursor.execute("UPDATE users SET sessionId = {} WHERE userId = {}".format(get_random_ssid(), user_id))
         connection.commit()
 
     except:
@@ -154,7 +154,7 @@ def create_group():
         connection.commit()
 
         if result:
-            return success_status("Successfully created group!")
+            return success_status("Successfully created a new group!")
 
     except:
         return error_status_response("error while inserting group in db")
@@ -187,14 +187,17 @@ def get_my_groups():
         return error_status_response("invalid id or session id")
 
     try:
-        if not logged_in(user_id, session_id):
-            return unauthorized_user()
+        try:
+            if not logged_in(user_id, session_id):
+                return unauthorized_user()
+        except pyodbc.Error as err:
+            return error_status_response(err)
 
         get_groups_of_user(user_id)
         columns = [column_description[0] for column_description in cursor.description]
         rows = cursor.fetchall()
-    except:
-        return error_status_response("Error while getting your groups!")
+    except pyodbc.Error as err:
+        return error_status_response("Error while getting your groups! {}".format(err))
 
     return group_list_to_json(rows, columns)
 
@@ -240,4 +243,15 @@ def leave_group(*args):
 
 @app.route("/deleteAccount")
 def delete_account():
-    pass
+    user_id, session_id = get_fields('user_id', 'session_id')
+
+    if not logged_in(user_id, session_id):
+        return unauthorized_user()
+
+    # Remove the user from all the groups
+    groups = get_groups_of_user(user_id)
+    for group in groups:
+        leave_group(user_id, session_id, group[0])
+
+    remove_user_from_database(user_id)
+    return success_status("You successfully deleted your account!")
