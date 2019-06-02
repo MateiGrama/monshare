@@ -133,7 +133,7 @@ def create_group():
         return error_status_response("invalid id or sessionid")
 
     try:
-        if logged_in(user_id, session_id):
+        if not logged_in(user_id, session_id):
             return unauthorized_user()
 
         result = cursor.execute(
