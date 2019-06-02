@@ -21,7 +21,7 @@ namespace monshare.Utils
         const string LOGIN_API = BASEURL + "/login";
         const string CREATE_GROUP_API = BASEURL + "/createGroup";
         const string GET_GROUPS_AROUND_API = BASEURL + "/getGroupsAround";
-        const string GET_MY_GROUPS_API = GET_GROUPS_AROUND_API;
+        const string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
 
         public static async Task<User> Login(string email, string password)
         {
@@ -43,12 +43,11 @@ namespace monshare.Utils
                     newUser = new User();
 
                     newUser.userId = (int)result["user"]["user_id"];
-                    // newUser.email = result["user"]["email"]; NOT RETURNED BY BACKEND
                     newUser.firstName = result["user"]["first_name"];
                     newUser.lastName = result["user"]["last_name"];
 
                     USER_ID = newUser.userId;
-                    SESSION_ID = (int) result["user"]["session_id"];
+                    SESSION_ID = (int)result["user"]["session_id"];
 
                     await LocalStorage.UpdateCredatialsAsync(result["user"]["user_id"], result["user"]["session_id"]);
                 }
@@ -71,8 +70,8 @@ namespace monshare.Utils
             var client = new HttpClient();
             string url = REGISTER_API + "?" +
                 "first_name=" + firstName + "&" +
-                "last_name="  + lastName  + "&" +
-                "email="      + email     + "&" +
+                "last_name=" + lastName + "&" +
+                "email=" + email + "&" +
                 "password_hash=" + Utils.hashPassword(password);
 
             var uri = new Uri(url);
@@ -81,14 +80,14 @@ namespace monshare.Utils
 
             try
             {
-                if(result["status"] == SUCCESS)
+                if (result["status"] == SUCCESS)
                 {
                     newUser = new User
                     {
-                        userId    = (int)result["user"]["user_id"],
+                        userId = (int)result["user"]["user_id"],
                         email = email,
                         firstName = result["user"]["first_name"],
-                        lastName  = result["user"]["last_name"]
+                        lastName = result["user"]["last_name"]
                     };
 
                     await LocalStorage.UpdateCredatialsAsync(result["user"]["user_id"], result["user"]["session_id"]);
@@ -99,7 +98,8 @@ namespace monshare.Utils
                 }
             }
 
-            catch {
+            catch
+            {
                 newUser.message = "Error happened in frontend";
             }
             return newUser;
@@ -139,9 +139,9 @@ namespace monshare.Utils
 
             try
             {
-                if ( result["status"] == SUCCESS)
+                if (result["status"] == SUCCESS)
                 {
-                    foreach(JsonValue group in result["groups"])
+                    foreach (JsonValue group in result["groups"])
                     {
                         Group newGroup = new Group();
                         newGroup.groupId = group["GroupId"];
