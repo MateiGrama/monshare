@@ -123,6 +123,11 @@ def create_group():
     session_id = request.args.get('session_id')
     group_name = request.args.get('group_name')
     group_description = request.args.get('group_description')
+    target_num = request.args.get('target')
+    lifetime = request.args.get('lifetime')
+    lat = request.args.get('lat')
+    long = request.args.get('long')
+    range = request.args.get('range')
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
@@ -131,9 +136,21 @@ def create_group():
         if logged_in(user_id, session_id):
             return unauthorized_user()
 
-        result = cursor.execute("""insert into groups (title, description, creationdatetime, ownerId)
-                                   values ('{}', '{}', GETDATE(), {})
-                                """.format(group_name, group_description, user_id))
+        result = cursor.execute(
+            """insert into groups
+               (title, description, creationdatetime, enddatetime, ownerid, lat, long, membersnumber, targetnum, groupRange)
+                values ('{}','{}',GETDATE(), {}, {}, {}, {}, {}, {}, {})""".format(
+                group_name,
+                group_description,
+                'DATEADD(minute, {}, GETDATE())'.format(lifetime) if lifetime else 'null',
+                user_id,
+                lat if lat else 'null',
+                long if long else 'null',
+                1,
+                target_num if target_num else 'null',
+                range if range else 'null'
+                ))
+                
         connection.commit()
 
         if result:
