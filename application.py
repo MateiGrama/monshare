@@ -42,7 +42,7 @@ def register():
         if len(cursor.fetchall()) > 0:
             return error_status_response("Email already in use.")
 
-        cursor.execute("""INSERT INTO users (firstname, lastname, passwordhash, sessionId, email) 
+        cursor.execute("""INSERT INTO users (firstname, lastname, passwordhash, sessionId, email)
                           values ('{}','{}','{}','{}','{}')
                        """.format(first_name, last_name, password_hash, get_random_SSID(), email))
         connection.commit()
@@ -78,7 +78,7 @@ def login():
         if not user_details.PasswordHash == password_hash:
             return error_status_response("Wrong password provided.")
 
-        cursor.execute("""UPDATE users SET sessionId = {} 
+        cursor.execute("""UPDATE users SET sessionId = {}
                           WHERE email = '{}'
                        """.format(int(user_details.SessionId) + 1, email))
         connection.commit()
@@ -143,6 +143,12 @@ def create_group():
         return error_status_response("error while inserting group in db")
 
 
+@app.route("/createGroup")
+def create_group():
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+
+
 @app.route("/getGroupsAround")
 def getGroupsAround():
     user_id = request.args.get('user_id')
@@ -164,7 +170,26 @@ def getGroupsAround():
 
 @app.route("/joinGroup")
 def joinGroup():
-    pass
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    group_id = request.args.get('group_id')
+
+    if not user_id or not session_id:
+        return error_status_response("invalid id or sessionid")
+    if not group_id:
+        return error_status_response("No group id provided.")
+
+    try:
+        if logged_in(user_id, session_id):
+            return unauthorized_user()
+        result = cursor.execute("""insert into userToGroup (userId, GroupId)
+                                   values ({}, {})""".format(user_id, group_id))
+        connection.commit()
+    except:
+        return error_status_response("error while getting all groups")
+
+    return success_status()
+
 
 
 @app.route("/leaveGroup")
