@@ -8,6 +8,8 @@ trigger:
 - b/login
 - b/logout
 - b/createGroup
+- b/register
+
 pool:
   name: Hosted Ubuntu 1604
 
