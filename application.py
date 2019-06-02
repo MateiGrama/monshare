@@ -177,11 +177,11 @@ def joinGroup():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        cursor.execute("SELECT groupId FROM groups WHERE groupId = {};".format(group_id))
+        cursor.execute("select groupId from groups where groupId={};".format(group_id))
         if not cursor.fetchone():
             return error_status_response("No group with the given group id.")
 
-        result = cursor.execute("""insert into userToGroup (userId, GroupId)
+        result = cursor.execute("""insert into userToGroup (userId, groupId)
                                    values ({}, {})""".format(user_id, group_id))
         connection.commit()
     except:
