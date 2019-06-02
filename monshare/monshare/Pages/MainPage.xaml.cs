@@ -21,6 +21,11 @@ namespace monshare
             InitializeComponent();
         }
 
+        public async void MyGroupsButtonPressed(object sender, EventArgs args)
+        {
+            await Navigation.PushAsync(new MyGroupsPage());
+        }
+
         public async void CreateGroupButtonPressed(object sender, EventArgs args)
         {
             await Navigation.PushAsync(new CreateGroupPage());
@@ -36,15 +41,9 @@ namespace monshare
             await Navigation.PushAsync(new RegisterPage());
         }
 
-        protected override void OnAppearing()
+        private void Button_Clicked(object sender, EventArgs e)
         {
-            refreshMyGroupsAsync();
-        }
 
-        private async void refreshMyGroupsAsync()
-        {
-            List<Group> groups = await ServerCommunication.GetMyGroupsAsync();
-            GroupsListView.ItemsSource = groups;
         }
     }
 }

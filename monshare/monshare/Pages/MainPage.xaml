@@ -7,17 +7,10 @@
              x:Class="monshare.MainPage">
 
     <StackLayout>
-        <ListView  x:Name="GroupsListView"
-                   SeparatorVisibility="None"
-                   ItemsSource="{Binding Groups}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text="{Binding title}"
-                         Detail="{Binding description}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
+        <Button 
+            Clicked="MyGroupsButtonPressed"
+            Text="MyGroups">
+        </Button>
         <Button
             Clicked="CreateGroupButtonPressed"
             Text="Create Group">

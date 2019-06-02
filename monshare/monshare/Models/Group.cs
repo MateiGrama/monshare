@@ -13,7 +13,7 @@ namespace monshare.Models
         public DateTime creationDateTime { get; internal set; }
         public DateTime endDateTime { get; internal set; }
         public int minMembers { get; internal set; }
-        public int maxMembers { get; internal set; }
+        public int membersNumber { get; internal set; }
         public int ownerId { get; internal set; }
     }
 }
