@@ -71,6 +71,7 @@ def get_groups_of_user(user_id):
                        join UserToGroup on UserToGroup.GroupId = Groups.GroupId
                        where UserToGroup.UserId = {}
                    """.format(user_id))
+    return cursor.fetchall()
 
 
 def get_group_members(group_id):

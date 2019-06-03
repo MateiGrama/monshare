@@ -214,9 +214,8 @@ def get_my_groups():
         except pyodbc.Error as err:
             return error_status_response(err)
 
-        get_groups_of_user(user_id)
+        rows = get_groups_of_user(user_id)
         columns = [column_description[0] for column_description in cursor.description]
-        rows = cursor.fetchall()
     except pyodbc.Error as err:
         return error_status_response("Error while getting your groups! {}".format(err))
 
