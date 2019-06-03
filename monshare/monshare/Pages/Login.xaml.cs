@@ -33,7 +33,9 @@ namespace monshare.Pages
 
             if (successfulCall)
             {
-                await Navigation.PopAsync();
+                Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
+                await Navigation.PopModalAsync();
+
             }
 
         }

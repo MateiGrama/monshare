@@ -22,6 +22,8 @@ namespace monshare.Utils
         const string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
         const string GET_GROUP_CHAT_API = BASEURL + "/getGroupChat";
         const string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
+        const string CHECK_IS_LOGGED_IN = BASEURL + "/isLoggedIn";
+        const string LOGOUT_API = BASEURL + "/logout";
 
         private static HttpClient client = new HttpClient();
 
@@ -46,7 +48,7 @@ namespace monshare.Utils
                         lastName = result["user"]["last_name"]
                     };
 
-                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"]);
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"], newUser.firstName, newUser.lastName);
                 }
                 else if (result["status"] == FAIL)
                 {
@@ -60,6 +62,22 @@ namespace monshare.Utils
                 newUser.message = "Error happened in frontend";
             }
             return newUser;
+        }
+
+        internal static async Task<bool> logout()
+        {
+            string url = LOGOUT_API + "?" +
+              "session_id=" + LocalStorage.GetSessionId() + "&" +
+              "user_id=" + LocalStorage.GetUserId();
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+             return result["status"] == SUCCESS;
+            }
+            catch { }
+            return false;
         }
 
         internal static async Task<Chat> getGroupChatAsync(Group group)
@@ -133,7 +151,7 @@ namespace monshare.Utils
                         lastName = result["user"]["last_name"]
                     };
 
-                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"]);
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"], firstName, lastName);
                 }
                 else if (result["status"] == FAIL)
                 {
@@ -221,6 +239,23 @@ namespace monshare.Utils
             }
             catch { }
             return false;
+        }
+
+
+        public static async Task<bool> isLoggedIn() {
+            string url = CHECK_IS_LOGGED_IN + "?" +
+               "user_id=" + LocalStorage.GetUserId() + "&" +
+               "session_id=" + LocalStorage.GetSessionId();
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch { }
+            return false;
+
         }
 
         private static async Task<JsonValue> GetResponse(string url)

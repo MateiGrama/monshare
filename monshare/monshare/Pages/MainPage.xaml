@@ -15,13 +15,25 @@
             Clicked="CreateGroupButtonPressed"
             Text="Create Group">
         </Button>
+        <StackLayout Padding="0, 20, 0, 0">
+            <Label x:Name="LoggedInLabel"
+                   HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="FillAndExpand"
+                   TextColor="Green"/>
+
+            <Label x:Name="userNameLabel"
+                   HorizontalOptions="CenterAndExpand"
+                   TextColor="Green"/>
+
+            <Label x:Name="userIDLabel"
+                   HorizontalOptions="CenterAndExpand"
+                   TextColor="Green"/>
+            
+        </StackLayout>
         <Button
-            Clicked="LoginButtonPressed"
-            Text="Login">
-        </Button>
-        <Button
-            Clicked="RegisterButtonPressed"
-            Text="Register">
+            Clicked="LogoutButtonPressed"
+            VerticalOptions="End"
+            Text="Logout">
         </Button>
     </StackLayout>
 
