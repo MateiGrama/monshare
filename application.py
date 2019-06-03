@@ -136,9 +136,8 @@ def create_group():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        result = cursor.execute(
-            """insert into groups
-               (title, description, creationdatetime, enddatetime, ownerid, lat, long, membersnumber, targetnum, groupRange)
+        result = cursor.execute("""insert into groups
+                (title, description, creationdatetime, enddatetime, ownerid, lat, long, membersnumber, targetnum, groupRange)
                 values ('{}','{}',GETDATE(), {}, {}, {}, {}, {}, {}, {})""".format(
                 group_name,
                 group_description,
@@ -150,14 +149,16 @@ def create_group():
                 target_num if target_num else 'null',
                 range if range else 'null'
             ))
-
         connection.commit()
 
-        if result:
-            return success_status("Successfully created a new group!")
+        cursor.execute("select GroupId from groups order by CreationDateTime desc")
+        group_id = cursor.fetchone()
 
-    except:
-        return error_status_response("error while inserting group in db")
+        if result:
+            result = {"status": SUCCESS_STATUS, "group_id": group_id.GroupId}
+            return json.dumps(result)
+    except Exception as e:
+        return error_status_response("error while inserting group in db. Exception was: " + str(e))
 
 
 @app.route("/getGroupsAround")
