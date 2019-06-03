@@ -21,6 +21,7 @@ namespace monshare.Utils
         const string GET_GROUPS_AROUND_API = BASEURL + "/getGroupsAround";
         const string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
         const string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
+        const string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";
 
         private static HttpClient client = new HttpClient();
 
@@ -60,7 +61,6 @@ namespace monshare.Utils
             }
             return newUser;
         }
-
 
         public static async Task<User> Register(string email, string firstName, string lastName, string password)
         {
@@ -175,6 +175,23 @@ namespace monshare.Utils
             catch { }
             return false;
         }
+
+        internal static async Task<bool> DeleteAccount()
+        {
+            string url = DELETE_ACCOUNT_API + "?" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId();
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch { }
+            return false;
+        }
+
 
         private static async Task<JsonValue> GetResponse(string url)
         {
