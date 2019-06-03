@@ -7,13 +7,13 @@ namespace monshare.Models
 {
     class Group
     {
-        public int groupId { get; internal set; }
-        public string title { get; internal set; }
-        public string description { get; internal set; }
-        public DateTime creationDateTime { get; internal set; }
-        public DateTime endDateTime { get; internal set; }
-        public int minMembers { get; internal set; }
-        public int membersNumber { get; internal set; }
-        public int ownerId { get; internal set; }
+        public int GroupId { get; internal set; }
+        public string Title { get; internal set; }
+        public string Description { get; internal set; }
+        public DateTime CreationDateTime { get; internal set; }
+        public DateTime EndDateTime { get; internal set; }
+        public int MembersNumber { get; internal set; }
+        public int TargetNumberOfPeople { get; internal set; }
+        public int OwnerId { get; internal set; }
     }
 }
