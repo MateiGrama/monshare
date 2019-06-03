@@ -18,6 +18,9 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Button Text="Create a new Group"
+                    Clicked="CreateNewGroupButtonPressed">
+            </Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
