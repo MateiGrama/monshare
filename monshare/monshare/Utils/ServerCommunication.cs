@@ -10,9 +10,6 @@ namespace monshare.Utils
 {
     class ServerCommunication
     {
-        //TODO:
-        public static int SESSION_ID { get; internal set; }
-        public static int USER_ID { get; internal set; }
 
         const string SUCCESS = "success";
         const string FAIL = "fail";
@@ -40,13 +37,14 @@ namespace monshare.Utils
             {
                 if (result["status"] == SUCCESS)
                 {
-                    newUser = new User();
+                    newUser = new User
+                    {
+                        userId = (int)result["user"]["user_id"],
+                        firstName = result["user"]["first_name"],
+                        lastName = result["user"]["last_name"]
+                    };
 
-                    newUser.userId = (int)result["user"]["user_id"];
-                    newUser.firstName = result["user"]["first_name"];
-                    newUser.lastName = result["user"]["last_name"];
-
-                    await LocalStorage.UpdateCredatialsAsync(result["user"]["user_id"], result["user"]["session_id"]);
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"].ToString());
                 }
                 else if (result["status"] == FAIL)
                 {
@@ -56,6 +54,7 @@ namespace monshare.Utils
 
             catch
             {
+                newUser = User.NullInstance;
                 newUser.message = "Error happened in frontend";
             }
             return newUser;
@@ -87,7 +86,7 @@ namespace monshare.Utils
                         lastName = result["user"]["last_name"]
                     };
 
-                    await LocalStorage.UpdateCredatialsAsync(result["user"]["user_id"], result["user"]["session_id"]);
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"].ToString());
                 }
                 else if (result["status"] == FAIL)
                 {
@@ -105,8 +104,8 @@ namespace monshare.Utils
         {
             var client = new HttpClient();
             string url = CREATE_GROUP_API + "?" +
-                "user_id=" + USER_ID + "&" +
-                "session_id=" + SESSION_ID + "&" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
                 "group_name=" + title + "&" +
                 "group_description=" + description;
 
@@ -127,8 +126,8 @@ namespace monshare.Utils
 
             var client = new HttpClient();
             string url = GET_MY_GROUPS_API + "?" +
-                "user_id=" + USER_ID + "&" +
-                "session_id=" + SESSION_ID;
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId();
 
             var uri = new Uri(url);
             var json = await client.GetStringAsync(uri);
@@ -140,14 +139,16 @@ namespace monshare.Utils
                 {
                     foreach (JsonValue group in result["groups"])
                     {
-                        Group newGroup = new Group();
-                        newGroup.groupId = group["GroupId"];
-                        newGroup.title = group["Title"];
-                        newGroup.description = group["Description"];
-                        newGroup.creationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString());
-                        newGroup.endDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString());
-                        newGroup.membersNumber = group["MembersNumber"] ?? -1;
-                        newGroup.ownerId = group["ownerId"];
+                        Group newGroup = new Group
+                        {
+                            groupId = group["GroupId"],
+                            title = group["Title"],
+                            description = group["Description"],
+                            creationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString()),
+                            endDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString()),
+                            membersNumber = group["MembersNumber"] ?? -1,
+                            ownerId = group["ownerId"]
+                        };
                         myGroups.Add(newGroup);
                     }
                 }
