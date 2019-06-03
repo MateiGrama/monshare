@@ -45,9 +45,5 @@ namespace monshare
         {
 
         }
-        private void GetGroupChatPressed(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new ChatPage(new Group() { groupId = 49 }));
-        }
     }
 }

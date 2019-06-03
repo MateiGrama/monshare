@@ -24,9 +24,9 @@
                 
                         <Picker.Items>
                             <x:String>500m</x:String>
-                            <x:String>1km</x:String>
-                            <x:String>1.5km</x:String>
-                            <x:String>2km</x:String>
+                            <x:String>1000m</x:String>
+                            <x:String>1500m</x:String>
+                            <x:String>2000m</x:String>
                         </Picker.Items>
                     </Picker>
 

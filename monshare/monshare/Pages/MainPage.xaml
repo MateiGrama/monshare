@@ -23,10 +23,6 @@
             Clicked="RegisterButtonPressed"
             Text="Register">
         </Button>
-        <Button
-            Clicked="GetGroupChatPressed"
-            Text="Chat">
-        </Button>
     </StackLayout>
 
 </ContentPage>

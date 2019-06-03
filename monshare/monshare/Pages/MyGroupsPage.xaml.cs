@@ -14,6 +14,8 @@ namespace monshare.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MyGroupsPage : ContentPage
     {
+
+        private List<Group> Groups;
         public MyGroupsPage()
         {
             InitializeComponent();
@@ -26,8 +28,13 @@ namespace monshare.Pages
 
         private async void RefreshMyGroupsAsync()
         {
-            List<Group> groups = await ServerCommunication.GetMyGroupsAsync();
-            GroupsListView.ItemsSource = groups;
+            Groups = await ServerCommunication.GetMyGroupsAsync();
+            GroupsListView.ItemsSource = Groups;
+        }
+
+        private async void GroupTapped(object sender, SelectedItemChangedEventArgs e)
+        {
+            await Navigation.PushAsync(new GroupDescriptionPage(Groups[e.SelectedItemIndex]));
         }
     }
 }
