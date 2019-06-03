@@ -50,7 +50,7 @@ def unauthorized_user():
 
 
 def success_status():
-    return success_status("successfuly done.")
+    return success_status("successfully done.")
 
 
 def success_status(msg):
