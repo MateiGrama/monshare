@@ -6,14 +6,15 @@
              mc:Ignorable="d"
              x:Class="monshare.Pages.MyGroupsPage">
     <ContentPage.Content>
-        <StackLayout>
-            <ListView  x:Name="GroupsListView"
-                   SeparatorVisibility="None"
-                   ItemsSource="{Binding Groups}">
+        <StackLayout x:Name="groupsStackLayout">
+            <ListView x:Name="GroupsListView"
+                      ItemSelected="GroupTapped"
+                      SeparatorVisibility="None"
+                      BindingContext="{Binding Group}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding title}"
-                         Detail="{Binding description}" />
+                        <TextCell Text="{Binding Title}"
+                         Detail="{Binding Description}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
