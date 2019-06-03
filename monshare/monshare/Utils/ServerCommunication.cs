@@ -44,7 +44,7 @@ namespace monshare.Utils
                         lastName = result["user"]["last_name"]
                     };
 
-                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"], result["user"]["session_id"]);
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"].ToString());
                 }
                 else if (result["status"] == FAIL)
                 {
@@ -54,6 +54,7 @@ namespace monshare.Utils
 
             catch
             {
+                newUser = User.NullInstance;
                 newUser.message = "Error happened in frontend";
             }
             return newUser;
@@ -85,7 +86,7 @@ namespace monshare.Utils
                         lastName = result["user"]["last_name"]
                     };
 
-                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"], result["user"]["session_id"]);
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"].ToString());
                 }
                 else if (result["status"] == FAIL)
                 {

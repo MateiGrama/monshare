@@ -11,17 +11,17 @@ using Xamarin.Forms.Xaml;
 
 namespace monshare.Pages
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class LoginPage : ContentPage
-	{
-		public LoginPage()
-		{
-			InitializeComponent ();
-		}
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class LoginPage : ContentPage
+    {
+        public LoginPage()
+        {
+            InitializeComponent();
+        }
 
         public async void LoginClickedAsync(object sender, EventArgs e)
         {
-            if (!formInputIsValid())
+            if (!FormInputIsValid())
             {
                 return;
             }
@@ -38,23 +38,23 @@ namespace monshare.Pages
 
         }
 
-        private bool formInputIsValid()
+        private bool FormInputIsValid()
         {
             if (email.Text == null)
             {
-                showError("You must provide an email address.");
+                ShowError("You must provide an email address.");
                 return false;
             }
 
             if (password.Text == null)
             {
-                showError("You must provide a password.");
+                ShowError("You must provide a password.");
                 return false;
             }
 
             return true;
         }
 
-        private void showError(string msg) => Utils.Utils.ShowError(msg, errorLabel, 20, 3000);
+        private void ShowError(string msg) => Utils.Utils.ShowError(msg, errorLabel, 20, 3000);
     }
 }
