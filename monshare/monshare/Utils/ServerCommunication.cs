@@ -20,19 +20,19 @@ namespace monshare.Utils
         const string CREATE_GROUP_API = BASEURL + "/createGroup";
         const string GET_GROUPS_AROUND_API = BASEURL + "/getGroupsAround";
         const string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
+        const string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
+
+        private static HttpClient client = new HttpClient();
 
         public static async Task<User> Login(string email, string password)
         {
             User newUser = User.NullInstance;
 
-            var client = new HttpClient();
             string url = LOGIN_API + "?" +
                 "email=" + email + "&" +
                 "password_hash=" + Utils.hashPassword(password);
 
-            var uri = new Uri(url);
-            var json = await client.GetStringAsync(uri);
-            var result = JsonValue.Parse(json);
+            JsonValue result = await GetResponse(url);
 
             try
             {
@@ -60,20 +60,19 @@ namespace monshare.Utils
             }
             return newUser;
         }
+
+
         public static async Task<User> Register(string email, string firstName, string lastName, string password)
         {
             User newUser = User.NullInstance;
 
-            var client = new HttpClient();
             string url = REGISTER_API + "?" +
                 "first_name=" + firstName + "&" +
                 "last_name=" + lastName + "&" +
                 "email=" + email + "&" +
                 "password_hash=" + Utils.hashPassword(password);
 
-            var uri = new Uri(url);
-            var json = await client.GetStringAsync(uri);
-            var result = JsonValue.Parse(json);
+            JsonValue result = await GetResponse(url);
 
             try
             {
@@ -103,7 +102,6 @@ namespace monshare.Utils
         }
         public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople)
         {
-            var client = new HttpClient();
             var position = await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromSeconds(5));
 
             string url = CREATE_GROUP_API + "?" +
@@ -117,9 +115,7 @@ namespace monshare.Utils
                 "long=" + position.Longitude + "&" +
                 "range=" + range;
 
-            var uri = new Uri(url);
-            var json = await client.GetStringAsync(uri);
-            var result = JsonValue.Parse(json);
+            JsonValue result = await GetResponse(url);
 
             try
             {
@@ -132,38 +128,60 @@ namespace monshare.Utils
         {
             List<Group> myGroups = new List<Group>();
 
-            var client = new HttpClient();
             string url = GET_MY_GROUPS_API + "?" +
                 "user_id=" + LocalStorage.GetUserId() + "&" +
                 "session_id=" + LocalStorage.GetSessionId();
 
-            var uri = new Uri(url);
-            var json = await client.GetStringAsync(uri);
-            var result = JsonValue.Parse(json);
+            JsonValue result = await GetResponse(url);
 
-            //try
-            //{
+            try
+            {
                 if (result["status"] == SUCCESS)
                 {
                     foreach (JsonValue group in result["groups"])
                     {
-                        Group newGroup = new Group
-                        {
-                            GroupId = group["GroupId"],
-                            Title = group["Title"],
-                            Description = group["Description"],
-                            CreationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString()),
-                            EndDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString()),
-                            MembersNumber = group["MembersNumber"],
-                            OwnerId = group["ownerId"],
-                            TargetNumberOfPeople = group["targetNum"]
-                        };
+                        Group newGroup = new Group();
+
+                        newGroup.GroupId = group["GroupId"];
+                        newGroup.Title = group["Title"];
+                        newGroup.Description = group["Description"];
+                        newGroup.CreationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString());
+                        newGroup.EndDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString());
+                        newGroup.MembersNumber = group["MembersNumber"];
+                        newGroup.OwnerId = group["ownerId"];
+                        newGroup.TargetNumberOfPeople = group["targetNum"] ?? 1;
+
                         myGroups.Add(newGroup);
                     }
                 }
-            //}
-           // catch { }
+            }
+            catch { }
             return myGroups;
+        }
+
+        public static async Task<bool> LeaveGroupAsync(int groupId)
+        {
+            string url = LEAVE_GROUP_API + "?" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
+                "group_id=" + groupId;
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch { }
+            return false;
+        }
+
+        private static async Task<JsonValue> GetResponse(string url)
+        {
+            var uri = new Uri(url);
+            var json = await client.GetStringAsync(uri);
+            var result = JsonValue.Parse(json);
+            return result;
         }
 
     }

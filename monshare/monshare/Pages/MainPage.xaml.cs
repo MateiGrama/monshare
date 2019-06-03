@@ -41,9 +41,5 @@ namespace monshare
             await Navigation.PushAsync(new RegisterPage());
         }
 
-        private void Button_Clicked(object sender, EventArgs e)
-        {
-
-        }
     }
 }
