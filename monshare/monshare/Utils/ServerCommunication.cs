@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Json;
 using monshare.Models;
+using Plugin.Geolocator;
 
 namespace monshare.Utils
 {
@@ -44,7 +45,7 @@ namespace monshare.Utils
                         lastName = result["user"]["last_name"]
                     };
 
-                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"].ToString());
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"]);
                 }
                 else if (result["status"] == FAIL)
                 {
@@ -86,7 +87,7 @@ namespace monshare.Utils
                         lastName = result["user"]["last_name"]
                     };
 
-                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"].ToString());
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"]);
                 }
                 else if (result["status"] == FAIL)
                 {
@@ -100,14 +101,21 @@ namespace monshare.Utils
             }
             return newUser;
         }
-        public static async Task<bool> CreateGroupAsync(string title, string description, double range, DateTime time, int targetNoPeople)
+        public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople)
         {
             var client = new HttpClient();
+            var position = await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromSeconds(5));
+
             string url = CREATE_GROUP_API + "?" +
                 "user_id=" + LocalStorage.GetUserId() + "&" +
                 "session_id=" + LocalStorage.GetSessionId() + "&" +
                 "group_name=" + title + "&" +
-                "group_description=" + description;
+                "group_description=" + description + "&" +
+                "target=" + targetNoPeople + "&" +
+                "lifetime=" + time.Subtract(DateTime.Now).TotalMinutes + "&" +
+                "lat=" + position.Latitude + "&" +
+                "long=" + position.Longitude + "&" +
+                "range=" + range;
 
             var uri = new Uri(url);
             var json = await client.GetStringAsync(uri);
@@ -133,27 +141,28 @@ namespace monshare.Utils
             var json = await client.GetStringAsync(uri);
             var result = JsonValue.Parse(json);
 
-            try
-            {
+            //try
+            //{
                 if (result["status"] == SUCCESS)
                 {
                     foreach (JsonValue group in result["groups"])
                     {
                         Group newGroup = new Group
                         {
-                            groupId = group["GroupId"],
-                            title = group["Title"],
-                            description = group["Description"],
-                            creationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString()),
-                            endDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString()),
-                            membersNumber = group["MembersNumber"] ?? -1,
-                            ownerId = group["ownerId"]
+                            GroupId = group["GroupId"],
+                            Title = group["Title"],
+                            Description = group["Description"],
+                            CreationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString()),
+                            EndDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString()),
+                            MembersNumber = group["MembersNumber"],
+                            OwnerId = group["ownerId"],
+                            TargetNumberOfPeople = group["targetNum"]
                         };
                         myGroups.Add(newGroup);
                     }
                 }
-            }
-            catch { }
+            //}
+           // catch { }
             return myGroups;
         }
 

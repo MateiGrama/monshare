@@ -25,7 +25,7 @@ namespace monshare.Pages
             bool APICallResult = await ServerCommunication.CreateGroupAsync(
                 groupTitle,
                 groupDescription,
-                double.Parse(rangeString),
+                Int32.Parse(rangeString),
                 DateTime.Parse(timePicker.Time.ToString()),
                 Int32.Parse(targetNoPeople.SelectedItem.ToString() ?? "0"));
 
