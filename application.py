@@ -139,20 +139,23 @@ def create_group():
         result = cursor.execute("""insert into groups
                 (title, description, creationdatetime, enddatetime, ownerid, lat, long, membersnumber, targetnum, groupRange)
                 values ('{}','{}',GETDATE(), {}, {}, {}, {}, {}, {}, {})""".format(
-                group_name,
-                group_description,
-                'DATEADD(minute, {}, GETDATE())'.format(lifetime) if lifetime else 'null',
-                user_id,
-                lat if lat else 'null',
-                long if long else 'null',
-                1,
-                target_num if target_num else 'null',
-                range if range else 'null'
-            ))
+            group_name,
+            group_description,
+            'DATEADD(minute, {}, GETDATE())'.format(lifetime) if lifetime else 'null',
+            user_id,
+            lat if lat else 'null',
+            long if long else 'null',
+            1,
+            target_num if target_num else 'null',
+            range if range else 'null'
+        ))
         connection.commit()
 
         cursor.execute("select GroupId from groups order by CreationDateTime desc")
         group_id = cursor.fetchone()
+
+        cursor.execute("insert into UserToGroup (UserId, GroupId) values ({}, {})".format(user_id, group_id.GroupId))
+        connection.commit()
 
         if result:
             result = {"status": SUCCESS_STATUS, "group_id": group_id.GroupId}
