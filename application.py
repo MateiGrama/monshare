@@ -10,7 +10,7 @@ from utils.db_functionalities import is_user_member_of_group, group_has_one_memb
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json
 
-DEBUG = False
+DEBUG = True
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 app = Flask(__name__)
@@ -42,7 +42,7 @@ def register():
         if len(cursor.fetchall()) > 0:
             return error_status_response("Email already in use.")
 
-        cursor.execute("""INSERT INTO users (firstname, lastname, passwordhash, sessionId, email) 
+        cursor.execute("""INSERT INTO users (firstname, lastname, passwordhash, sessionId, email)
                           values ('{}','{}','{}','{}','{}')
                        """.format(first_name, last_name, password_hash, get_random_ssid(), email))
         connection.commit()
@@ -78,7 +78,7 @@ def login():
         if not user_details.PasswordHash == password_hash:
             return error_status_response("Wrong password provided.")
 
-        cursor.execute("""UPDATE users SET sessionId = {} 
+        cursor.execute("""UPDATE users SET sessionId = {}
                           WHERE email = '{}'
                        """.format(int(user_details.SessionId) + 1, email))
         connection.commit()
@@ -133,7 +133,7 @@ def create_group():
         return error_status_response("invalid id or sessionid")
 
     try:
-        if logged_in(user_id, session_id):
+        if not logged_in(user_id, session_id):
             return unauthorized_user()
 
         result = cursor.execute(
@@ -203,8 +203,26 @@ def get_my_groups():
 
 
 @app.route("/joinGroup")
-def joinGroup():
-    pass
+def join_group():
+    user_id = request.args.get('user_id')
+    session_id = request.args.get('session_id')
+    group_id = request.args.get('group_id')
+    try:
+        if not user_id or not session_id:
+            return error_status_response("invalid id or sessionid")
+        if not group_id:
+            return error_status_response("No group id provided.")
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
+        cursor.execute("""select groupId from groups where groupId={};""".format(group_id))
+        if not cursor.fetchone():
+            return error_status_response("No group with the given group id.")
+        cursor.execute("""insert into userToGroup (userId, groupId) values ({}, {})""".format(user_id, group_id))
+        connection.commit()
+    except:
+        return error_status_response("error while getting all groups.")
+
+    return success_status("User successfully added to the group.")
 
 
 @app.route("/leaveGroup")

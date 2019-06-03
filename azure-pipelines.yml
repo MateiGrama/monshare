@@ -9,6 +9,7 @@ trigger:
 - b/logout
 - b/createGroup
 - b/register
+- b/joinGroup
 
 pool:
   name: Hosted Ubuntu 1604
