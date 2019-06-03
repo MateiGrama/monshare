@@ -10,7 +10,7 @@ from utils.db_functionalities import is_user_member_of_group, group_has_one_memb
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json
 
-DEBUG = True
+DEBUG = False
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 app = Flask(__name__)
@@ -97,6 +97,23 @@ def login():
     return json.dumps(result)
 
 
+@app.route("/isLoggedIn")
+def is_logged_in():
+    user_id, session_id = get_fields('user_id', 'session_id')
+
+    if not (user_id and session_id):
+        return error_status_response("No user_id or session_id provided.")
+
+    # Check that the connection is valid
+    try:
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
+
+        return success_status("User is already logged in.")
+    except:
+        return error_status_response("Something went wrong when queering database about user's login status.")
+
+
 @app.route("/logout")
 def logout():
     user_id, session_id = get_fields('user_id', 'session_id')
@@ -136,28 +153,32 @@ def create_group():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        result = cursor.execute(
-            """insert into groups
-               (title, description, creationdatetime, enddatetime, ownerid, lat, long, membersnumber, targetnum, groupRange)
+        result = cursor.execute("""insert into groups
+                (title, description, creationdatetime, enddatetime, ownerid, lat, long, membersnumber, targetnum, groupRange)
                 values ('{}','{}',GETDATE(), {}, {}, {}, {}, {}, {}, {})""".format(
-                group_name,
-                group_description,
-                'DATEADD(minute, {}, GETDATE())'.format(lifetime) if lifetime else 'null',
-                user_id,
-                lat if lat else 'null',
-                long if long else 'null',
-                1,
-                target_num if target_num else 'null',
-                range if range else 'null'
-            ))
+            group_name,
+            group_description,
+            'DATEADD(minute, {}, GETDATE())'.format(lifetime) if lifetime else 'null',
+            user_id,
+            lat if lat else 'null',
+            long if long else 'null',
+            1,
+            target_num if target_num else 'null',
+            range if range else 'null'
+        ))
+        connection.commit()
 
+        cursor.execute("select GroupId from groups order by CreationDateTime desc")
+        group_id = cursor.fetchone()
+
+        cursor.execute("insert into UserToGroup (UserId, GroupId) values ({}, {})".format(user_id, group_id.GroupId))
         connection.commit()
 
         if result:
-            return success_status("Successfully created a new group!")
-
-    except:
-        return error_status_response("error while inserting group in db")
+            result = {"status": SUCCESS_STATUS, "group_id": group_id.GroupId}
+            return json.dumps(result)
+    except Exception as e:
+        return error_status_response("error while inserting group in db. Exception was: " + str(e))
 
 
 @app.route("/getGroupsAround")
@@ -193,9 +214,8 @@ def get_my_groups():
         except pyodbc.Error as err:
             return error_status_response(err)
 
-        get_groups_of_user(user_id)
+        rows = get_groups_of_user(user_id)
         columns = [column_description[0] for column_description in cursor.description]
-        rows = cursor.fetchall()
     except pyodbc.Error as err:
         return error_status_response("Error while getting your groups! {}".format(err))
 
