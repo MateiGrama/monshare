@@ -49,6 +49,10 @@ def unauthorized_user():
     return error_status_response("user has not got a valid session id")
 
 
+def success_status():
+    return success_status("successfuly done.")
+
+
 def success_status(msg):
     result = {"message": msg, "status": SUCCESS_STATUS}
     return json.dumps(result)
