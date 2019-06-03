@@ -10,7 +10,7 @@ from utils.db_functionalities import is_user_member_of_group, group_has_one_memb
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_SSID, group_list_to_json
 
-DEBUG = False
+DEBUG = True
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 app = Flask(__name__)
@@ -200,33 +200,27 @@ def get_my_groups():
 
 
 @app.route("/joinGroup")
-def joinGroup():
+def join_group():
     user_id = request.args.get('user_id')
     session_id = request.args.get('session_id')
     group_id = request.args.get('group_id')
-    line = 0
     try:
         if not user_id or not session_id:
             return error_status_response("invalid id or sessionid")
-        line += 1
         if not group_id:
             return error_status_response("No group id provided.")
-        line += 1
         if not logged_in(user_id, session_id):
             return unauthorized_user()
-        line += 1
         cursor.execute("""select groupId from groups where groupId={};""".format(group_id))
         if not cursor.fetchone():
             return error_status_response("No group with the given group id.")
-        line += 1
-        result = cursor.execute("""insert into userToGroup (userId, groupId)
-                                   values ({}, {})""".format(user_id, group_id))
+        cursor.execute("""insert into userToGroup (userId, groupId) values ({}, {})""".format(user_id, group_id))
         connection.commit()
-        line += 1
     except:
-        return error_status_response("error while getting all groups. Line " + str(line))
+        return error_status_response("error while getting all groups.")
 
-    return success_status()
+    return success_status("User successfully added to the group.")
+
 
 @app.route("/leaveGroup")
 def leave_group(*args):
