@@ -314,3 +314,23 @@ def get_group_chat():
         return error_status_response("Error while processing group message request.")
 
     return messages_list_to_json(rows, columns)
+
+
+@app.route("/sendMessage")
+def sendMessage():
+    user_id, session_id, group_id, message = get_fields('user_id', 'session_id', 'group_id', 'message')
+
+    if not (user_id and session_id):
+        return error_status_response("No user_id or session_id provided.")
+
+    # Check that the connection is valid
+    try:
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
+
+        cursor.execute("INSERT INTO messages (groupid, senderid, message, datetime) VALUES ({},{},'{}',GETDATE())".format(group_id, user_id, message))
+        connection.commit()
+
+    except:
+        return error_status_response("Error while processing logout request.")
+    return success_status()
