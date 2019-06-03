@@ -97,6 +97,23 @@ def login():
     return json.dumps(result)
 
 
+@app.route("/isLoggedIn")
+def is_logged_in():
+    user_id, session_id = get_fields('user_id', 'session_id')
+
+    if not (user_id and session_id):
+        return error_status_response("No user_id or session_id provided.")
+
+    # Check that the connection is valid
+    try:
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
+
+        return success_status("User is already logged in.")
+    except:
+        return error_status_response("Something went wrong when queering database about user's login status.")
+
+
 @app.route("/logout")
 def logout():
     user_id, session_id = get_fields('user_id', 'session_id')

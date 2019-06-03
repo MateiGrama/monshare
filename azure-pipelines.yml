@@ -10,6 +10,7 @@ trigger:
 - b/createGroup
 - b/register
 - b/joinGroup
+- b/isLoggedIn
 
 pool:
   name: Hosted Ubuntu 1604
