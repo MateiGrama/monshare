@@ -19,6 +19,7 @@ namespace monshare.Utils
         const string CREATE_GROUP_API = BASEURL + "/createGroup";
         const string GET_GROUPS_AROUND_API = BASEURL + "/getGroupsAround";
         const string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
+        const string GET_GROUP_CHAT_API = BASEURL + "/getGroupChat";
 
         public static async Task<User> Login(string email, string password)
         {
@@ -59,6 +60,54 @@ namespace monshare.Utils
             }
             return newUser;
         }
+
+        internal static async Task<Chat> getGroupChatAsync(Group group)
+        {
+            Chat chat = Chat.NullInstance;
+            List<Message> messages = new List<Message>();
+            var client = new HttpClient();
+
+            string url = GET_GROUP_CHAT_API + "?" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "group_id=" + group.groupId;
+
+            var uri = new Uri(url);
+            var json = await client.GetStringAsync(uri);
+            var result = JsonValue.Parse(json);
+
+            try
+            {
+                if (result["status"] == SUCCESS)
+                {
+                    chat = new Chat {
+                        group = group,
+                        messages = new List<Message>()
+                    };
+
+                    foreach(JsonValue jsonMessage in result["messages"])
+                    {
+                        chat.messages.Add(new Message() {
+                            senderId = jsonMessage["msg_sender_id"],
+                            text = jsonMessage["msg"],
+                            dateTime = jsonMessage["date_time"]
+                        });
+                    }
+                }
+                else if (result["status"] == FAIL)
+                {
+                    chat.message = result["description"];
+                }
+            }
+            catch
+            {
+                chat = Chat.NullInstance;
+                chat.message = "Error happened in frontend";
+            }
+
+            return chat;
+        }
+
         public static async Task<User> Register(string email, string firstName, string lastName, string password)
         {
             User newUser = User.NullInstance;

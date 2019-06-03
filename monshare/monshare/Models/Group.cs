@@ -5,7 +5,7 @@ using System.Text;
 
 namespace monshare.Models
 {
-    class Group
+    public class Group
     {
         public int groupId { get; internal set; }
         public string title { get; internal set; }
