@@ -27,6 +27,17 @@ def group_list_to_json(rows, columns):
         return error_status_response("error while generating json for rows")
 
 
+def messages_list_to_json(rows, columns):
+    try:
+        groups = []
+        for row in rows:
+            groups.append(dict(zip(columns, row)))
+        result = {'status': 'success', 'messages': groups}
+        return json.dumps(result)
+    except:
+        return error_status_response("error while generating json for rows")
+
+
 def logged_in(user_id, session_id):
     from application import cursor
     cursor.execute("select * from Users where userid={} and sessionid={}".format(user_id, session_id))

@@ -8,7 +8,7 @@ from utils import keys, db_functionalities
 from utils.db_functionalities import is_user_member_of_group, group_has_one_member, delete_group, is_group_owner, \
     pass_ownership, remove_user_from_group, get_groups_of_user, remove_user_from_database
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
-    get_random_ssid, group_list_to_json
+    get_random_ssid, group_list_to_json, messages_list_to_json
 
 DEBUG = True
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
@@ -273,3 +273,24 @@ def delete_account():
 
     remove_user_from_database(user_id)
     return success_status("You successfully deleted your account!")
+
+@app.route("/getGroupChat")
+def get_group_chat():
+    user_id, session_id, group_id = get_fields('user_id', 'session_id','group_id')
+
+    if not (user_id and session_id):
+        return error_status_response("No user_id or session_id provided.")
+
+
+    # Check that the connection is valid
+    try:
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
+        cursor.execute("""select senderid as msg_sender_id,  message as msg , datetime as date_time from messages where groupId={};""".format(group_id))
+        columns = [column_description[0] for column_description in cursor.description]
+        rows = cursor.fetchall()
+
+    except:
+        return error_status_response("Error while processing group message request.")
+
+    return messages_list_to_json(rows, columns)
