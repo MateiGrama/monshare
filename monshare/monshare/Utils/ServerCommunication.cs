@@ -137,7 +137,6 @@ namespace monshare.Utils
             return chat;
         }
       
-
         public static async Task<User> Register(string email, string firstName, string lastName, string password)
         {
             User newUser = User.NullInstance;
@@ -237,7 +236,7 @@ namespace monshare.Utils
                         newGroup.Description = group["Description"];
                         newGroup.CreationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString());
                         newGroup.EndDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString());
-                        newGroup.MembersNumber = group["MembersNumber"];
+                        newGroup.MembersNumber = group["MembersNumber"] ?? 1;
                         newGroup.OwnerId = group["ownerId"];
                         newGroup.TargetNumberOfPeople = group["targetNum"] ?? 1;
 
@@ -308,6 +307,7 @@ namespace monshare.Utils
             }
             catch { }
             return false;
+
         }
 
         internal static async Task<bool> DeleteAccount()
@@ -349,9 +349,11 @@ namespace monshare.Utils
             }
             return false;
         }
-
+        
+      
         private static async Task<JsonValue> GetResponse(string url)
         {
+            client.CancelPendingRequests();
             var uri = new Uri(url);
             var json = await client.GetStringAsync(uri);
             var result = JsonValue.Parse(json);

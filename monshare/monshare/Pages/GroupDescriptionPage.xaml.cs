@@ -62,5 +62,11 @@ namespace monshare.Pages
                 }
             }
         }
+
+        private async Task<bool> ShowLeaveGroupDialog()
+        {
+            return await DisplayAlert("Leave group", "Are you sure you want to leave the group?", "Yes", "No");
+
+        }
     }
 }

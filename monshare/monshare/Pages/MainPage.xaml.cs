@@ -75,5 +75,11 @@ namespace monshare
                 }
             }
         }
+
+        private async Task<bool> ShowLeaveGroupDialog()
+        {
+            return await DisplayAlert("Delete Account", "Are you sure you want to deleteyour account?", "Yes", "No");
+
+        }
     }
 }
