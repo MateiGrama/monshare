@@ -161,10 +161,10 @@ def create_group():
         ))
         connection.commit()
 
-        cursor.execute("select GroupId from groups order by CreationDateTime  desc ")
+        cursor.execute("select GroupId from groups order by CreationDateTime desc ")
         group_id = cursor.fetchone()
 
-        cursor.execute("insert into UserToGroup (UserId, GroupId) values ({}, {})".format(user_id, group_id.GroupId))
+        cursor.execute("insert into UserToGroup (UserId, Gr oupId) values ({}, {})".format(user_id, group_id.GroupId))
         connection.commit()
 
         if result:
@@ -291,7 +291,7 @@ def leave_group(*args):
     # If the only member of the group leaves, delete the group
     if group_has_one_member(group_id):
         remove_user_from_group(user_id, group_id)
-        delete_group(group_id)
+        db_functionalities.delete_group(group_id)
         connection.commit()
         return success_status("You successfully left the group {} which has been deleted.".format(group_id))
 
