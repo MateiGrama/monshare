@@ -110,5 +110,5 @@ def remove_user_from_database(user_id):
 
 def delete_group_messages(group_id):
     from application import cursor, connection
-    cursor.execute("delete from Group where groupId = {}".format(group_id))
+    cursor.execute("delete from Messages where groupId = {}".format(group_id))
     connection.commit()
