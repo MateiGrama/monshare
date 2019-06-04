@@ -15,7 +15,13 @@ namespace monshare.Pages
 		public AuthentificationPage ()
 		{
 			InitializeComponent ();
-		}
+            NavigationPage.SetHasBackButton(this, false);
+        }
+
+        protected override bool OnBackButtonPressed()
+        {  
+            return true;
+        }
 
         public async void LoginButtonPressed(object sender, EventArgs args)
         {

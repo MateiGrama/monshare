@@ -18,8 +18,9 @@ namespace monshare
     {
         public MainPage()
         {
-            InitializeComponent();
             CheckCredentials();
+            InitializeComponent();
+       
         }
 
         private async void CheckCredentials()
@@ -32,11 +33,6 @@ namespace monshare
             LoggedInLabel.Text = "Logged in";
             userNameLabel.Text = "User name: " + LocalStorage.GetUserName();
             userIDLabel.Text = "User ID: " + LocalStorage.GetUserId().ToString();
-        }
-
-        public async void MyGroupsButtonPressed(object sender, EventArgs args)
-        {
-            await Navigation.PushAsync(new MyGroupsPage());
         }
 
         public async void CreateGroupButtonPressed(object sender, EventArgs args)
