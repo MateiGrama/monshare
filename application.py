@@ -157,7 +157,7 @@ def create_group():
             long if long else 'null',
             1,
             target_num if target_num else 'null',
-            range if group_range else 'null'
+            group_range if group_range else 'null'
         ))
         connection.commit()
 
