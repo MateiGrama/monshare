@@ -10,15 +10,20 @@ namespace monshare.Utils
     {
         private const string USER_ID = "USERID";
         private const string SESSION_ID = "SSID";
+        private const string FIRST_NAME = "FIRST_NAME";
+        private const string LAST_NAME = "LAST_NAME";
 
         private const int DEFAULT_USER_ID = -1;
         private const int DEFAULT_SESSION_ID = -1;
 
 
-        public static async Task UpdateCredetialsAsync(string userId, string ssid)
+        public static async Task UpdateCredetialsAsync(string userId, string ssid, string firstName, string lastName)
         {
             Application.Current.Properties[USER_ID] = userId;
             Application.Current.Properties[SESSION_ID] = ssid;
+            Application.Current.Properties[FIRST_NAME] = firstName;
+            Application.Current.Properties[LAST_NAME] = lastName;
+
             await Application.Current.SavePropertiesAsync();
         }
 
@@ -42,6 +47,17 @@ namespace monshare.Utils
             catch { }
 
             return DEFAULT_SESSION_ID;
+        }
+
+        public static string GetUserName()
+        {
+            try
+            {
+                return Application.Current.Properties[FIRST_NAME] + " " + Application.Current.Properties[LAST_NAME];
+            }
+            catch { }
+
+            return "";
         }
     }
 }

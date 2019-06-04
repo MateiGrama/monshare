@@ -18,12 +18,21 @@ namespace monshare
     {
         public MainPage()
         {
+            CheckCredentials();
             InitializeComponent();
+       
         }
 
-        public async void MyGroupsButtonPressed(object sender, EventArgs args)
+        private async void CheckCredentials()
         {
-            await Navigation.PushAsync(new MyGroupsPage());
+            if (!await ServerCommunication.isLoggedIn())
+            {
+                await Navigation.PushAsync(new AuthentificationPage());
+            }
+
+            LoggedInLabel.Text = "Logged in";
+            userNameLabel.Text = "User name: " + LocalStorage.GetUserName();
+            userIDLabel.Text = "User ID: " + LocalStorage.GetUserId().ToString();
         }
 
         public async void CreateGroupButtonPressed(object sender, EventArgs args)
@@ -31,15 +40,23 @@ namespace monshare
             await Navigation.PushAsync(new CreateGroupPage());
         }
 
-        public async void LoginButtonPressed(object sender, EventArgs args)
+        public async void LogoutButtonPressed(object sender, EventArgs args)
         {
-            await Navigation.PushAsync(new LoginPage());
+            bool successfulCall = await ServerCommunication.logout();
+
+            await DisplayAlert("Logout", (successfulCall ? "" : "not ") + "successful", "OK");
+
+            if (successfulCall)
+            {
+                await Navigation.PushAsync(new AuthentificationPage());
+            }
         }
 
-        public async void RegisterButtonPressed(object sender, EventArgs args)
+        public async void MyGroupsButtonPressed(object sender, EventArgs args)
         {
-            await Navigation.PushAsync(new RegisterPage());
+            await Navigation.PushAsync(new MyGroupsPage());
         }
+
 
         private async void DeleteAccountButtonPressed(object sender, EventArgs e)
         {

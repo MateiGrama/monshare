@@ -1,4 +1,5 @@
-﻿using System;
+﻿using monshare.Utils;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -9,8 +10,13 @@ namespace monshare
         public App()
         {
             InitializeComponent();
+            loggedInStatusRouting();
+        }
 
+        private async void loggedInStatusRouting()
+        {
             MainPage = new NavigationPage(new MainPage());
+
         }
 
         protected override void OnStart()

@@ -27,6 +27,8 @@ namespace monshare.Utils
         private static readonly string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
         private static readonly string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";
         private static readonly string DELETE_GROUP_API = BASEURL + "/deleteGroup";
+        private static readonly string CHECK_IS_LOGGED_IN = BASEURL + "/isLoggedIn";
+
         private static HttpClient client = new HttpClient();
 
 
@@ -51,7 +53,7 @@ namespace monshare.Utils
                         lastName = result["user"]["last_name"]
                     };
 
-                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"]);
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"], newUser.firstName, newUser.lastName);
                 }
                 else if (result["status"] == FAIL)
                 {
@@ -68,6 +70,70 @@ namespace monshare.Utils
             return newUser;
         }
 
+
+        internal static async Task<bool> logout()
+        {
+            string url = LOGOUT_API + "?" +
+              "session_id=" + LocalStorage.GetSessionId() + "&" +
+              "user_id=" + LocalStorage.GetUserId();
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+             return result["status"] == SUCCESS;
+            }
+            catch { }
+            return false;
+        }
+
+        internal static async Task<Chat> getGroupChatAsync(Group group)
+        {
+            Chat chat = Chat.NullInstance;
+            List<Message> messages = new List<Message>();
+            var client = new HttpClient();
+
+            string url = GET_GROUP_CHAT_API + "?" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "group_id=" + group.GroupId;
+
+            var uri = new Uri(url);
+            var json = await client.GetStringAsync(uri);
+            var result = JsonValue.Parse(json);
+
+            try
+            {
+                if (result["status"] == SUCCESS)
+                {
+                    chat = new Chat {
+                        group = group,
+                        messages = new List<Message>()
+                    };
+
+                    foreach(JsonValue jsonMessage in result["messages"])
+                    {
+                        chat.messages.Add(new Message() {
+                            senderId = jsonMessage["msg_sender_id"],
+                            text = jsonMessage["msg"],
+                            dateTime = DateTime.Parse(jsonMessage["date_time"])
+                        });
+                    }
+                }
+                else if (result["status"] == FAIL)
+                {
+                    chat.message = result["description"];
+                }
+            }
+            catch
+            {
+                chat = Chat.NullInstance;
+                chat.message = "Error happened in frontend";
+            }
+
+            return chat;
+        }
+      
 
         public static async Task<User> Register(string email, string firstName, string lastName, string password)
         {
@@ -93,7 +159,7 @@ namespace monshare.Utils
                         lastName = result["user"]["last_name"]
                     };
 
-                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"]);
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"], firstName, lastName);
                 }
                 else if (result["status"] == FAIL)
                 {
@@ -108,6 +174,7 @@ namespace monshare.Utils
             }
             return newUser;
         }
+      
         public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople)
         {
             var status = await Utils.CheckPermissions(Permission.Location);
@@ -143,6 +210,7 @@ namespace monshare.Utils
             }
             return false;
         }
+      
         public static async Task<List<Group>> GetMyGroupsAsync()
         {
             List<Group> myGroups = new List<Group>();
@@ -224,6 +292,21 @@ namespace monshare.Utils
         }
 
 
+        public static async Task<bool> isLoggedIn() {
+            string url = CHECK_IS_LOGGED_IN + "?" +
+               "user_id=" + LocalStorage.GetUserId() + "&" +
+               "session_id=" + LocalStorage.GetSessionId();
+            
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch { }
+            return false;
+        }
+
         internal static async Task<bool> DeleteAccount()
         {
             string url = DELETE_ACCOUNT_API + "?" +
@@ -242,8 +325,7 @@ namespace monshare.Utils
             }
             return false;
         }
-
-
+      
         private static async Task<JsonValue> GetResponse(string url)
         {
             var uri = new Uri(url);

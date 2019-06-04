@@ -34,7 +34,7 @@ namespace monshare.Pages
 
             if (successfulCall)
             {
-                await Navigation.PopAsync();
+                await Navigation.PopToRootAsync(false);
             }
 
         }
