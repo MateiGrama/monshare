@@ -28,6 +28,8 @@ namespace monshare.Pages
 
         private async void RefreshMyGroupsAsync()
         {
+
+            //TODO: cache locally
             Groups = await ServerCommunication.GetMyGroupsAsync();
             if (Groups.Count > 0)
             {

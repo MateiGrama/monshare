@@ -19,6 +19,14 @@
                 Text="Leave Group"
                 Clicked="LeaveGroupClicked">
             </Button>
+            <Button
+                x:Name="DeleteGroupButton"
+                Text="Delete this group"
+                IsVisible="False"
+                HeightRequest="0"
+                Clicked="DeleteGroupButtonPressed"
+                >
+            </Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -43,7 +43,7 @@ namespace monshare
 
         private async void DeleteAccountButtonPressed(object sender, EventArgs e)
         {
-            if (await ShowLeaveGroupDialog())
+            if (await Utils.Utils.ShowLeaveGroupDialog(this, "Delete Account", "Are you sure you want to deleteyour account?"))
             {
                 if (await ServerCommunication.DeleteAccount())
                 {
@@ -52,12 +52,6 @@ namespace monshare
                     await Navigation.PopAsync();
                 }
             }
-        }
-
-        private async Task<bool> ShowLeaveGroupDialog()
-        {
-            return await DisplayAlert("Delete Account", "Are you sure you want to deleteyour account?", "Yes", "No");
-
         }
     }
 }
