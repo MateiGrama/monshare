@@ -320,6 +320,11 @@ def delete_account():
     return success_status("You successfully deleted your account!")
 
 
+@app.route("/deleteGroup")
+def delete_group_api():
+    leave_group()
+
+
 @app.route("/getGroupChat")
 def get_group_chat():
     user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
@@ -331,9 +336,11 @@ def get_group_chat():
     try:
         if not logged_in(user_id, session_id):
             return unauthorized_user()
-        cursor.execute(
-            """select senderid as msg_sender_id,  message as msg , datetime as date_time from messages where groupId={};""".format(
-                group_id))
+
+        cursor.execute("""select senderid as msg_sender_id,  message as msg , datetime as date_time from messages 
+                          where groupId={}
+                       """.format(group_id))
+
         columns = [column_description[0] for column_description in cursor.description]
         rows = cursor.fetchall()
 
@@ -344,7 +351,7 @@ def get_group_chat():
 
 
 @app.route("/sendMessage")
-def sendMessage():
+def send_message():
     user_id, session_id, group_id, message = get_fields('user_id', 'session_id', 'group_id', 'message')
 
     if not (user_id and session_id):
@@ -354,13 +361,12 @@ def sendMessage():
     try:
         if not logged_in(user_id, session_id):
             return unauthorized_user()
-
-        cursor.execute(
-            "INSERT INTO messages (groupid, senderid, message, datetime) VALUES ({},{},'{}',GETDATE())".format(group_id,
-                                                                                                               user_id,
-                                                                                                               message))
+          
+        cursor.execute("""insert into messages (groupid, senderid, message, datetime) 
+                          values ({},{},'{}',GETDATE())
+                       """.format(group_id, user_id, message))
         connection.commit()
 
     except:
-        return error_status_response("Error while processing logout request.")
+        return error_status_response("Error while processing sendMessage request.")
     return success_status("successfully sent a message.")
