@@ -131,7 +131,7 @@ def logout():
 
     except:
         return error_status_response("Error while processing logout request.")
-    return success_status()
+    return success_status("Logout succeded.")
 
 
 @app.route("/createGroup")
