@@ -4,10 +4,8 @@ import pyodbc
 from flask import Flask
 from flask import request
 
-from utils import keys, db_functionalities
-from utils.db_functionalities import is_user_member_of_group, group_has_one_member, delete_group, is_group_owner, \
-    pass_ownership, remove_user_from_group, get_groups_of_user, remove_user_from_database, get_group, add_user_to_group, \
-    group_exists
+from utils import keys
+from utils.db_functionalities import Db
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
 
@@ -21,8 +19,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 ALLOWED_EXTENSIONS = {'.apk'}
 
-connection = pyodbc.connect(db_functionalities.get_connection_string(pyodbc.drivers()[-1]))
+connection = pyodbc.connect(Db.get_connection_string(pyodbc.drivers()[-1]))
 cursor = connection.cursor()
+db = Db(cursor, connection)
 
 
 @app.route("/")
@@ -192,13 +191,13 @@ def update_group():
             return unauthorized_user()
 
         # Fails the user is not member of the group
-        if not is_user_member_of_group(user_id, group_id):
+        if not db.is_user_member_of_group(user_id, group_id):
             return error_status_response("User {} is not a member of group {}!".format(user_id, group_id))
 
-        db_functionalities.update_group(
+        db.update_group(
             [(param, val) for param, val in param_dict.items() if val and val != ""], group_id)
 
-        row = get_group(group_id)
+        row = db.get_group(group_id)
         columns = [column_description[0] for column_description in cursor.description]
 
         return group_to_json(row, columns)
@@ -240,7 +239,7 @@ def get_my_groups():
         except pyodbc.Error as err:
             return error_status_response(err)
 
-        rows = get_groups_of_user(user_id)
+        rows = db.get_groups_of_user(user_id)
         columns = [column_description[0] for column_description in cursor.description]
     except pyodbc.Error as err:
         return error_status_response("Error while getting your groups! {}".format(err))
@@ -261,9 +260,9 @@ def join_group():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        if not group_exists(group_id):
+        if not db.group_exists(group_id):
             return error_status_response("No group with the given group id: {}.".format(group_id))
-        add_user_to_group(user_id, group_id)
+        db.add_user_to_group(user_id, group_id)
     except:
         return error_status_response("error while getting all groups.")
 
@@ -285,21 +284,21 @@ def leave_group(*args):
         return unauthorized_user()
 
     # Fails the user is not member of the group
-    if not is_user_member_of_group(user_id, group_id):
+    if not db.is_user_member_of_group(user_id, group_id):
         return error_status_response("User {} is not a member of group {}!".format(user_id, group_id))
 
     # If the only member of the group leaves, delete the group
-    if group_has_one_member(group_id):
-        remove_user_from_group(user_id, group_id)
-        db_functionalities.delete_group(group_id)
+    if db.group_has_one_member(group_id):
+        db.remove_user_from_group(user_id, group_id)
+        db.delete_group(group_id)
         connection.commit()
         return success_status("You successfully left the group {} which has been deleted.".format(group_id))
 
     # If the owner leaves, pass the ownership to another user in that group.
-    if is_group_owner(user_id, group_id):
-        pass_ownership(user_id, group_id)
+    if db.is_group_owner(user_id, group_id):
+        db.pass_ownership(user_id, group_id)
 
-    remove_user_from_group(user_id, group_id)
+    db.remove_user_from_group(user_id, group_id)
     connection.commit()
     return success_status("You successfully left the group {}.".format(group_id))
 
@@ -312,11 +311,11 @@ def delete_account():
         return unauthorized_user()
 
     # Remove the user from all the groups
-    groups = get_groups_of_user(user_id)
+    groups = db.get_groups_of_user(user_id)
     for group in groups:
         leave_group(user_id, session_id, group[0])
 
-    remove_user_from_database(user_id)
+    db.remove_user_from_database(user_id)
     return success_status("You successfully deleted your account!")
 
 
