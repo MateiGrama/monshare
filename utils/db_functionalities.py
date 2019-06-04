@@ -59,6 +59,7 @@ def update_group(params):
 
 def delete_group(group_id):
     from application import cursor, connection
+    delete_group_messages(group_id)
     cursor.execute("delete from groups where GroupId = {}".format(group_id))
     connection.commit()
 
@@ -106,4 +107,10 @@ def get_group_members(group_id):
 def remove_user_from_database(user_id):
     from application import cursor, connection
     cursor.execute("delete from Users where UserId = {}".format(user_id))
+    connection.commit()
+
+
+def delete_group_messages(group_id):
+    from application import cursor, connection
+    cursor.execute("delete from Group where groupId = {}".format(group_id))
     connection.commit()
