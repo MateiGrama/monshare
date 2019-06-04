@@ -19,12 +19,12 @@ namespace monshare.Pages
 
         public async void LoginButtonPressed(object sender, EventArgs args)
         {
-            await Navigation.PushModalAsync(new LoginPage());
+            await Navigation.PushAsync(new LoginPage());
         }
 
         public async void RegisterButtonPressed(object sender, EventArgs args)
         {
-            await Navigation.PushModalAsync(new RegisterPage());
+            await Navigation.PushAsync(new RegisterPage());
         }
     }
 }

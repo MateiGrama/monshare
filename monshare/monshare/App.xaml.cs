@@ -16,6 +16,7 @@ namespace monshare
         private async void loggedInStatusRouting()
         {
             MainPage = new NavigationPage(new MainPage());
+
         }
 
         protected override void OnStart()

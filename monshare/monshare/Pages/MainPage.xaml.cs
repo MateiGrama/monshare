@@ -26,7 +26,7 @@ namespace monshare
         {
             if (!await ServerCommunication.isLoggedIn())
             {
-                await Navigation.PushModalAsync(new AuthentificationPage());
+                await Navigation.PushAsync(new AuthentificationPage());
             }
 
             LoggedInLabel.Text = "Logged in";
@@ -52,7 +52,7 @@ namespace monshare
 
             if (successfulCall)
             {
-                await Navigation.PushModalAsync(new AuthentificationPage());
+                await Navigation.PushAsync(new AuthentificationPage());
             }
         }
 
