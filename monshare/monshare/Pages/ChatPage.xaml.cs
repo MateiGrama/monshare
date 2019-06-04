@@ -40,11 +40,13 @@ namespace monshare.Pages
                 return;
             }
             List<Message> sortedMesages = chat.messages.OrderBy(msg => msg.dateTime).ToList();
-            foreach (Message msg in sortedMesages) {
+            foreach (Message msg in sortedMesages)
+            {
                 //ReceivedMessageView messageView = new ReceivedMessageView() { BindingContext = msg };
                 addMessageInLayout(msg);
 
-             }
+            }
+            scrollToBottom();
         }
 
         public async void SendButtonPressed(object sender, EventArgs args)
@@ -53,23 +55,31 @@ namespace monshare.Pages
             {
                 await DisplayAlert("Message Sent", "", "Ok");
                 addMessageInLayout(new Message() { senderId = LocalStorage.GetUserId(), text = messageEntry.Text });
+
+                scrollToBottom();
             }
         }
 
         private void addMessageInLayout(Message msg) {
-             Thickness margin = msg.isOwnMessage ? new Thickness(70, 5, 150, 0): new Thickness(150, 5, 70, 0);
+             Thickness margin = msg.isOwnMessage ? new Thickness(60, 5, 15, 0) : new Thickness(15, 5, 60, 0);
                 Color color = msg.isOwnMessage ? Color.FromHex("657b83") : Color.FromHex("93a1a1");
 
                 Frame msgFrame = new Frame() { HorizontalOptions = LayoutOptions.FillAndExpand,
                     Padding = 15,
                     Margin = margin,
-                    BackgroundColor = color
+                    BackgroundColor = color,
+                    CornerRadius = 8
                 };
 
                 StackLayout stack = new StackLayout() { HorizontalOptions = LayoutOptions.FillAndExpand };
                 stack.Children.Add(new Label() { Text = msg.text });
                 msgFrame.Content = stack;
                 chatLayout.Children.Add(msgFrame);
+        }
+
+        private async void scrollToBottom()
+        {
+            await chatScrollView.ScrollToAsync(chatLayout, ScrollToPosition.End, true);
         }
 
     }
