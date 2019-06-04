@@ -13,7 +13,7 @@
         </Button>
         <Button 
             Clicked="MyGroupsButtonPressed"
-            Text="MyGroups">
+            Text="My Groups">
         </Button>
         <Button
             Clicked="CreateGroupButtonPressed"
