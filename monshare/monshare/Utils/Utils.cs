@@ -12,13 +12,14 @@ namespace monshare.Utils
 {
     public class Utils
     {
+
         public static byte[] GetHash(string inputString)
         {
             HashAlgorithm algorithm = SHA256.Create();
             return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
         }
 
-        public static string hashPassword(string password)
+        public static string HashPassword(string password)
         {
 
             StringBuilder sb = new StringBuilder();
@@ -40,7 +41,7 @@ namespace monshare.Utils
                 return false;
             }
         }
- 
+
         public static async void ShowError(string msg, Label errorLabel, int height, int duration)
         {
             errorLabel.Text = msg;
@@ -118,6 +119,18 @@ namespace monshare.Utils
                 }
             }
             return permissionStatus;
+        }
+
+        public static async Task<bool> ShowLeaveGroupDialog(Page sender, string err, string message)
+        {
+            return await sender.DisplayAlert(err, message, "Yes", "No");
+
+        }
+
+        public static void DisplayVisualElement(VisualElement element, bool visible)
+        {
+            element.HeightRequest = visible ? -1 : 0;
+            element.IsVisible = visible;
         }
 
     }

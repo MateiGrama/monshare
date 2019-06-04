@@ -39,15 +39,29 @@ namespace monshare.Pages
                 await DisplayAlert("Alert", "Messages not loaded; reason: " + chat.message, "ok");
                 return;
             }
-
-            foreach (Message msg in chat.messages) {
+            List<Message> sortedMesages = chat.messages.OrderBy(msg => msg.dateTime).ToList();
+            foreach (Message msg in sortedMesages) {
                 //ReceivedMessageView messageView = new ReceivedMessageView() { BindingContext = msg };
+                addMessageInLayout(msg);
 
-                Thickness margin = msg.isOwnMessage ? new Thickness(20, 5, 0, 100): new Thickness(100, 5, 0, 20);
+             }
+        }
+
+        public async void SendButtonPressed(object sender, EventArgs args)
+        {
+            if (await ServerCommunication.sendMessage(messageEntry.Text, group.GroupId))
+            {
+                await DisplayAlert("Message Sent", "", "Ok");
+                addMessageInLayout(new Message() { senderId = LocalStorage.GetUserId(), text = messageEntry.Text });
+            }
+        }
+
+        private void addMessageInLayout(Message msg) {
+             Thickness margin = msg.isOwnMessage ? new Thickness(70, 5, 150, 0): new Thickness(150, 5, 70, 0);
                 Color color = msg.isOwnMessage ? Color.FromHex("657b83") : Color.FromHex("93a1a1");
 
                 Frame msgFrame = new Frame() { HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Padding = 20,
+                    Padding = 15,
                     Margin = margin,
                     BackgroundColor = color
                 };
@@ -56,7 +70,7 @@ namespace monshare.Pages
                 stack.Children.Add(new Label() { Text = msg.text });
                 msgFrame.Content = stack;
                 chatLayout.Children.Add(msgFrame);
-             }
         }
+
     }
 }

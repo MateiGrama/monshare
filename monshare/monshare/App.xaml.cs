@@ -13,7 +13,7 @@ namespace monshare
             loggedInStatusRouting();
         }
 
-        private async void loggedInStatusRouting()
+        private void loggedInStatusRouting()
         {
             MainPage = new NavigationPage(new MainPage());
 

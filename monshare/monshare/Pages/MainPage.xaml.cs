@@ -18,9 +18,8 @@ namespace monshare
     {
         public MainPage()
         {
-            CheckCredentials();
             InitializeComponent();
-       
+            CheckCredentials();
         }
 
         private async void CheckCredentials()
@@ -30,9 +29,15 @@ namespace monshare
                 await Navigation.PushAsync(new AuthentificationPage());
             }
 
+        }
+
+        protected override void OnAppearing()
+        {
             LoggedInLabel.Text = "Logged in";
             userNameLabel.Text = "User name: " + LocalStorage.GetUserName();
             userIDLabel.Text = "User ID: " + LocalStorage.GetUserId().ToString();
+            base.OnAppearing();
+
         }
 
         public async void CreateGroupButtonPressed(object sender, EventArgs args)
@@ -52,9 +57,15 @@ namespace monshare
             }
         }
 
+        public async void MyGroupsButtonPressed(object sender, EventArgs args)
+        {
+            await Navigation.PushAsync(new MyGroupsPage());
+        }
+
+
         private async void DeleteAccountButtonPressed(object sender, EventArgs e)
         {
-            if (await ShowLeaveGroupDialog())
+            if (await Utils.Utils.ShowLeaveGroupDialog(this, "Delete Account", "Are you sure you want to deleteyour account?"))
             {
                 if (await ServerCommunication.DeleteAccount())
                 {

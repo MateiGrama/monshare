@@ -16,21 +16,24 @@ namespace monshare.Utils
     {
         private static Page page = new Page();
 
-        const string SUCCESS = "success";
-        const string FAIL = "fail";
-        const string BASEURL = "https://monshare.azurewebsites.net";
-        const string REGISTER_API = BASEURL + "/register";
-        const string LOGIN_API = BASEURL + "/login";
-        const string CREATE_GROUP_API = BASEURL + "/createGroup";
-        const string GET_GROUPS_AROUND_API = BASEURL + "/getGroupsAround";
-        const string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
-        const string GET_GROUP_CHAT_API = BASEURL + "/getGroupChat";
-        const string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
-        const string CHECK_IS_LOGGED_IN = BASEURL + "/isLoggedIn";
-        const string LOGOUT_API = BASEURL + "/logout";
-        const string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";
+        private static readonly string SUCCESS = "success";
+        private static readonly string FAIL = "fail";
+        private static readonly string BASEURL = "https://monshare.azurewebsites.net";
+        private static readonly string REGISTER_API = BASEURL + "/register";
+        private static readonly string LOGIN_API = BASEURL + "/login";
+        private static readonly string LOGOUT_API = BASEURL + "/logout";
+        private static readonly string CREATE_GROUP_API = BASEURL + "/createGroup";
+        private static readonly string GET_GROUPS_AROUND_API = BASEURL + "/getGroupsAround";
+        private static readonly string GET_GROUP_CHAT_API = BASEURL + "/getGroupChat";
+        private static readonly string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
+        private static readonly string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
+        private static readonly string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";
+        private static readonly string DELETE_GROUP_API = BASEURL + "/deleteGroup";
+        private static readonly string CHECK_IS_LOGGED_IN = BASEURL + "/isLoggedIn";
+        private static readonly string SEND_MESSAGE_API = BASEURL + "/sendMessage";
 
         private static HttpClient client = new HttpClient();
+
 
         public static async Task<User> Login(string email, string password)
         {
@@ -38,7 +41,7 @@ namespace monshare.Utils
 
             string url = LOGIN_API + "?" +
                 "email=" + email + "&" +
-                "password_hash=" + Utils.hashPassword(password);
+                "password_hash=" + Utils.HashPassword(password);
 
             JsonValue result = await GetResponse(url);
 
@@ -61,8 +64,9 @@ namespace monshare.Utils
                 }
             }
 
-            catch
+            catch (Exception e)
             {
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
                 newUser = User.NullInstance;
                 newUser.message = "Error happened in frontend";
             }
@@ -141,7 +145,7 @@ namespace monshare.Utils
                 "first_name=" + firstName + "&" +
                 "last_name=" + lastName + "&" +
                 "email=" + email + "&" +
-                "password_hash=" + Utils.hashPassword(password);
+                "password_hash=" + Utils.HashPassword(password);
 
             JsonValue result = await GetResponse(url);
 
@@ -165,9 +169,10 @@ namespace monshare.Utils
                 }
             }
 
-            catch
+            catch (Exception e)
             {
-                newUser.message = "Error happened in frontend";
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
+                newUser.message = "An error involving our database occurred. Please try again later.";
             }
             return newUser;
         }
@@ -201,7 +206,10 @@ namespace monshare.Utils
             {
                 return result["status"] == SUCCESS;
             }
-            catch { }
+            catch (Exception e)
+            {
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
+            }
             return false;
         }
       
@@ -228,7 +236,7 @@ namespace monshare.Utils
                         newGroup.Description = group["Description"];
                         newGroup.CreationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString());
                         newGroup.EndDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString());
-                        newGroup.MembersNumber = group["MembersNumber"];
+                        newGroup.MembersNumber = group["MembersNumber"] ?? 1;
                         newGroup.OwnerId = group["ownerId"];
                         newGroup.TargetNumberOfPeople = group["targetNum"] ?? 1;
 
@@ -236,7 +244,10 @@ namespace monshare.Utils
                     }
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
+            }
             return myGroups;
         }
 
@@ -253,7 +264,32 @@ namespace monshare.Utils
             {
                 return result["status"] == SUCCESS;
             }
-            catch { }
+            catch (Exception e)
+            {
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
+            }
+            return false;
+        }
+
+
+        public static async Task<bool> DeleteGroup(int groupId)
+        {
+            String url = DELETE_GROUP_API + "?" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
+                "group_id=" + groupId;
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                //TODO: Update local cache to remove the group identified by @param groupId from MyGroups list
+                return result["status"] == SUCCESS;
+            }
+            catch (Exception e)
+            {
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
+            }
             return false;
         }
 
@@ -271,6 +307,7 @@ namespace monshare.Utils
             }
             catch { }
             return false;
+
         }
 
         internal static async Task<bool> DeleteAccount()
@@ -285,12 +322,38 @@ namespace monshare.Utils
             {
                 return result["status"] == SUCCESS;
             }
-            catch { }
+            catch (Exception e)
+            {
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
+            }
             return false;
         }
+
+        internal static async Task<bool> sendMessage(String messageToBeSent, int groupId)
+        {
+            string url = SEND_MESSAGE_API + "?" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
+                "group_id=" + groupId.ToString() + "&" +
+                "message=" + messageToBeSent;
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch (Exception e)
+            {
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again.", "Ok");
+            }
+            return false;
+        }
+        
       
         private static async Task<JsonValue> GetResponse(string url)
         {
+            client.CancelPendingRequests();
             var uri = new Uri(url);
             var json = await client.GetStringAsync(uri);
             var result = JsonValue.Parse(json);

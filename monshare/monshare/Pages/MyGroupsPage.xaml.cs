@@ -28,22 +28,27 @@ namespace monshare.Pages
 
         private async void RefreshMyGroupsAsync()
         {
+
+            //TODO: cache locally
             Groups = await ServerCommunication.GetMyGroupsAsync();
             if (Groups.Count > 0)
             {
                 GroupsListView.ItemsSource = Groups;
-                GroupsListView.HeightRequest = -1;
-                GroupsListView.IsVisible = true;
+                Utils.Utils.DisplayVisualElement(GroupsListView, true);
+
+                Utils.Utils.DisplayVisualElement(NoGroupsLabel, false);
+                Utils.Utils.DisplayVisualElement(CreateGroupButton, false);
+               
             }
             else
             {
+                Utils.Utils.DisplayVisualElement(GroupsListView, false);
 
-                NoGroupsLabel.IsVisible = true;
-                NoGroupsLabel.HeightRequest = -1;
-                CreateGroupButton.IsVisible = true;
-                CreateGroupButton.HeightRequest = -1;
+                Utils.Utils.DisplayVisualElement(NoGroupsLabel, true);
+                Utils.Utils.DisplayVisualElement(CreateGroupButton, true);
             }
         }
+
 
         private async void GroupTapped(object sender, SelectedItemChangedEventArgs e)
         {

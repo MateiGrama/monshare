@@ -11,10 +11,10 @@
             Clicked="DeleteAccountButtonPressed"
             Text="Delete your Account">
         </Button>
-        <!--<Button 
+        <Button 
             Clicked="MyGroupsButtonPressed"
-            Text="MyGroups">
-        </Button>-->
+            Text="My Groups">
+        </Button>
         <Button
             Clicked="CreateGroupButtonPressed"
             Text="Create Group">
