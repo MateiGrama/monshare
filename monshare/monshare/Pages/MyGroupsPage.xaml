@@ -10,7 +10,9 @@
             <ListView x:Name="GroupsListView"
                       ItemSelected="GroupTapped"
                       SeparatorVisibility="None"
-                      BindingContext="{Binding Group}">
+                      BindingContext="{Binding Group}"
+                      IsVisible="False"
+                      HeightRequest="0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding Title}"
@@ -18,8 +20,21 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Label 
+                x:Name="NoGroupsLabel"
+                Text="You don't have any grups yet! Create a new group by clicking on the button below."
+                HorizontalOptions = "CenterAndExpand"
+                VerticalOptions = "CenterAndExpand"
+                Opacity="0.75"
+                FontSize="16"
+                IsVisible="False"
+                HeightRequest="0">
+            </Label>
             <Button Text="Create a new Group"
-                    Clicked="CreateNewGroupButtonPressed">
+                    x:Name="CreateGroupButton"
+                    Clicked="CreateNewGroupButtonPressed"
+                    IsVisible="False"
+                    HeightRequest="0">
             </Button>
         </StackLayout>
     </ContentPage.Content>

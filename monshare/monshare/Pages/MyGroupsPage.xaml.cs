@@ -32,23 +32,16 @@ namespace monshare.Pages
             if (Groups.Count > 0)
             {
                 GroupsListView.ItemsSource = Groups;
+                GroupsListView.HeightRequest = -1;
+                GroupsListView.IsVisible = true;
             }
             else
             {
-                Button button = new Button
-                {
-                    Text = "Create a new group"
-                };
-                button.Clicked += (s, e) => CreateNewGroupButtonPressed(s, e);
-                //TODO: Fix this
-                groupsStackLayout.Children.Add(new Label()
-                {
-                    Text = "You don't have any grups yet! Create a new group by clicking on the button below.",
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
-                    Opacity = 0.75,
-                    FontSize = 16
-                });
+
+                NoGroupsLabel.IsVisible = true;
+                NoGroupsLabel.HeightRequest = -1;
+                CreateGroupButton.IsVisible = true;
+                CreateGroupButton.HeightRequest = -1;
             }
         }
 
