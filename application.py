@@ -10,7 +10,7 @@ from utils.db_functionalities import is_user_member_of_group, group_has_one_memb
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json
 
-DEBUG = False
+DEBUG = True
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 app = Flask(__name__)
@@ -296,7 +296,7 @@ def delete_account():
 
 
 @app.route("/deleteGroup")
-def delete_group():
+def delete_group_api():
     leave_group()
 
 
