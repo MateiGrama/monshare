@@ -29,9 +29,15 @@ namespace monshare
                 await Navigation.PushAsync(new AuthentificationPage());
             }
 
+        }
+
+        protected override void OnAppearing()
+        {
             LoggedInLabel.Text = "Logged in";
             userNameLabel.Text = "User name: " + LocalStorage.GetUserName();
             userIDLabel.Text = "User ID: " + LocalStorage.GetUserId().ToString();
+            base.OnAppearing();
+
         }
 
         public async void CreateGroupButtonPressed(object sender, EventArgs args)
