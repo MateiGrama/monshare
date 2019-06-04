@@ -333,4 +333,4 @@ def sendMessage():
 
     except:
         return error_status_response("Error while processing logout request.")
-    return success_status()
+    return success_status("successfully sent a message.")
