@@ -52,6 +52,12 @@ namespace monshare
             }
         }
 
+        public async void MyGroupsButtonPressed(object sender, EventArgs args)
+        {
+            await Navigation.PushAsync(new MyGroupsPage());
+        }
+
+
         private async void DeleteAccountButtonPressed(object sender, EventArgs e)
         {
             if (await ShowLeaveGroupDialog())
