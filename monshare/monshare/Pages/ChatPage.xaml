@@ -5,7 +5,8 @@
     <ContentPage.Content>
         <StackLayout HorizontalOptions="FillAndExpand"
                      VerticalOptions="FillAndExpand">
-            <ScrollView HorizontalOptions="FillAndExpand"
+            <ScrollView x:Name="chatScrollView"
+                        HorizontalOptions="FillAndExpand"
                         VerticalOptions="FillAndExpand">
                 <StackLayout x:Name="chatLayout"
                         HorizontalOptions="FillAndExpand"
