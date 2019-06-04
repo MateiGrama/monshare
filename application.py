@@ -164,7 +164,7 @@ def create_group():
         cursor.execute("select GroupId from groups order by CreationDateTime desc ")
         group_id = cursor.fetchone()
 
-        cursor.execute("insert into UserToGroup (UserId, Gr oupId) values ({}, {})".format(user_id, group_id.GroupId))
+        cursor.execute("insert into UserToGroup (UserId, GroupId) values ({}, {})".format(user_id, group_id.GroupId))
         connection.commit()
 
         if result:
