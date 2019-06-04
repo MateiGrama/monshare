@@ -1,6 +1,6 @@
 ﻿using monshare.Utils;
 using System;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,7 +17,6 @@ namespace monshare.Pages
 
         private async void CreateGroupClicked(object sender, EventArgs e)
         {
-    
             string groupTitle = title.Text ?? "";
             string groupDescription = description.Text ?? "";
             string rangeString = System.Text.RegularExpressions.Regex.Replace(range.SelectedItem.ToString() ?? "", "[^0-9.]", "");
@@ -31,7 +30,8 @@ namespace monshare.Pages
 
             await DisplayAlert("Create group", (APICallResult ? "" : "not ") + "successful", "OK");
 
-            if (APICallResult) {
+            if (APICallResult)
+            {
                 await Navigation.PopAsync();
             }
         }

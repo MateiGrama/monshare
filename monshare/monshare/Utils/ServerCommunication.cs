@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
+using Xamarin.Forms;
 using System.Threading.Tasks;
 using System.Json;
 using monshare.Models;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 using Plugin.Geolocator;
+using monshare.Pages;
 
 namespace monshare.Utils
 {
     class ServerCommunication
     {
+        private static Page page = new Page();
 
         const string SUCCESS = "success";
         const string FAIL = "fail";
@@ -21,6 +25,7 @@ namespace monshare.Utils
         const string GET_GROUPS_AROUND_API = BASEURL + "/getGroupsAround";
         const string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
         const string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
+        const string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";
 
         private static HttpClient client = new HttpClient();
 
@@ -60,7 +65,6 @@ namespace monshare.Utils
             }
             return newUser;
         }
-
 
         public static async Task<User> Register(string email, string firstName, string lastName, string password)
         {
@@ -102,6 +106,14 @@ namespace monshare.Utils
         }
         public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople)
         {
+            var status = await Utils.CheckPermissions(Permission.Location);
+
+            if (status != PermissionStatus.Granted)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Please grant location permissions", "Ok");
+                return false;
+            }
+
             var position = await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromSeconds(5));
 
             string url = CREATE_GROUP_API + "?" +
@@ -175,6 +187,23 @@ namespace monshare.Utils
             catch { }
             return false;
         }
+
+        internal static async Task<bool> DeleteAccount()
+        {
+            string url = DELETE_ACCOUNT_API + "?" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId();
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch { }
+            return false;
+        }
+
 
         private static async Task<JsonValue> GetResponse(string url)
         {
