@@ -26,7 +26,7 @@ namespace monshare.Pages
 
         private async void ViewChatButtonClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new ConversationPage());
+            await Navigation.PushAsync(new ChatPage(CurrentGroup));
         }
 
         private async void LeaveGroupClicked(object sender, EventArgs e)
