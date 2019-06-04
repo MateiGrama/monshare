@@ -70,16 +70,9 @@ namespace monshare
                 if (await ServerCommunication.DeleteAccount())
                 {
                     await DisplayAlert("Account deleted", "You have successfully deleted your account", "Return to Login page");
-                    //TODO: GO to login page
-                    await Navigation.PopAsync();
+                    await Navigation.PushAsync(new AuthentificationPage());
                 }
             }
-        }
-
-        private async Task<bool> ShowLeaveGroupDialog()
-        {
-            return await DisplayAlert("Delete Account", "Are you sure you want to deleteyour account?", "Yes", "No");
-
         }
     }
 }
