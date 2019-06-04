@@ -8,6 +8,10 @@
 
     <StackLayout>
         <Button 
+            Clicked="DeleteAccountButtonPressed"
+            Text="Delete your Account">
+        </Button>
+        <Button 
             Clicked="MyGroupsButtonPressed"
             Text="MyGroups">
         </Button>

@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
+using Xamarin.Forms;
 using System.Threading.Tasks;
 using System.Json;
 using monshare.Models;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 using Plugin.Geolocator;
+using monshare.Pages;
 
 namespace monshare.Utils
 {
     class ServerCommunication
     {
+        private static Page page = new Page();
 
         const string SUCCESS = "success";
         const string FAIL = "fail";
@@ -24,6 +28,7 @@ namespace monshare.Utils
         const string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
         const string CHECK_IS_LOGGED_IN = BASEURL + "/isLoggedIn";
         const string LOGOUT_API = BASEURL + "/logout";
+        const string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";
 
         private static HttpClient client = new HttpClient();
 
@@ -63,6 +68,7 @@ namespace monshare.Utils
             }
             return newUser;
         }
+
 
         internal static async Task<bool> logout()
         {
@@ -126,7 +132,7 @@ namespace monshare.Utils
 
             return chat;
         }
-
+      
         public static async Task<User> Register(string email, string firstName, string lastName, string password)
         {
             User newUser = User.NullInstance;
@@ -165,8 +171,17 @@ namespace monshare.Utils
             }
             return newUser;
         }
+      
         public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople)
         {
+            var status = await Utils.CheckPermissions(Permission.Location);
+
+            if (status != PermissionStatus.Granted)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Please grant location permissions", "Ok");
+                return false;
+            }
+
             var position = await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromSeconds(5));
 
             string url = CREATE_GROUP_API + "?" +
@@ -189,6 +204,7 @@ namespace monshare.Utils
             catch { }
             return false;
         }
+      
         public static async Task<List<Group>> GetMyGroupsAsync()
         {
             List<Group> myGroups = new List<Group>();
@@ -246,6 +262,22 @@ namespace monshare.Utils
             string url = CHECK_IS_LOGGED_IN + "?" +
                "user_id=" + LocalStorage.GetUserId() + "&" +
                "session_id=" + LocalStorage.GetSessionId();
+            
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch { }
+            return false;
+        }
+
+        internal static async Task<bool> DeleteAccount()
+        {
+            string url = DELETE_ACCOUNT_API + "?" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId();
 
             JsonValue result = await GetResponse(url);
 
@@ -255,9 +287,8 @@ namespace monshare.Utils
             }
             catch { }
             return false;
-
         }
-
+      
         private static async Task<JsonValue> GetResponse(string url)
         {
             var uri = new Uri(url);

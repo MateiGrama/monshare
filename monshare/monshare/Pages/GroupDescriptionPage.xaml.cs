@@ -15,7 +15,6 @@ namespace monshare.Pages
     public partial class GroupDescriptionPage : ContentPage
     {
 
-        private bool _canClose = false;
         private Group CurrentGroup;
 
         public GroupDescriptionPage(Group group)
@@ -30,32 +29,21 @@ namespace monshare.Pages
             await Navigation.PushAsync(new ChatPage(CurrentGroup));
         }
 
-        private void LeaveGroupClicked(object sender, EventArgs e)
+        private async void LeaveGroupClicked(object sender, EventArgs e)
         {
-            ShowExitDialog();
-        }
-
-        protected override bool OnBackButtonPressed()
-        {
-            if (_canClose)
-            {
-                ShowExitDialog();
-            }
-            return _canClose;
-        }
-
-        private async void ShowExitDialog()
-        {
-            var answer = await DisplayAlert("Leave group", "Are you sure you want to leave the group?", "Yes", "No");
-            if (answer)
-            {
-                _canClose = false;
-                OnBackButtonPressed();
-               if (await ServerCommunication.LeaveGroupAsync(CurrentGroup.GroupId))
+            if (await ShowLeaveGroupDialog()) {
+                if (await ServerCommunication.LeaveGroupAsync(CurrentGroup.GroupId))
                 {
                     await DisplayAlert("Group Left", "You have successfully left the group", "OK");
+                    await Navigation.PopAsync();
                 }
             }
+        }
+
+        private async Task<bool> ShowLeaveGroupDialog()
+        {
+            return await DisplayAlert("Leave group", "Are you sure you want to leave the group?", "Yes", "No");
+
         }
     }
 }
