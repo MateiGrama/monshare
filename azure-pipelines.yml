@@ -5,12 +5,7 @@ variables:
 
 trigger:
 - backend
-- b/login
-- b/logout
-- b/createGroup
-- b/register
-- b/joinGroup
-- b/isLoggedIn
+
 
 pool:
   name: Hosted Ubuntu 1604
