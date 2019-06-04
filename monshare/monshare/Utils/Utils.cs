@@ -41,7 +41,7 @@ namespace monshare.Utils
                 return false;
             }
         }
- 
+
         public static async void ShowError(string msg, Label errorLabel, int height, int duration)
         {
             errorLabel.Text = msg;
@@ -125,6 +125,12 @@ namespace monshare.Utils
         {
             return await sender.DisplayAlert(err, message, "Yes", "No");
 
+        }
+
+        public static void DisplayVisualElement(VisualElement element, bool visible)
+        {
+            element.HeightRequest = visible ? -1 : 0;
+            element.IsVisible = visible;
         }
 
     }
