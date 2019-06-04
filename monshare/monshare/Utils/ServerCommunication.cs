@@ -30,6 +30,7 @@ namespace monshare.Utils
         private static readonly string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";
         private static readonly string DELETE_GROUP_API = BASEURL + "/deleteGroup";
         private static readonly string CHECK_IS_LOGGED_IN = BASEURL + "/isLoggedIn";
+        private static readonly string SEND_MESSAGE_API = BASEURL + "/sendMessage";
 
         private static HttpClient client = new HttpClient();
 
@@ -327,7 +328,28 @@ namespace monshare.Utils
             }
             return false;
         }
-      
+
+        internal static async Task<bool> sendMessage(String messageToBeSent, int groupId)
+        {
+            string url = SEND_MESSAGE_API + "?" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
+                "group_id=" + groupId.ToString() + "&" +
+                "message=" + messageToBeSent;
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch (Exception e)
+            {
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again.", "Ok");
+            }
+            return false;
+        }
+
         private static async Task<JsonValue> GetResponse(string url)
         {
             var uri = new Uri(url);

@@ -42,13 +42,26 @@ namespace monshare.Pages
 
             foreach (Message msg in chat.messages) {
                 //ReceivedMessageView messageView = new ReceivedMessageView() { BindingContext = msg };
-
-                Frame msgFrame = new Frame() { HorizontalOptions = LayoutOptions.FillAndExpand, Padding = 20, Margin = 20, };
-                StackLayout stack = new StackLayout() { HorizontalOptions = LayoutOptions.FillAndExpand };
-                stack.Children.Add(new Label() { Text = msg.text });
-                msgFrame.Content = stack;
-                chatLayout.Children.Add(msgFrame);
+                addMessageInLayout(msg.text);
              }
         }
+
+        public async void SendButtonPressed(object sender, EventArgs args)
+        {
+            if (await ServerCommunication.sendMessage(messageEntry.Text, group.GroupId))
+            {
+                await DisplayAlert("Message Sent", "", "Ok");
+                addMessageInLayout(messageEntry.Text);
+            }
+        }
+
+        private void addMessageInLayout(String msg) {
+            Frame msgFrame = new Frame() { HorizontalOptions = LayoutOptions.FillAndExpand, Padding = 20, Margin = 20, };
+            StackLayout stack = new StackLayout() { HorizontalOptions = LayoutOptions.FillAndExpand };
+            stack.Children.Add(new Label() { Text = msg });
+            msgFrame.Content = stack;
+            chatLayout.Children.Add(msgFrame);
+        }
+
     }
 }
