@@ -336,10 +336,10 @@ def send_message():
             return unauthorized_user()
 
         cursor.execute("""insert into messages (groupid, senderid, message, datetime) 
-                          values ({},{},{},GETDATE())
+                          values ({},{},'{}',GETDATE())
                        """.format(group_id, user_id, message))
         connection.commit()
 
     except:
-        return error_status_response("Error while processing logout request.")
+        return error_status_response("Error while processing sendMessage request.")
     return success_status("successfully sent a message.")
