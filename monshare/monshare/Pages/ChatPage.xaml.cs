@@ -43,7 +43,15 @@ namespace monshare.Pages
             foreach (Message msg in chat.messages) {
                 //ReceivedMessageView messageView = new ReceivedMessageView() { BindingContext = msg };
 
-                Frame msgFrame = new Frame() { HorizontalOptions = LayoutOptions.FillAndExpand, Padding = 20, Margin = 20, };
+                Thickness margin = msg.isOwnMessage ? new Thickness(20, 5, 0, 100): new Thickness(100, 5, 0, 20);
+                Color color = msg.isOwnMessage ? Color.FromHex("657b83") : Color.FromHex("93a1a1");
+
+                Frame msgFrame = new Frame() { HorizontalOptions = LayoutOptions.FillAndExpand,
+                    Padding = 20,
+                    Margin = margin,
+                    BackgroundColor = color
+                };
+
                 StackLayout stack = new StackLayout() { HorizontalOptions = LayoutOptions.FillAndExpand };
                 stack.Children.Add(new Label() { Text = msg.text });
                 msgFrame.Content = stack;
