@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
+using Xamarin.Forms;
 using System.Threading.Tasks;
 using System.Json;
 using monshare.Models;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 using Plugin.Geolocator;
+using monshare.Pages;
 
 namespace monshare.Utils
 {
     class ServerCommunication
     {
+        private static Page page = new Page();
 
         const string SUCCESS = "success";
         const string FAIL = "fail";
@@ -102,6 +106,14 @@ namespace monshare.Utils
         }
         public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople)
         {
+            var status = await CheckPermissions(Permission.Location);
+
+            if (status != PermissionStatus.Granted)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Please grant location permissions", "Ok");
+                return false;
+            }
+
             var position = await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromSeconds(5));
 
             string url = CREATE_GROUP_API + "?" +
@@ -199,6 +211,70 @@ namespace monshare.Utils
             var json = await client.GetStringAsync(uri);
             var result = JsonValue.Parse(json);
             return result;
+        }
+
+        public static async Task<PermissionStatus> CheckPermissions(Permission permission)
+        {
+            var permissionStatus = await CrossPermissions.Current.CheckPermissionStatusAsync(permission);
+            bool request = false;
+            if (permissionStatus == PermissionStatus.Denied)
+            {
+                if (Device.RuntimePlatform == Device.iOS)
+                {
+
+                    var title = $"{permission} Permission";
+                    var question = $"To use this plugin the {permission} permission is required. Please go into Settings and turn on {permission} for the app.";
+                    var positive = "Settings";
+                    var negative = "Maybe Later";
+                    var task = Application.Current?.MainPage?.DisplayAlert(title, question, positive, negative);
+                    if (task == null)
+                        return permissionStatus;
+
+                    var result = await task;
+                    if (result)
+                    {
+                        CrossPermissions.Current.OpenAppSettings();
+                    }
+
+                    return permissionStatus;
+                }
+
+                request = true;
+
+            }
+
+            if (request || permissionStatus != PermissionStatus.Granted)
+            {
+                var newStatus = await CrossPermissions.Current.RequestPermissionsAsync(permission);
+
+                if (!newStatus.ContainsKey(permission))
+                {
+                    return permissionStatus;
+                }
+
+                permissionStatus = newStatus[permission];
+
+                if (newStatus[permission] != PermissionStatus.Granted)
+                {
+                    permissionStatus = newStatus[permission];
+                    var title = $"{permission} Permission";
+                    var question = $"To use the plugin the {permission} permission is required.";
+                    var positive = "Settings";
+                    var negative = "Maybe Later";
+                    var task = Application.Current?.MainPage?.DisplayAlert(title, question, positive, negative);
+                    if (task == null)
+                        return permissionStatus;
+
+                    var result = await task;
+                    if (result)
+                    {
+                        CrossPermissions.Current.OpenAppSettings();
+                    }
+                    return permissionStatus;
+                }
+            }
+
+            return permissionStatus;
         }
 
     }
