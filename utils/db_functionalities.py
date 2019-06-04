@@ -70,7 +70,25 @@ def is_group_owner(user_id, group_id):
 
 def remove_user_from_group(user_id, group_id):
     from application import cursor, connection
-    cursor.execute("delete from UserToGroup where UserId = {} and GroupId = {} ".format(user_id, group_id))
+    # Delete the user from the mapping from users to groups and update the number of members
+    cursor.execute(""" begin transaction;
+                       delete from UserToGroup where UserId = {0} and GroupId = {1};
+                       update Groups set MembersNumber = MembersNumber - 1
+                       where GroupId = {1};
+                       commit;
+                   """.format(user_id, group_id))
+    connection.commit()
+
+
+def add_user_to_group(user_id, group_id):
+    from application import cursor, connection
+    # Add the user to the mapping from users to groups and update the number of members
+    cursor.execute(""" begin transaction;
+                       insert into UserToGroup (userId, groupId) values ({0}, {1});
+                       update Groups set MembersNumber = MembersNumber + 1
+                       where GroupId = {1};
+                       commit;
+                   """.format(user_id, group_id))
     connection.commit()
 
 
@@ -112,3 +130,9 @@ def delete_group_messages(group_id):
     from application import cursor, connection
     cursor.execute("delete from Messages where groupId = {}".format(group_id))
     connection.commit()
+
+
+def group_exists(group_id):
+    from application import cursor
+    cursor.execute("""select groupId from groups where groupId={}""".format(group_id))
+    return cursor.fetchone()

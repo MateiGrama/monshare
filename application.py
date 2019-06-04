@@ -6,7 +6,8 @@ from flask import request
 
 from utils import keys, db_functionalities
 from utils.db_functionalities import is_user_member_of_group, group_has_one_member, delete_group, is_group_owner, \
-    pass_ownership, remove_user_from_group, get_groups_of_user, remove_user_from_database, get_group
+    pass_ownership, remove_user_from_group, get_groups_of_user, remove_user_from_database, get_group, add_user_to_group, \
+    group_exists
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
 
@@ -259,11 +260,10 @@ def join_group():
             return error_status_response("No group id provided.")
         if not logged_in(user_id, session_id):
             return unauthorized_user()
-        cursor.execute("""select groupId from groups where groupId={};""".format(group_id))
-        if not cursor.fetchone():
-            return error_status_response("No group with the given group id.")
-        cursor.execute("""insert into userToGroup (userId, groupId) values ({}, {})""".format(user_id, group_id))
-        connection.commit()
+
+        if not group_exists(group_id):
+            return error_status_response("No group with the given group id: {}.".format(group_id))
+        add_user_to_group(user_id, group_id)
     except:
         return error_status_response("error while getting all groups.")
 
@@ -322,7 +322,8 @@ def delete_account():
 
 @app.route("/deleteGroup")
 def delete_group_api():
-    leave_group()
+    user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
+    return leave_group(user_id, session_id, group_id)
 
 
 @app.route("/getGroupChat")
@@ -361,7 +362,7 @@ def send_message():
     try:
         if not logged_in(user_id, session_id):
             return unauthorized_user()
-          
+
         cursor.execute("""insert into messages (groupid, senderid, message, datetime) 
                           values ({},{},'{}',GETDATE())
                        """.format(group_id, user_id, message))
