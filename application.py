@@ -136,7 +136,8 @@ def logout():
 
 @app.route("/createGroup")
 def create_group():
-    user_id, session_id, group_name, group_description, target_num, lifetime, lat, long, group_range = get_fields('user_id', 'session_id', 'group_name', 'group_description', 'target', 'lifetime', 'lat', 'long', 'range')
+    user_id, session_id, group_name, group_description, target_num, lifetime, lat, long, group_range = get_fields(
+        'user_id', 'session_id', 'group_name', 'group_description', 'target', 'lifetime', 'lat', 'long', 'range')
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
@@ -175,9 +176,12 @@ def create_group():
 
 @app.route("/updateGroup")
 def update_group():
-    param_list = ['user_id', 'session_id', 'group_id', 'group_name', 'group_description', 'endDateTime', 'target', 'lat', 'long', 'range']
+    param_list = ['user_id', 'session_id', 'group_id', 'group_name', 'group_description', 'endDateTime', 'target',
+                  'lat', 'long', 'range']
     param_dict = get_fields_in_dict(param_list)
-    user_id, session_id, group_id, group_name, group_description, target_num, lifetime, lat, long, group_range = [val for (param, val) in param_dict]
+    user_id = param_dict.pop('user_id')
+    session_id = param_dict.pop('session_id')
+    group_id = param_dict.pop('group_id')
 
     if not user_id or not session_id or not group_id:
         return error_status_response("invalid id or sessionid")
@@ -190,7 +194,8 @@ def update_group():
         if not is_user_member_of_group(user_id, group_id):
             return error_status_response("User {} is not a member of group {}!".format(user_id, group_id))
 
-        update_group([(param, val) for (param, val) in param_dict if not val and val != ""])
+        db_functionalities.update_group(
+            [(param, val) for param, val in param_dict.items() if val and val != ""], group_id)
 
         row = get_group(group_id)
         columns = [column_description[0] for column_description in cursor.description]
@@ -315,6 +320,11 @@ def delete_account():
     return success_status("You successfully deleted your account!")
 
 
+@app.route("/deleteGroup")
+def delete_group_api():
+    leave_group()
+
+
 @app.route("/getGroupChat")
 def get_group_chat():
     user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
@@ -326,7 +336,11 @@ def get_group_chat():
     try:
         if not logged_in(user_id, session_id):
             return unauthorized_user()
-        cursor.execute("""select senderid as msg_sender_id,  message as msg , datetime as date_time from messages where groupId={};""".format(group_id))
+
+        cursor.execute("""select senderid as msg_sender_id,  message as msg , datetime as date_time from messages 
+                          where groupId={}
+                       """.format(group_id))
+
         columns = [column_description[0] for column_description in cursor.description]
         rows = cursor.fetchall()
 
@@ -337,7 +351,7 @@ def get_group_chat():
 
 
 @app.route("/sendMessage")
-def sendMessage():
+def send_message():
     user_id, session_id, group_id, message = get_fields('user_id', 'session_id', 'group_id', 'message')
 
     if not (user_id and session_id):
@@ -347,10 +361,12 @@ def sendMessage():
     try:
         if not logged_in(user_id, session_id):
             return unauthorized_user()
-
-        cursor.execute("INSERT INTO messages (groupid, senderid, message, datetime) VALUES ({},{},'{}',GETDATE())".format(group_id, user_id, message))
+          
+        cursor.execute("""insert into messages (groupid, senderid, message, datetime) 
+                          values ({},{},'{}',GETDATE())
+                       """.format(group_id, user_id, message))
         connection.commit()
 
     except:
-        return error_status_response("Error while processing logout request.")
+        return error_status_response("Error while processing sendMessage request.")
     return success_status("successfully sent a message.")

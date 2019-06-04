@@ -47,12 +47,10 @@ def group_has_one_member(group_id):
     return cursor.fetchone()[0] == 1
 
 
-def update_group(params):
+def update_group(params, group_id):
     from application import cursor, connection
-    query = "update Groups set" \
-             + ", ".join([DB_COL_NAME[param] + " = " + val for (param, val) in params]) \
-             + "where groupId = " + params('group_id')
-
+    query = "update Groups set " + "', ".join([DB_COL_NAME[param] + " = '" + val for param, val in params]) + \
+            "' where groupId = " + group_id
     cursor.execute(query)
     connection.commit()
 
