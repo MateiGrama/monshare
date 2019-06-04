@@ -21,8 +21,10 @@ namespace monshare.Utils
         private static readonly string BASEURL = "https://monshare.azurewebsites.net";
         private static readonly string REGISTER_API = BASEURL + "/register";
         private static readonly string LOGIN_API = BASEURL + "/login";
+        private static readonly string LOGOUT_API = BASEURL + "/logout";
         private static readonly string CREATE_GROUP_API = BASEURL + "/createGroup";
         private static readonly string GET_GROUPS_AROUND_API = BASEURL + "/getGroupsAround";
+        private static readonly string GET_GROUP_CHAT_API = BASEURL + "/getGroupChat";
         private static readonly string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
         private static readonly string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
         private static readonly string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";

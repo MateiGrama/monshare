@@ -18,9 +18,8 @@ namespace monshare
     {
         public MainPage()
         {
-            CheckCredentials();
             InitializeComponent();
-       
+            CheckCredentials();
         }
 
         private async void CheckCredentials()
