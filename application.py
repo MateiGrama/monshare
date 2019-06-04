@@ -10,7 +10,7 @@ from utils.db_functionalities import is_user_member_of_group, group_has_one_memb
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json
 
-DEBUG = False
+DEBUG = True
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 app = Flask(__name__)
@@ -294,19 +294,26 @@ def delete_account():
     remove_user_from_database(user_id)
     return success_status("You successfully deleted your account!")
 
+
+@app.route("/deleteGroup")
+def delete_group():
+    leave_group()
+
+
 @app.route("/getGroupChat")
 def get_group_chat():
-    user_id, session_id, group_id = get_fields('user_id', 'session_id','group_id')
+    user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
 
     if not (user_id and session_id):
         return error_status_response("No user_id or session_id provided.")
-
 
     # Check that the connection is valid
     try:
         if not logged_in(user_id, session_id):
             return unauthorized_user()
-        cursor.execute("""select senderid as msg_sender_id,  message as msg , datetime as date_time from messages where groupId={};""".format(group_id))
+        cursor.execute("""select senderid as msg_sender_id,  message as msg , datetime as date_time from messages 
+                          where groupId={}
+                       """.format(group_id))
         columns = [column_description[0] for column_description in cursor.description]
         rows = cursor.fetchall()
 
@@ -317,7 +324,7 @@ def get_group_chat():
 
 
 @app.route("/sendMessage")
-def sendMessage():
+def send_message():
     user_id, session_id, group_id, message = get_fields('user_id', 'session_id', 'group_id', 'message')
 
     if not (user_id and session_id):
@@ -328,7 +335,9 @@ def sendMessage():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        cursor.execute("INSERT INTO messages (groupid, senderid, message, datetime) VALUES ({},{},'{}',GETDATE())".format(group_id, user_id, message))
+        cursor.execute("""insert into messages (groupid, senderid, message, datetime) 
+                          values ({},{},{},GETDATE())
+                       """.format(group_id, user_id, message))
         connection.commit()
 
     except:
