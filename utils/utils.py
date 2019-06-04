@@ -4,12 +4,31 @@ from flask import request, json
 FAIL_STATUS = "fail"
 SUCCESS_STATUS = "success"
 
+DB_COL_NAME = {
+    'user_id': 'userId',
+    'session_id': 'sessionId',
+    'group_name': 'title',
+    'group_description': 'description',
+    'target': 'targetNum',
+    'endDateTime': 'endDateTime',
+    'lat': 'lat',
+    'long': 'long',
+    'range': 'groupRange'
+}
+
 
 def get_fields(*args):
     fields = []
     for arg in args:
         fields.append(request.args.get(arg))
     return fields
+
+
+def get_fields_in_dict(args):
+    fields = []
+    for arg in args:
+        fields.append((arg, request.args.get(arg)))
+    return dict(fields)
 
 
 def group_list_to_json(rows, columns):
@@ -26,6 +45,19 @@ def group_list_to_json(rows, columns):
         return json.dumps(result)
     except:
         return error_status_response("error while generating json for rows")
+
+
+def group_to_json(row, columns):
+    try:
+        if len(row) > 5:
+            if not row[3] is None:
+                row[3] = row[3].strftime('%Y-%m-%dT%H:%M:%S.%f')
+            if not row[4] is None:
+                row[4] = row[4].strftime('%Y-%m-%dT%H:%M:%S.%f')
+        result = {'status': 'success', 'group': dict(zip(columns, row))}
+        return json.dumps(result)
+    except:
+        return error_status_response("error while generating json for given group")
 
 
 def messages_list_to_json(rows, columns):

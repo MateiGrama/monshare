@@ -1,4 +1,5 @@
 from utils.keys import db_password
+from utils.utils import DB_COL_NAME
 
 
 def get_connection_string(driver):
@@ -46,6 +47,16 @@ def group_has_one_member(group_id):
     return cursor.fetchone()[0] == 1
 
 
+def update_group(params):
+    from application import cursor, connection
+    query = "update Groups set" \
+             + ", ".join([DB_COL_NAME[param] + " = " + val for (param, val) in params]) \
+             + "where groupId = " + params('group_id')
+
+    cursor.execute(query)
+    connection.commit()
+
+
 def delete_group(group_id):
     from application import cursor, connection
     cursor.execute("delete from groups where GroupId = {}".format(group_id))
@@ -72,6 +83,15 @@ def get_groups_of_user(user_id):
                        where UserToGroup.UserId = {}
                    """.format(user_id))
     return cursor.fetchall()
+
+
+def get_group(group_id):
+    from application import cursor
+    cursor.execute(""" select *
+                       from Groups
+                       where GroupId = {}
+                   """.format(group_id))
+    return cursor.fetchone()
 
 
 def get_group_members(group_id):

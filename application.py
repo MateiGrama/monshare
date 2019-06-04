@@ -6,9 +6,9 @@ from flask import request
 
 from utils import keys, db_functionalities
 from utils.db_functionalities import is_user_member_of_group, group_has_one_member, delete_group, is_group_owner, \
-    pass_ownership, remove_user_from_group, get_groups_of_user, remove_user_from_database
+    pass_ownership, remove_user_from_group, get_groups_of_user, remove_user_from_database, get_group
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
-    get_random_ssid, group_list_to_json, messages_list_to_json
+    get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
 
 DEBUG = False
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
@@ -136,15 +136,7 @@ def logout():
 
 @app.route("/createGroup")
 def create_group():
-    user_id = request.args.get('user_id')
-    session_id = request.args.get('session_id')
-    group_name = request.args.get('group_name')
-    group_description = request.args.get('group_description')
-    target_num = request.args.get('target')
-    lifetime = request.args.get('lifetime')
-    lat = request.args.get('lat')
-    long = request.args.get('long')
-    range = request.args.get('range')
+    user_id, session_id, group_name, group_description, target_num, lifetime, lat, long, group_range = get_fields('user_id', 'session_id', 'group_name', 'group_description', 'target', 'lifetime', 'lat', 'long', 'range')
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
@@ -164,7 +156,7 @@ def create_group():
             long if long else 'null',
             1,
             target_num if target_num else 'null',
-            range if range else 'null'
+            range if group_range else 'null'
         ))
         connection.commit()
 
@@ -177,6 +169,34 @@ def create_group():
         if result:
             result = {"status": SUCCESS_STATUS, "group_id": group_id.GroupId}
             return json.dumps(result)
+    except Exception as e:
+        return error_status_response("error while inserting group in db. Exception was: " + str(e))
+
+
+@app.route("/updateGroup")
+def update_group():
+    param_list = ['user_id', 'session_id', 'group_id', 'group_name', 'group_description', 'endDateTime', 'target', 'lat', 'long', 'range']
+    param_dict = get_fields_in_dict(param_list)
+    user_id, session_id, group_id, group_name, group_description, target_num, lifetime, lat, long, group_range = [val for (param, val) in param_dict]
+
+    if not user_id or not session_id or not group_id:
+        return error_status_response("invalid id or sessionid")
+
+    try:
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
+
+        # Fails the user is not member of the group
+        if not is_user_member_of_group(user_id, group_id):
+            return error_status_response("User {} is not a member of group {}!".format(user_id, group_id))
+
+        update_group([(param, val) for (param, val) in param_dict if not val and val != ""])
+
+        row = get_group(group_id)
+        columns = [column_description[0] for column_description in cursor.description]
+
+        return group_to_json(row, columns)
+
     except Exception as e:
         return error_status_response("error while inserting group in db. Exception was: " + str(e))
 
@@ -268,7 +288,7 @@ def leave_group(*args):
         remove_user_from_group(user_id, group_id)
         delete_group(group_id)
         connection.commit()
-        return success_status("You successfully left the group {} which now has been deleted.".format(group_id))
+        return success_status("You successfully left the group {} which has been deleted.".format(group_id))
 
     # If the owner leaves, pass the ownership to another user in that group.
     if is_group_owner(user_id, group_id):
@@ -294,13 +314,13 @@ def delete_account():
     remove_user_from_database(user_id)
     return success_status("You successfully deleted your account!")
 
+
 @app.route("/getGroupChat")
 def get_group_chat():
-    user_id, session_id, group_id = get_fields('user_id', 'session_id','group_id')
+    user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
 
     if not (user_id and session_id):
         return error_status_response("No user_id or session_id provided.")
-
 
     # Check that the connection is valid
     try:
