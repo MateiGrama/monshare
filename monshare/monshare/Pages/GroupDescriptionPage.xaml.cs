@@ -20,21 +20,66 @@ namespace monshare.Pages
         public GroupDescriptionPage(Group group)
         {
             InitializeComponent();
-
             CurrentGroup = group;
-            GroupNumber.Text = group.GroupId.ToString();
 
-            // Display the delete group button only for the owner of the group
-            if(CurrentGroup.OwnerId == LocalStorage.GetUserId())
+            GroupDetailVisualElementsGenerator.CreateGroupDetailFields(group, true, GroupDetailsLayout);
+            DisplayToolbarItems();
+            GenerateViewChatButton();
+        }
+
+        private void GenerateViewChatButton()
+        {
+            var viewChatButton = new Button()
             {
-                Utils.Utils.DisplayVisualElement(DeleteGroupButton, true);
+                Text = "View chat"
+            };
+            viewChatButton.Clicked += ViewChatButtonClicked;
+            GroupDetailsLayout.Children.Add(viewChatButton);
+        }
+
+        private void DisplayToolbarItems()
+        {
+            if (CurrentGroup.OwnerId == LocalStorage.GetUserId())
+            {
+                var editToolbarItem = new ToolbarItem()
+                {
+                    Text = "Edit",
+                    Order = ToolbarItemOrder.Secondary
+
+                };
+                editToolbarItem.Clicked += EditGroupButtonPressed;
+
+
+                var leaveGroupToolbarItem = new ToolbarItem()
+                {
+                    Text = "Leave Group",
+                    Order = ToolbarItemOrder.Secondary
+
+                };
+                leaveGroupToolbarItem.Clicked += LeaveGroupClicked;
+
+                var deleteGroupToolbarItem = new ToolbarItem()
+                {
+                    Text = "Delete group",
+                    Order = ToolbarItemOrder.Secondary
+
+                };
+                deleteGroupToolbarItem.Clicked += DeleteGroupButtonPressed;
+
+                this.ToolbarItems.Add(editToolbarItem);
+                this.ToolbarItems.Add(leaveGroupToolbarItem);
+                this.ToolbarItems.Add(deleteGroupToolbarItem);
             }
-            
         }
 
         private async void ViewChatButtonClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new ChatPage(CurrentGroup));
+        }
+
+        private async void EditGroupButtonPressed(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new EditGroupDetailsPage(CurrentGroup));
         }
 
         private async void LeaveGroupClicked(object sender, EventArgs e)

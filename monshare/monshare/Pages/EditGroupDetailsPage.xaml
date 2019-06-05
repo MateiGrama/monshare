@@ -4,9 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="monshare.Pages.GroupDescriptionPage">
-    <ContentPage.ToolbarItems>
-    </ContentPage.ToolbarItems>
+             x:Class="monshare.Pages.EditGroupDetailsPage">
     <ContentPage.Content>
         <StackLayout x:Name="GroupDetailsLayout">
         </StackLayout>
