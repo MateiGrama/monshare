@@ -31,8 +31,7 @@ namespace monshare.Utils
         private static readonly string DELETE_GROUP_API = BASEURL + "/deleteGroup";
         private static readonly string CHECK_IS_LOGGED_IN = BASEURL + "/isLoggedIn";
         private static readonly string SEND_MESSAGE_API = BASEURL + "/sendMessage";
-
-        private static HttpClient client = new HttpClient();
+        
 
 
         public static async Task<User> Login(string email, string password)
@@ -169,7 +168,7 @@ namespace monshare.Utils
                 }
             }
 
-            catch (Exception e)
+            catch
             {
                 await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
                 newUser.message = "An error involving our database occurred. Please try again later.";
@@ -351,9 +350,9 @@ namespace monshare.Utils
         }
         
       
-        private static async Task<JsonValue> GetResponse(string url)
+        internal static async Task<JsonValue> GetResponse(string url)
         {
-            client.CancelPendingRequests();
+            HttpClient client = new HttpClient();
             var uri = new Uri(url);
             var json = await client.GetStringAsync(uri);
             var result = JsonValue.Parse(json);

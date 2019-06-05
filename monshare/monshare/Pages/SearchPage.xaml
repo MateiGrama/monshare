@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="monshare.Pages.SearchPage">
+    <ContentPage.Content>
+        <RelativeLayout HorizontalOptions="FillAndExpand"
+                        x:Name="pageLayout">
+            <Frame Padding="10" Margin="10,10,10,0" x:Name="searchBar" HorizontalOptions="FillAndExpand"
+                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1,Constant=0}">
+                <Entry x:Name="queryEntry"  Placeholder="Where do you wanna save money?" HorizontalOptions="FillAndExpand"/>
+            </Frame>
+
+            <StackLayout x:Name="resultLayout"
+                         Padding="20"
+                         HorizontalOptions="FillAndExpand"
+                         RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=searchBar, Property=Height,Factor=1,Constant=20}"
+                         >
+                <Label Text="Asta trebuie sa se vada dedesubt" FontSize="Large"/>
+                <Label Text="Asta trebuie sa se vada dedesubt" FontSize="Large"/>
+                <Label Text="Asta trebuie sa se vada dedesubt" FontSize="Large"/>
+
+            </StackLayout>
+
+            
+
+
+        </RelativeLayout>
+    </ContentPage.Content>
+</ContentPage>

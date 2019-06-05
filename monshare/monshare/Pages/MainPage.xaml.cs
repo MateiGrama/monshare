@@ -61,7 +61,11 @@ namespace monshare
         {
             await Navigation.PushAsync(new MyGroupsPage());
         }
-
+        
+        public async void SearchButtonPressed(object sender, EventArgs args)
+        {
+            await Navigation.PushAsync(new SearchPage());
+        }
 
         private async void DeleteAccountButtonPressed(object sender, EventArgs e)
         {
