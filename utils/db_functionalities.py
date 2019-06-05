@@ -116,20 +116,17 @@ class Db:
 
     def get_groups_around(self, lat, long, default_range):
         earth_radius_in_km = 6371
-        x = """ select * from ( select TOP 10 *, ( 6371 * acos (   cos ( radians({0}) )
-                                                                * cos( radians( lat ) )
-                                                                * cos( radians( long ) - radians({1}) )
-                                                                + sin ( radians({0}) )
-                                                                * sin( radians( lat ) ))
-                                                ) as Distance
-                                 from Groups
-								 order by Distance 
-								) as ResultTable
-								where ResultTable.Distance < {2}
-                             """.format(lat, long, default_range, earth_radius_in_km)
-        self.cursor.execute(x)
-        with open('./logs.txt', 'w') as f:
-            f.write(x)
+        self.cursor.execute(""" select TOP 50 * from ( select *, ( {0} * acos ( cos(radians({1}))
+                                                                              * cos(radians( lat))
+                                                                              * cos(radians( long) - radians({2}))
+                                                                              + sin(radians({1}))
+                                                                              * sin(radians( lat)))
+                                                                  ) as Distance
+                                                                    from Groups	 
+								                     ) as ResultTable
+                                                       where ResultTable.Distance < {3}
+                                                       order by ResultTable.Distance asc
+                            """.format(earth_radius_in_km, lat, long, default_range))
         return self.cursor.fetchall()
 
     def get_group_located_at(self, place_id):
