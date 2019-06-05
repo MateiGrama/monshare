@@ -7,23 +7,32 @@
                         x:Name="pageLayout">
             <Frame Padding="10" Margin="10,10,10,0" x:Name="searchBar" HorizontalOptions="FillAndExpand"
                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1,Constant=0}">
-                <Entry x:Name="queryEntry"  Placeholder="Where do you wanna save money?" HorizontalOptions="FillAndExpand"/>
+                <Entry x:Name="queryEntry"  Placeholder="Where do you wanna save money?" HorizontalOptions="FillAndExpand"
+                       Completed="QueryEntryCompleted"/>
             </Frame>
 
-            <StackLayout x:Name="resultLayout"
-                         Padding="20"
-                         HorizontalOptions="FillAndExpand"
+            <ActivityIndicator x:Name="activityIndicator"
+                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=Constant, Constant=30}"
+                    RelativeLayout.HeightConstraint="{ConstraintExpression Type=Constant, Constant=30}"
+                    RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5,Constant=-15}"
+                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.5,Constant=-15}"
+                    IsVisible="False"
+                    Color="Red" 
+                    IsRunning="true" />
+
+            <ScrollView  x:Name="resultsView"
                          RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=searchBar, Property=Height,Factor=1,Constant=20}"
+                         RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"
                          >
-                <Label Text="Asta trebuie sa se vada dedesubt" FontSize="Large"/>
-                <Label Text="Asta trebuie sa se vada dedesubt" FontSize="Large"/>
-                <Label Text="Asta trebuie sa se vada dedesubt" FontSize="Large"/>
+                <StackLayout x:Name="resultLayout"
+                         Padding="5"
+                         HorizontalOptions="FillAndExpand"
+                         >
 
-            </StackLayout>
 
+                </StackLayout>
+            </ScrollView>
             
-
-
         </RelativeLayout>
     </ContentPage.Content>
 </ContentPage>

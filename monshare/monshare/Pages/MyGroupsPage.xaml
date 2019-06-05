@@ -7,7 +7,20 @@
              x:Class="monshare.Pages.MyGroupsPage">
     <ContentPage.Content>
         <StackLayout x:Name="groupsStackLayout">
-            <ListView x:Name="GroupsListView"
+            <ScrollView  x:Name="resultsView"
+                     HorizontalOptions="FillAndExpand"
+                     VerticalOptions="FillAndExpand"
+                     IsVisible="False"
+                     HeightRequest="0"    
+                     >
+                <StackLayout x:Name="groupListLayout"
+                         Padding="5"
+                         HorizontalOptions="FillAndExpand"/>
+
+
+
+            </ScrollView>
+            <!--<ListView x:Name="GroupsListView"
                       ItemSelected="GroupTapped"
                       SeparatorVisibility="None"
                       BindingContext="{Binding Group}"
@@ -19,7 +32,7 @@
                          Detail="{Binding Description}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
             <Label 
                 x:Name="NoGroupsLabel"
                 Text="You don't have any grups yet! Create a new group by clicking on the button below."

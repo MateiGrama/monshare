@@ -6,10 +6,16 @@
              mc:Ignorable="d"
              x:Class="monshare.Pages.GroupsAroundPage">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <ScrollView  x:Name="resultsView"
+                     HorizontalOptions="FillAndExpand"
+                     VerticalOptions="FillAndExpand"    
+                     >
+            <StackLayout x:Name="resultLayout"
+                         Padding="5"
+                         HorizontalOptions="FillAndExpand"/>
+
+
+
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
