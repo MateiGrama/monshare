@@ -10,7 +10,7 @@ from utils.search_engine import levenshtein, Trie
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
 
-DEBUG = True
+DEBUG = False
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 # The default value in kilometres used when the user searches for groups.
@@ -208,17 +208,17 @@ def update_group():
 
 @app.route("/getGroups")
 def get_groups():
-    def get_filtered_list(dictionary, edit_distance=2):
-        return [k for k, v in dictionary.items() if v <= edit_distance]
+    def get_filtered_list(l, edit_distance=2):
+        return [k for k, v in l.items() if v <= edit_distance]
 
-    def get_filtered_list2(dictionary, keys):
-        l = []
+    def get_filtered_list2(l, keys):
+        new_list = []
 
         for key in keys:
-            for k, v in dictionary.items():
+            for k in l:
                 if k[1] == key:
-                    l.append(k)
-        return l
+                    new_list.append(k)
+        return new_list
 
     user_id, session_id, lat, long, query, place_id = get_fields('user_id', 'session_id', 'lat',
                                                                  'long', 'query', 'place_id')
@@ -244,15 +244,9 @@ def get_groups():
 
         # Search for a specific group
         if place_id is None:
-            _dict = dict()
-            rows = [tuple([items for items in row]) for row in rows]
-
-            for result in rows:
-                _dict[result] = levenshtein(query, result[1])
-
             trie = Trie(item[1] for item in rows)
             suggestions = trie.get_auto_suggestions(query)
-            rows = get_filtered_list2(_dict, suggestions)
+            rows = get_filtered_list2(rows, suggestions)
 
     except Exception as e:
         return error_status_response("error while getting groups. Exception was: " + str(e))
