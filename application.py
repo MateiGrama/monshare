@@ -9,10 +9,10 @@ from utils.db_functionalities import Db
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
 
-DEBUG = False
+DEBUG = True
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 # Used when the user searches groups nearby. The default value is 2 kilometers
-DEFALUT_RANGE = 2
+DEFAULT_RANGE = 2
 
 app = Flask(__name__)
 
@@ -220,36 +220,17 @@ def get_groups():
         columns = []
         if query is None:
             # Groups around
-            #TODO: ignore grops of user
-            rows = db.get_groups_around(lat, long, DEFALUT_RANGE)
+            # TODO: ignore groups of user
+            rows = db.get_groups_around(lat, long, DEFAULT_RANGE)
             columns = [column_description[0] for column_description in cursor.description]
         else:
-            # Search for a palce
+            # Search for a place
             pass
 
     except Exception as e:
         return error_status_response("error while getting groups. Exception was: " + str(e))
 
     return group_list_to_json(rows, columns)
-
-
-# @app.route("/getGroupsAround")
-# def get_groups_around():
-#     user_id = request.args.get('user_id')
-#     session_id = request.args.get('session_id')
-#
-#     if not (user_id and session_id):
-#         return error_status_response("invalid id or session id")
-#     try:
-#         if not logged_in(user_id, session_id):
-#             return unauthorized_user()
-#         cursor.execute("select * from groups")
-#         columns = [column_description[0] for column_description in cursor.description]
-#         rows = cursor.fetchall()
-#     except:
-#         return error_status_response("error while getting all groups")
-#
-#     return group_list_to_json(rows, columns)
 
 
 @app.route("/getMyGroups")

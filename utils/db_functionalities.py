@@ -100,6 +100,7 @@ class Db:
                                 join UserToGroup on UserToGroup.UserId = Users.UserId
                                 where UserToGroup.GroupId = {}
                            """.format(group_id))
+        return self.cursor.fetchall()
 
     def remove_user_from_database(self, user_id):
         self.cursor.execute("delete from Users where UserId = {}".format(user_id))
@@ -115,15 +116,15 @@ class Db:
 
     def get_groups_around(self, lat, long, default_range):
         earth_radius_in_km = 6371
-        self.cursor.execute(""" select id, ( {3} * acos (
-                                             cos ( radians({0}) )
-                                             * cos( radians( lat ) )
-                                             * cos( radians( lng ) - radians({1}) )
-                                             + sin ( radians({0}) )
-                                             * sin( radians( lat ) ))
-                                            ) as distance
-                                            from Groups
-                                            having distance < {2}
-                                            order by distance
-                                            LIMIT 0 , 50
+        self.cursor.execute(""" select * from ( select TOP 5 *, ( 6371 * acos (   cos ( radians({0}) )
+                                                                * cos( radians( lat ) )
+                                                                * cos( radians( long ) - radians({1}) )
+                                                                + sin ( radians({0}) )
+                                                                * sin( radians( lat ) ))
+                                                ) as Distance
+                                 from Groups
+								 order by Distance 
+								) as ResultTable
+								where ResultTable.Distance < {2}
                              """.format(lat, long, default_range, earth_radius_in_km))
+        return self.cursor.fetchall()
