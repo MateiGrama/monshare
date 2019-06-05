@@ -10,7 +10,7 @@ from utils.search_engine import levenshtein, Trie
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
 
-DEBUG = False
+DEBUG = True
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 # The default value in kilometres used when the user searches for groups.
@@ -230,7 +230,7 @@ def get_groups():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        if place_id is not None:
+        if place_id is not None and place_id != '':
             # Search for a place
             rows = db.get_group_located_at(place_id)
         else:
@@ -240,6 +240,9 @@ def get_groups():
         columns = [column_description[0] for column_description in cursor.description]
 
         if len(rows) is 0:
+            return group_list_to_json(rows, columns)
+
+        if query is None or query == "":
             return group_list_to_json(rows, columns)
 
         # Search for a specific group
