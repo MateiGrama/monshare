@@ -1,5 +1,6 @@
 ﻿using monshare.Models;
 using monshare.Utils;
+using monshare.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,13 +29,15 @@ namespace monshare.Pages
 
         private async void RefreshMyGroupsAsync()
         {
-
             //TODO: cache locally
             Groups = await ServerCommunication.GetMyGroupsAsync();
             if (Groups.Count > 0)
             {
-                GroupsListView.ItemsSource = Groups;
-                Utils.Utils.DisplayVisualElement(GroupsListView, true);
+                groupListLayout.Children.Clear();
+                Groups.ForEach(g => groupListLayout.Children.Add(GenericViews.GroupListElement(g)));
+
+                Utils.Utils.DisplayVisualElement(groupListLayout, true);
+                Utils.Utils.DisplayVisualElement(resultsView, true);
 
                 Utils.Utils.DisplayVisualElement(NoGroupsLabel, false);
                 Utils.Utils.DisplayVisualElement(CreateGroupButton, false);
@@ -42,7 +45,8 @@ namespace monshare.Pages
             }
             else
             {
-                Utils.Utils.DisplayVisualElement(GroupsListView, false);
+                Utils.Utils.DisplayVisualElement(groupListLayout, false);
+                Utils.Utils.DisplayVisualElement(resultsView, false);
 
                 Utils.Utils.DisplayVisualElement(NoGroupsLabel, true);
                 Utils.Utils.DisplayVisualElement(CreateGroupButton, true);

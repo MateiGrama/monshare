@@ -9,6 +9,7 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout x:Name="GroupDetailsLayout">
+            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

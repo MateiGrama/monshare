@@ -7,6 +7,33 @@
              x:Class="monshare.Pages.EditGroupDetailsPage">
     <ContentPage.Content>
         <StackLayout x:Name="GroupDetailsLayout">
+            <Frame HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="CenterAndExpand">
+                <StackLayout>
+                    <Entry x:Name="title"
+                           Placeholder="Enter group name"
+                           HorizontalOptions="FillAndExpand"/>
+
+                    <Editor x:Name="description" 
+                            Placeholder="Add a short description"
+                            HorizontalOptions="FillAndExpand"/>
+
+                    <StackLayout Orientation="Horizontal"
+                                 HorizontalOptions="FillAndExpand">
+                        <Label Text="Target number of people:"/>
+                        <Picker x:Name="targetNoPeople"
+                            Title="Target number"
+                            HorizontalOptions="FillAndExpand">
+                            <Picker.Items>
+                                <x:String>5</x:String>
+                                <x:String>10</x:String>
+                                <x:String>15</x:String>
+                                <x:String>20</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

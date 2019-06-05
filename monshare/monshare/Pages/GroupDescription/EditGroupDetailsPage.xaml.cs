@@ -15,14 +15,16 @@ namespace monshare.Pages
     public partial class EditGroupDetailsPage : ContentPage
     {
         private readonly Group group;
-        private readonly GroupDetailVisualElementsGenerator groupDetailsFields;
 
         public EditGroupDetailsPage(Group group)
         {
             InitializeComponent();
             this.group = group;
-            groupDetailsFields = new GroupDetailVisualElementsGenerator();
-            groupDetailsFields.CreateGroupDetailFields(group, false, GroupDetailsLayout);
+
+            title.Text = group.Title;
+            description.Text = group.Description;
+            targetNoPeople.Title = group.TargetNumberOfPeople.ToString();
+
             GenerateSaveDiscardButtons();
 
         }
@@ -63,9 +65,11 @@ namespace monshare.Pages
         {
             string oldTitle = group.Title;
             string oldDescription = group.Description;
+            int oldTargetNumOfPeople = group.TargetNumberOfPeople;
 
-            group.Title = groupDetailsFields.GroupNameEntry.Text;
-            group.Description = groupDetailsFields.GroupDescriptionEditor.Text;
+            group.Title = title.Text;
+            group.Description = description.Text;
+            group.TargetNumberOfPeople = Int32.Parse(targetNoPeople.SelectedItem.ToString());
 
             bool successfulCall = await ServerCommunication.UpdateGroup(group);
 
@@ -74,6 +78,7 @@ namespace monshare.Pages
             if (!successfulCall) {
                 group.Title = oldTitle;
                 group.Description = oldDescription;
+                group.TargetNumberOfPeople = oldTargetNumOfPeople;
             }
 
             await Navigation.PopAsync();

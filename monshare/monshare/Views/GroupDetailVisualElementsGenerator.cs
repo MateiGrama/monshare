@@ -33,7 +33,7 @@ namespace monshare.Utils
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 WidthRequest = Application.Current.MainPage.Width,
-                Text = group.Title
+                Text = group.Description
             };
 
             groupDetailsLayout.Children.Add(GroupNameEntry);

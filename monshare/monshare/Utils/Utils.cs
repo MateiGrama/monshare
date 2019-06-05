@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
+using Plugin.Geolocator;
+using Plugin.Geolocator.Abstractions;
 
 namespace monshare.Utils
 {
@@ -133,5 +135,17 @@ namespace monshare.Utils
             element.IsVisible = visible;
         }
 
+        public static async Task<Position> GetLocationAfterCheckingPermisionsAsync()
+        {
+            var status = await CheckPermissions(Permission.Location);
+
+            if (status != PermissionStatus.Granted)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Please grant location permissions", "Ok");
+                return null;
+            }
+
+            return await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromSeconds(5));
+        }
     }
 }

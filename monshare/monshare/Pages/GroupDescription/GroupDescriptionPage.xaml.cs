@@ -16,63 +16,84 @@ namespace monshare.Pages
     public partial class GroupDescriptionPage : ContentPage
     {
 
-        private Group CurrentGroup;
-        private readonly GroupDetailVisualElementsGenerator groupDetailsFields;
+        private Group Group;
 
         public GroupDescriptionPage(Group group)
         {
             InitializeComponent();
-            CurrentGroup = group;
-            groupDetailsFields = new GroupDetailVisualElementsGenerator();
-            groupDetailsFields.CreateGroupDetailFields(group, true, GroupDetailsLayout);
+            Group = group;
             DisplayToolbarItems();
-            DisplayMap();
-            GenerateViewChatButton();
         }
 
-        private void DisplayMap()
+        private Map GetMapView()
         {
            var map = new Map(
                MapSpan.FromCenterAndRadius(
-                  new Position(CurrentGroup.Latitude, CurrentGroup.Longitude), Distance.FromMiles(0.3)))
-            {
-                IsShowingUser = true,
-                HeightRequest = 200,
-                WidthRequest = 960,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            };
+                  new Position(Group.Latitude, Group.Longitude), Distance.FromMiles(0.3)))
+                    {
+                        IsShowingUser = true,
+                        HeightRequest = 200,
+                        WidthRequest = 960,
+                        VerticalOptions = LayoutOptions.FillAndExpand
+                    };
 
             var pin = new Pin()
             {
-                Position = new Position(CurrentGroup.Latitude, CurrentGroup.Longitude),
+                Position = new Position(Group.Latitude, Group.Longitude),
                 Label = "Meeting point!"
             };
             map.Pins.Add(pin);
 
-            GroupDetailsLayout.Children.Add(map);
+            return map;
         }
 
         protected override void OnAppearing()
         {
-            groupDetailsFields.GroupNameEntry.Text = CurrentGroup.Title;
-            groupDetailsFields.GroupDescriptionEditor.Text = CurrentGroup.Description;
-
             base.OnAppearing();
+            populateView();
         }
 
-        private void GenerateViewChatButton()
+        private void populateView()
         {
+            StackLayout stackLayout = new StackLayout();
+
+            stackLayout.Children.Add(new Label()
+            {
+                Text = Group.Title,
+                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
+            });
+
+            stackLayout.Children.Add(new Label()
+            {
+                Text = Group.Description,
+                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
+            });
+
+            stackLayout.Children.Add(GetMapView());
+
+            Frame frame = new Frame()
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Padding = 30,
+                Margin = new Thickness(30),
+                Content = stackLayout,
+            };
             var viewChatButton = new Button()
             {
-                Text = "View chat"
+                Text = "View chat",
+                HorizontalOptions = LayoutOptions.Center
             };
             viewChatButton.Clicked += ViewChatButtonClicked;
+
+            GroupDetailsLayout.Children.Clear();
+
+            GroupDetailsLayout.Children.Add(frame);
             GroupDetailsLayout.Children.Add(viewChatButton);
         }
 
         private void DisplayToolbarItems()
         {
-            if (CurrentGroup.OwnerId == LocalStorage.GetUserId())
+            if (Group.OwnerId == LocalStorage.GetUserId())
             {
                 var editToolbarItem = new ToolbarItem()
                 {
@@ -107,19 +128,19 @@ namespace monshare.Pages
 
         private async void ViewChatButtonClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new ChatPage(CurrentGroup));
+            await Navigation.PushAsync(new ChatPage(Group));
         }
 
         private async void EditGroupButtonPressed(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new EditGroupDetailsPage(CurrentGroup));
+            await Navigation.PushAsync(new EditGroupDetailsPage(Group));
         }
 
         private async void LeaveGroupClicked(object sender, EventArgs e)
         {
             if (await Utils.Utils.ShowLeaveGroupDialog(this, "Leave group", "Are you sure you want to leave the group?"))
             {
-                if (await ServerCommunication.LeaveGroupAsync(CurrentGroup.GroupId))
+                if (await ServerCommunication.LeaveGroupAsync(Group.GroupId))
                 {
                     await DisplayAlert("Group Left", "You have successfully left the group", "OK");
                     await Navigation.PopAsync();
@@ -132,7 +153,7 @@ namespace monshare.Pages
         {
             if (await Utils.Utils.ShowLeaveGroupDialog(this, "Delete Group", "Are you sure you want to delete this group?"))
             {
-                if (await ServerCommunication.DeleteGroup(CurrentGroup.GroupId))
+                if (await ServerCommunication.DeleteGroup(Group.GroupId))
                 {
                     await DisplayAlert("Group deleted", "You have successfully deleted your group", "Ok");
                     await Navigation.PopAsync();

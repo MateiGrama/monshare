@@ -1,4 +1,7 @@
-﻿using System;
+﻿using monshare.Models;
+using monshare.Utils;
+using monshare.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +18,21 @@ namespace monshare.Pages
         public GroupsAroundPage()
         {
             InitializeComponent();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            loadGroupsAsync();
+
+        }
+
+        private async void loadGroupsAsync()
+        {
+            List<Group> groups = await ServerCommunication.GetGroupsAround();
+            resultLayout.Children.Clear();
+            groups.ForEach(g => resultLayout.Children.Add(GenericViews.GroupListElement(g)));
+            
         }
     }
 }

@@ -23,7 +23,8 @@ namespace monshare.Utils
         private static readonly string LOGIN_API = BASEURL + "/login";
         private static readonly string LOGOUT_API = BASEURL + "/logout";
         private static readonly string CREATE_GROUP_API = BASEURL + "/createGroup";
-        private static readonly string GET_GROUPS_AROUND_API = BASEURL + "/getGroupsAround";
+        private static readonly string GET_GROUPS_AROUND_API = BASEURL + "/getGroups";
+        private static readonly string SEARCH_GRPUPS_API =GET_GROUPS_AROUND_API;
         private static readonly string GET_GROUP_CHAT_API = BASEURL + "/getGroupChat";
         private static readonly string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
         private static readonly string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
@@ -33,7 +34,14 @@ namespace monshare.Utils
         private static readonly string SEND_MESSAGE_API = BASEURL + "/sendMessage";
         private static readonly string UPDATE_GROUP_GROUP_API = BASEURL + "/updateGroup";
 
-
+        private static async Task<string> GetUserIDSeesionIdLocationAPICallParams () {  
+            var pos = await Utils.GetLocationAfterCheckingPermisionsAsync();
+           
+            return "user_id="    + LocalStorage.GetUserId()    + "&" +
+                   "session_id=" + LocalStorage.GetSessionId() + "&" +
+                   "lat="        + pos.Latitude                + "&" +
+                   "long="       + pos.Longitude               ;
+        }
 
         public static async Task<User> Login(string email, string password)
         {
@@ -97,7 +105,8 @@ namespace monshare.Utils
                 "user_id=" + LocalStorage.GetUserId() + "&" +
                 "group_id=" + group.GroupId + "&" +
                 "group_name=" + group.Title + "&" +
-                "group_description=" + group.Description;
+                "group_description=" + group.Description + "&" +
+                "target=" + group.TargetNumberOfPeople.ToString();
 
             JsonValue result = await GetResponse(url);
 
@@ -200,15 +209,12 @@ namespace monshare.Utils
 
         public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople)
         {
-            var status = await Utils.CheckPermissions(Permission.Location);
+            var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
 
-            if (status != PermissionStatus.Granted)
+            if (position == null)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Please grant location permissions", "Ok");
                 return false;
             }
-
-            var position = await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromSeconds(5));
 
             string url = CREATE_GROUP_API + "?" +
                 "user_id=" + LocalStorage.GetUserId() + "&" +
@@ -236,35 +242,57 @@ namespace monshare.Utils
 
         public static async Task<List<Group>> GetMyGroupsAsync()
         {
-            List<Group> myGroups = new List<Group>();
+            var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
 
+            if (position == null)
+            {
+                return new List<Group>();
+            }
             string url = GET_MY_GROUPS_API + "?" +
                 "user_id=" + LocalStorage.GetUserId() + "&" +
                 "session_id=" + LocalStorage.GetSessionId();
 
+            return await RequestGroupList(url);
+        }
+
+        public static async Task<List<Group>> GetGroupsAround()
+        {
+            var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
+
+            if (position == null)
+            {
+                return new List<Group>();
+            }
+            string url = GET_GROUPS_AROUND_API + "?" + await GetUserIDSeesionIdLocationAPICallParams();
+
+            return await RequestGroupList(url);
+        }
+
+        public static async Task<List<Group>> SearchGroups(string query, string placeId)
+        {
+            var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
+
+            if (position == null)
+            {
+                return new List<Group>();
+            }
+            string url = SEARCH_GRPUPS_API + "?" + await GetUserIDSeesionIdLocationAPICallParams() + "&" 
+                                   + "query="   + query + "&"
+                                   + "place_id=" + placeId;
+
+            return await RequestGroupList(url);
+        }
+
+        private static async Task<List<Group>> RequestGroupList(string url)
+        {
             JsonValue result = await GetResponse(url);
 
+            List<Group> myGroups = new List<Group>();
             try
             {
                 if (result["status"] == SUCCESS)
                 {
-                    foreach (JsonValue group in result["groups"])
-                    {
-                        Group newGroup = new Group();
-
-                        newGroup.GroupId = group["GroupId"];
-                        newGroup.Title = group["Title"];
-                        newGroup.Description = group["Description"];
-                        newGroup.CreationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString());
-                        newGroup.EndDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString());
-                        newGroup.MembersNumber = group["MembersNumber"] ?? 1;
-                        newGroup.OwnerId = group["ownerId"];
-                        newGroup.TargetNumberOfPeople = group["targetNum"] ?? 1;
-                        newGroup.Latitude = group["lat"] ?? 0;
-                        newGroup.Longitude = group["long"] ?? 0;
-
-                        myGroups.Add(newGroup);
-                    }
+                    myGroups = ExtrctGroupListFromJson(result["groups"]);
                 }
             }
             catch (Exception e)
@@ -272,6 +300,31 @@ namespace monshare.Utils
                 await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
             }
             return myGroups;
+        }
+
+        private static List<Group> ExtrctGroupListFromJson(JsonValue groups)
+        {
+            Group newGroup;
+            List<Group> result = new List<Group>();
+
+            foreach (JsonValue group in groups)
+            {
+                newGroup = new Group();
+
+                newGroup.GroupId = group["GroupId"];
+                newGroup.Title = group["Title"];
+                newGroup.Description = group["Description"];
+                newGroup.CreationDateTime = DateTime.Parse(group["CreationDateTime"] ?? DateTime.Now.ToString());
+                newGroup.EndDateTime = DateTime.Parse(group["EndDateTime"] ?? DateTime.Now.ToString());
+                newGroup.MembersNumber = group["MembersNumber"] ?? 1;
+                newGroup.OwnerId = group["ownerId"];
+                newGroup.TargetNumberOfPeople = group["targetNum"] ?? 1;
+                newGroup.Latitude = group["lat"] ?? 0;
+                newGroup.Longitude = group["long"] ?? 0;
+
+                result.Add(newGroup);
+            }
+            return result;
         }
 
         public static async Task<bool> LeaveGroupAsync(int groupId)
@@ -294,7 +347,6 @@ namespace monshare.Utils
             return false;
         }
 
-
         public static async Task<bool> DeleteGroup(int groupId)
         {
             String url = DELETE_GROUP_API + "?" +
@@ -315,7 +367,6 @@ namespace monshare.Utils
             }
             return false;
         }
-
 
         public static async Task<bool> isLoggedIn()
         {
