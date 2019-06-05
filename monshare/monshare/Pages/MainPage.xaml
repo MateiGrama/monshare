@@ -22,15 +22,12 @@
 
     <StackLayout>
         <Button 
-            Clicked="MyGroupsButtonPressed"
-            Text="My Groups"
-            />
-        <Button 
             Clicked="SearchButtonPressed"
             Text="SearchPage"
             />
         <Button
-            Clicked="GroupsAroundPressed"/>
+            Clicked="GroupsAroundPressed"
+            Text="Groups around"/>
         <Button
             Clicked="CreateGroupButtonPressed"
             Text="Create Group"
