@@ -29,7 +29,7 @@ namespace monshare.Utils
                 BackgroundColor = Color.LightGray,
                 IsReadOnly = isReadOnly,
                 Margin = new Thickness(0, 10),
-                HeightRequest = 200,
+                HeightRequest = 150,
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 WidthRequest = Application.Current.MainPage.Width,

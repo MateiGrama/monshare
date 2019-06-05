@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Maps;
 using Xamarin.Forms.Xaml;
 
 namespace monshare.Pages
@@ -25,7 +26,30 @@ namespace monshare.Pages
             groupDetailsFields = new GroupDetailVisualElementsGenerator();
             groupDetailsFields.CreateGroupDetailFields(group, true, GroupDetailsLayout);
             DisplayToolbarItems();
+            DisplayMap();
             GenerateViewChatButton();
+        }
+
+        private void DisplayMap()
+        {
+           var map = new Map(
+               MapSpan.FromCenterAndRadius(
+                  new Position(CurrentGroup.Latitude, CurrentGroup.Longitude), Distance.FromMiles(0.3)))
+            {
+                IsShowingUser = true,
+                HeightRequest = 200,
+                WidthRequest = 960,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+
+            var pin = new Pin()
+            {
+                Position = new Position(CurrentGroup.Latitude, CurrentGroup.Longitude),
+                Label = "Meeting point!"
+            };
+            map.Pins.Add(pin);
+
+            GroupDetailsLayout.Children.Add(map);
         }
 
         protected override void OnAppearing()

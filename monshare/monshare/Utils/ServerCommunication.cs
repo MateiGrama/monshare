@@ -260,6 +260,8 @@ namespace monshare.Utils
                         newGroup.MembersNumber = group["MembersNumber"] ?? 1;
                         newGroup.OwnerId = group["ownerId"];
                         newGroup.TargetNumberOfPeople = group["targetNum"] ?? 1;
+                        newGroup.Latitude = group["lat"] ?? 0;
+                        newGroup.Longitude = group["long"] ?? 0;
 
                         myGroups.Add(newGroup);
                     }

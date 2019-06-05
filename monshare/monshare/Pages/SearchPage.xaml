@@ -15,9 +15,7 @@
                          HorizontalOptions="FillAndExpand"
                          RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=searchBar, Property=Height,Factor=1,Constant=20}"
                          >
-                <Label Text="Asta trebuie sa se vada dedesubt" FontSize="Large"/>
-                <Label Text="Asta trebuie sa se vada dedesubt" FontSize="Large"/>
-                <Label Text="Asta trebuie sa se vada dedesubt" FontSize="Large"/>
+                
 
             </StackLayout>
 
