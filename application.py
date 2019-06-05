@@ -246,7 +246,7 @@ def get_groups():
             return group_list_to_json(rows, columns)
 
         # Search for a specific group
-        if place_id is None:
+        if place_id is None or place_id == '':
             trie = Trie(item[1] for item in rows)
             suggestions = trie.get_auto_suggestions(query)
             rows = get_filtered_list2(rows, suggestions)
