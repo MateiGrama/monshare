@@ -23,7 +23,7 @@ class Db:
                                from Groups
                                join UserToGroup on Groups.GroupId = UserToGroup.GroupId
                                where Groups.GroupId = {} and UserToGroup.UserID != {}
-                       """.format(group_id, user_id))
+                            """.format(group_id, user_id))
         new_owner = self.cursor.fetchone()[0]
 
         self.cursor.execute("update Groups set ownerId = {} where GroupId = {}".format(new_owner, group_id))
@@ -35,7 +35,7 @@ class Db:
                                 join UserToGroup on Groups.GroupId = UserToGroup.GroupId)
                                 join Users on Users.UserId = UserToGroup.UserId
                                 where Users.UserId = {} and Groups.GroupId = {}
-                       """.format(user_id, group_id))
+                            """.format(user_id, group_id))
         return len(self.cursor.fetchall()) == 1
 
     def group_has_one_member(self, group_id):
@@ -44,7 +44,7 @@ class Db:
                                 join UserToGroup on Users.UserId = UserToGroup.UserId)
                                 join Groups on Groups.GroupId = UserToGroup.GroupId
                                 where Groups.GroupId = {}
-                       """.format(group_id))
+                            """.format(group_id))
         return self.cursor.fetchone()[0] == 1
 
     def update_group(self, params, group_id):
@@ -69,7 +69,7 @@ class Db:
                                 update Groups set MembersNumber = MembersNumber - 1
                                 where GroupId = {1};
                                 commit;
-                       """.format(user_id, group_id))
+                           """.format(user_id, group_id))
         self.connection.commit()
 
     def add_user_to_group(self, user_id, group_id):
@@ -79,7 +79,7 @@ class Db:
                                 update Groups set MembersNumber = MembersNumber + 1
                                 where GroupId = {1};
                                 commit;
-                       """.format(user_id, group_id))
+                            """.format(user_id, group_id))
         self.connection.commit()
 
     def get_groups_of_user(self, user_id):
@@ -87,7 +87,7 @@ class Db:
                                 from Groups
                                 join UserToGroup on UserToGroup.GroupId = Groups.GroupId
                                 where UserToGroup.UserId = {}
-                       """.format(user_id))
+                            """.format(user_id))
         return self.cursor.fetchall()
 
     def get_group(self, group_id):
@@ -112,3 +112,18 @@ class Db:
     def group_exists(self, group_id):
         self.cursor.execute("select groupId from groups where groupId={}".format(group_id))
         return self.cursor.fetchone()
+
+    def get_groups_around(self, lat, long, default_range):
+        earth_radius_in_km = 6371
+        self.cursor.execute(""" select id, ( {3} * acos (
+                                             cos ( radians({0}) )
+                                             * cos( radians( lat ) )
+                                             * cos( radians( lng ) - radians({1}) )
+                                             + sin ( radians({0}) )
+                                             * sin( radians( lat ) ))
+                                            ) as distance
+                                            from Groups
+                                            having distance < {2}
+                                            order by distance
+                                            LIMIT 0 , 50
+                             """.format(lat, long, default_range, earth_radius_in_km))
