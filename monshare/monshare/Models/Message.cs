@@ -8,9 +8,9 @@ namespace monshare.Models
     public class Message
 
     {
-        public int senderId { get; internal set; }
-        public string text { get; internal set; }
-        public DateTime dateTime { get; internal set; }
-        public bool isOwnMessage => senderId == LocalStorage.GetUserId();
+        public int SenderId { get; internal set; }
+        public string Text { get; internal set; }
+        public DateTime DateTime { get; internal set; }
+        public bool IsOwnMessage => SenderId == LocalStorage.GetUserId();
     }
 }

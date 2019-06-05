@@ -39,7 +39,7 @@ namespace monshare.Pages
                 await DisplayAlert("Alert", "Messages not loaded; reason: " + chat.message, "ok");
                 return;
             }
-            List<Message> sortedMesages = chat.messages.OrderBy(msg => msg.dateTime).ToList();
+            List<Message> sortedMesages = chat.messages.OrderBy(msg => msg.DateTime).ToList();
             foreach (Message msg in sortedMesages)
             {
                 //ReceivedMessageView messageView = new ReceivedMessageView() { BindingContext = msg };
@@ -54,15 +54,15 @@ namespace monshare.Pages
             if (await ServerCommunication.sendMessage(messageEntry.Text, group.GroupId))
             {
                 await DisplayAlert("Message Sent", "", "Ok");
-                addMessageInLayout(new Message() { senderId = LocalStorage.GetUserId(), text = messageEntry.Text });
+                addMessageInLayout(new Message() { SenderId = LocalStorage.GetUserId(), Text = messageEntry.Text });
 
                 scrollToBottom();
             }
         }
 
         private void addMessageInLayout(Message msg) {
-             Thickness margin = msg.isOwnMessage ? new Thickness(60, 5, 15, 0) : new Thickness(15, 5, 60, 0);
-                Color color = msg.isOwnMessage ? Color.FromHex("657b83") : Color.FromHex("93a1a1");
+             Thickness margin = msg.IsOwnMessage ? new Thickness(60, 5, 15, 0) : new Thickness(15, 5, 60, 0);
+                Color color = msg.IsOwnMessage ? Color.FromHex("657b83") : Color.FromHex("93a1a1");
 
                 Frame msgFrame = new Frame() { HorizontalOptions = LayoutOptions.FillAndExpand,
                     Padding = 15,
@@ -72,7 +72,7 @@ namespace monshare.Pages
                 };
 
                 StackLayout stack = new StackLayout() { HorizontalOptions = LayoutOptions.FillAndExpand };
-                stack.Children.Add(new Label() { Text = msg.text });
+                stack.Children.Add(new Label() { Text = msg.Text });
                 msgFrame.Content = stack;
                 chatLayout.Children.Add(msgFrame);
         }

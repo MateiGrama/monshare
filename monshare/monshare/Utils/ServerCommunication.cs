@@ -50,12 +50,12 @@ namespace monshare.Utils
                 {
                     newUser = new User
                     {
-                        userId = (int)result["user"]["user_id"],
-                        firstName = result["user"]["first_name"],
-                        lastName = result["user"]["last_name"]
+                        UserId = (int)result["user"]["user_id"],
+                        FirstName = result["user"]["first_name"],
+                        LastName = result["user"]["last_name"]
                     };
 
-                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"], newUser.firstName, newUser.lastName);
+                    await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"], newUser.FirstName, newUser.LastName);
                 }
                 else if (result["status"] == FAIL)
                 {
@@ -116,9 +116,9 @@ namespace monshare.Utils
                     foreach(JsonValue jsonMessage in result["messages"])
                     {
                         chat.messages.Add(new Message() {
-                            senderId = jsonMessage["msg_sender_id"],
-                            text = jsonMessage["msg"],
-                            dateTime = DateTime.Parse(jsonMessage["date_time"])
+                            SenderId = jsonMessage["msg_sender_id"],
+                            Text = jsonMessage["msg"],
+                            DateTime = DateTime.Parse(jsonMessage["date_time"])
                         });
                     }
                 }
@@ -154,10 +154,10 @@ namespace monshare.Utils
                 {
                     newUser = new User
                     {
-                        userId = (int)result["user"]["user_id"],
-                        email = email,
-                        firstName = result["user"]["first_name"],
-                        lastName = result["user"]["last_name"]
+                        UserId = (int)result["user"]["user_id"],
+                        Email = email,
+                        FirstName = result["user"]["first_name"],
+                        LastName = result["user"]["last_name"]
                     };
 
                     await LocalStorage.UpdateCredetialsAsync(result["user"]["user_id"].ToString(), result["user"]["session_id"], firstName, lastName);

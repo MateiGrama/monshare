@@ -8,9 +8,9 @@ namespace monshare.Models
 {
     class User : NullObject<User>
     {
-        public string  firstName{ get; internal set; }
-        public string  lastName{ get; internal set; }
-        public int  userId{ get; internal set; }
-        public string  email{ get; internal set; }
+        public string  FirstName{ get; internal set; }
+        public string  LastName{ get; internal set; }
+        public int  UserId{ get; internal set; }
+        public string  Email{ get; internal set; }
     }
 }

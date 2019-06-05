@@ -25,25 +25,25 @@ namespace monshare.Pages
         {
             base.OnAppearing();
 
-            queryEntry.TextChanged += (s,a) => { processingInput(); };
+            queryEntry.TextChanged += (s,a) => { ProcessingInput(); };
         }
 
-        private async void processingInput()
+        private async void ProcessingInput()
         {
             string old = String.Copy(queryEntry.Text);
             await Task.Delay(250);
             if(old == queryEntry.Text)
             {
-                loadPredictions();
+                LoadPredictions();
             }
 
         }
 
-        private async void loadPredictions()
+        private async void LoadPredictions()
         {
             if (queryEntry.Text == null || queryEntry.Text == "")
             {
-                removeCurrentPredictionFromRelativeLayout();
+                RemoveCurrentPredictionFromRelativeLayout();
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace monshare.Pages
                 }
             }
 
-            removeCurrentPredictionFromRelativeLayout();
+            RemoveCurrentPredictionFromRelativeLayout();
             pageLayout.Children.Add(suggestionsLayout, Constraint.RelativeToParent((parent) => {
                 return parent.X;
             }), Constraint.RelativeToView(searchBar, (Parent, sibling) => {
@@ -75,7 +75,7 @@ namespace monshare.Pages
 
         }
 
-        private void removeCurrentPredictionFromRelativeLayout()
+        private void RemoveCurrentPredictionFromRelativeLayout()
         {
             if (pageLayout.Children[pageLayout.Children.Count - 1] != resultLayout)
             {
