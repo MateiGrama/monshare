@@ -130,5 +130,5 @@ class Db:
         return self.cursor.fetchall()
 
     def get_group_located_at(self, place_id):
-        self.cursor.execute("select * from Groups where PlaceId = {}".format(place_id))
+        self.cursor.execute("select * from Groups where PlaceId = '{}'".format(place_id))
         return self.cursor.fetchall()
