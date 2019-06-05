@@ -116,7 +116,7 @@ class Db:
 
     def get_groups_around(self, lat, long, default_range):
         earth_radius_in_km = 6371
-        self.cursor.execute(""" select * from ( select TOP 10 *, ( 6371 * acos (   cos ( radians({0}) )
+        x = """ select * from ( select TOP 10 *, ( 6371 * acos (   cos ( radians({0}) )
                                                                 * cos( radians( lat ) )
                                                                 * cos( radians( long ) - radians({1}) )
                                                                 + sin ( radians({0}) )
@@ -126,7 +126,10 @@ class Db:
 								 order by Distance 
 								) as ResultTable
 								where ResultTable.Distance < {2}
-                             """.format(lat, long, default_range, earth_radius_in_km))
+                             """.format(lat, long, default_range, earth_radius_in_km)
+        self.cursor.execute(x)
+        with open('./logs.txt', 'w') as f:
+            f.write(x)
         return self.cursor.fetchall()
 
     def get_group_located_at(self, place_id):
