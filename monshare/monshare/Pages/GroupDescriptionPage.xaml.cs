@@ -27,8 +27,7 @@ namespace monshare.Pages
             // Display the delete group button only for the owner of the group
             if(CurrentGroup.OwnerId == LocalStorage.GetUserId())
             {
-                DeleteGroupButton.IsVisible = true;
-                DeleteGroupButton.HeightRequest = -1;
+                Utils.Utils.DisplayVisualElement(DeleteGroupButton, true);
             }
             
         }

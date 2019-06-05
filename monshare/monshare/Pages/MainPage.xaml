@@ -5,44 +5,34 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="monshare.MainPage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+            Name="My groups" 
+            Order="Secondary"
+            Clicked="MyGroupsButtonPressed"/>
+        <ToolbarItem 
+            Name="My account" 
+            Order="Secondary"
+            Clicked="MyAccountButtonPressed"/>
+        <ToolbarItem 
+            Name="Logout" 
+            Order="Secondary" 
+            Clicked="LogoutButtonPressed"/>
+    </ContentPage.ToolbarItems>
 
     <StackLayout>
-        <Button 
-            Clicked="DeleteAccountButtonPressed"
-            Text="Delete your Account">
-        </Button>
-        <Button 
-            Clicked="MyGroupsButtonPressed"
-            Text="My Groups">
-        </Button>
-        <Button
-            Clicked="CreateGroupButtonPressed"
-            Text="Create Group">
-        </Button>
         <Button 
             Clicked="SearchButtonPressed"
             Text="SearchPage"
             />
-        <StackLayout Padding="0, 20, 0, 0">
-            <Label x:Name="LoggedInLabel"
-                   HorizontalOptions="CenterAndExpand"
-                   VerticalOptions="FillAndExpand"
-                   TextColor="Green"/>
-
-            <Label x:Name="userNameLabel"
-                   HorizontalOptions="CenterAndExpand"
-                   TextColor="Green"/>
-
-            <Label x:Name="userIDLabel"
-                   HorizontalOptions="CenterAndExpand"
-                   TextColor="Green"/>
-            
-        </StackLayout>
         <Button
-            Clicked="LogoutButtonPressed"
-            VerticalOptions="End"
-            Text="Logout">
-        </Button>
+            Clicked="GroupsAroundPressed"
+            Text="Groups around"/>
+        <Button
+            Clicked="CreateGroupButtonPressed"
+            Text="Create Group"
+            />
+
     </StackLayout>
 
 </ContentPage>

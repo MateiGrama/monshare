@@ -31,15 +31,6 @@ namespace monshare
 
         }
 
-        protected override void OnAppearing()
-        {
-            LoggedInLabel.Text = "Logged in";
-            userNameLabel.Text = "User name: " + LocalStorage.GetUserName();
-            userIDLabel.Text = "User ID: " + LocalStorage.GetUserId().ToString();
-            base.OnAppearing();
-
-        }
-
         public async void CreateGroupButtonPressed(object sender, EventArgs args)
         {
             await Navigation.PushAsync(new CreateGroupPage());
@@ -67,23 +58,14 @@ namespace monshare
             await Navigation.PushAsync(new SearchPage());
         }
 
-        private async void DeleteAccountButtonPressed(object sender, EventArgs e)
+        public async void MyAccountButtonPressed(object sender, EventArgs e)
         {
-            if (await Utils.Utils.ShowLeaveGroupDialog(this, "Delete Account", "Are you sure you want to deleteyour account?"))
-            {
-                if (await ServerCommunication.DeleteAccount())
-                {
-                    await DisplayAlert("Account deleted", "You have successfully deleted your account", "Return to Login page");
-                    //TODO: GO to login page
-                    await Navigation.PopAsync();
-                }
-            }
+            await Navigation.PushAsync(new MyAccountPage());
         }
 
-        private async Task<bool> ShowLeaveGroupDialog()
+        private async void GroupsAroundPressed(object sender, EventArgs e)
         {
-            return await DisplayAlert("Delete Account", "Are you sure you want to deleteyour account?", "Yes", "No");
-
+            await Navigation.PushAsync(new GroupsAroundPage());
         }
     }
 }
