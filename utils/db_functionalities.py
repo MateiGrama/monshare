@@ -116,7 +116,7 @@ class Db:
 
     def get_groups_around(self, lat, long, default_range):
         earth_radius_in_km = 6371
-        self.cursor.execute(""" select * from ( select TOP 5 *, ( 6371 * acos (   cos ( radians({0}) )
+        self.cursor.execute(""" select * from ( select TOP 10 *, ( 6371 * acos (   cos ( radians({0}) )
                                                                 * cos( radians( lat ) )
                                                                 * cos( radians( long ) - radians({1}) )
                                                                 + sin ( radians({0}) )

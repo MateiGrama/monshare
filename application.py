@@ -7,11 +7,12 @@ from flask import request
 from utils import keys
 from utils.db_functionalities import Db
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
-    get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
+    get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict, levenshtein
 
-DEBUG = True
+DEBUG = False
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
-# Used when the user searches groups nearby. The default value is 2 kilometers
+
+# The default value in kilometres used when the user searches for groups.
 DEFAULT_RANGE = 2
 
 app = Flask(__name__)
@@ -206,6 +207,9 @@ def update_group():
 
 @app.route("/getGroups")
 def get_groups():
+    def _filter(dictionary, edit_distance=2):
+        return [k for k, v in dictionary.items() if v <= edit_distance]
+
     user_id, session_id, lat, long, query, place_id = get_fields('user_id', 'session_id', 'lat',
                                                                  'long', 'query', 'place_id')
 
@@ -216,17 +220,21 @@ def get_groups():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        rows = []
-        columns = []
-        if query is None:
-            # Groups around
-            # TODO: ignore groups of user
-            rows = db.get_groups_around(lat, long, DEFAULT_RANGE)
-            columns = [column_description[0] for column_description in cursor.description]
+        rows = db.get_groups_around(lat, long, DEFAULT_RANGE)
+
+        if place_id is None:
+            # Search for a specific group
+            _dict = dict()
+            rows = [tuple([items for items in row]) for row in rows]
+            for result in rows:
+                _dict[result] = levenshtein(query, result[1])
+            rows = _filter(_dict, 2)
+            rows.sort()
         else:
             # Search for a place
             pass
 
+        columns = [column_description[0] for column_description in cursor.description]
     except Exception as e:
         return error_status_response("error while getting groups. Exception was: " + str(e))
 
