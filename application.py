@@ -6,11 +6,15 @@ from flask import request
 
 from utils import keys
 from utils.db_functionalities import Db
+from utils.search_engine import levenshtein, Trie
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
 
 DEBUG = False
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
+
+# The default value in kilometres used when the user searches for groups.
+DEFAULT_RANGE = 2
 
 app = Flask(__name__)
 
@@ -176,15 +180,12 @@ def create_group():
 
 @app.route("/updateGroup")
 def update_group():
-    param_list = ['user_id', 'session_id', 'group_id', 'group_name', 'group_description', 'endDateTime', 'target',
-                  'lat', 'long', 'range']
+    user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
+    param_list = ['group_name', 'group_description', 'endDateTime', 'target', 'lat', 'long', 'range']
     param_dict = get_fields_in_dict(param_list)
-    user_id = param_dict.pop('user_id')
-    session_id = param_dict.pop('session_id')
-    group_id = param_dict.pop('group_id')
 
     if not user_id or not session_id or not group_id:
-        return error_status_response("invalid id or sessionid")
+        return error_status_response("invalid id or session id or group id")
 
     try:
         if not logged_in(user_id, session_id):
@@ -194,8 +195,7 @@ def update_group():
         if not db.is_user_member_of_group(user_id, group_id):
             return error_status_response("User {} is not a member of group {}!".format(user_id, group_id))
 
-        db.update_group(
-            [(param, val) for param, val in param_dict.items() if val and val != ""], group_id)
+        db.update_group([(param, val) for param, val in param_dict.items() if val and val != ""], group_id)
 
         row = db.get_group(group_id)
         columns = [column_description[0] for column_description in cursor.description]
@@ -203,24 +203,53 @@ def update_group():
         return group_to_json(row, columns)
 
     except Exception as e:
-        return error_status_response("error while inserting group in db. Exception was: " + str(e))
+        return error_status_response("error while updating group. Exception was: " + str(e))
 
 
-@app.route("/getGroupsAround")
-def get_groups_around():
-    user_id = request.args.get('user_id')
-    session_id = request.args.get('session_id')
+@app.route("/getGroups")
+def get_groups():
+    def get_filtered_list(l, edit_distance=2):
+        return [k for k, v in l.items() if v <= edit_distance]
 
-    if not (user_id and session_id):
-        return error_status_response("invalid id or session id")
+    def get_filtered_list2(l, keys):
+        new_list = []
+
+        for key in keys:
+            for k in l:
+                if k[1] == key:
+                    new_list.append(k)
+        return new_list
+
+    user_id, session_id, lat, long, query, place_id = get_fields('user_id', 'session_id', 'lat',
+                                                                 'long', 'query', 'place_id')
+
+    if not user_id or not session_id or not lat or not long:
+        return error_status_response("invalid id or session id or coordinates")
+
     try:
         if not logged_in(user_id, session_id):
             return unauthorized_user()
-        cursor.execute("select * from groups")
+
+        if place_id is not None:
+            # Search for a place
+            rows = db.get_group_located_at(place_id)
+        else:
+            # Get groups around given position
+            rows = db.get_groups_around(lat, long, DEFAULT_RANGE)
+
         columns = [column_description[0] for column_description in cursor.description]
-        rows = cursor.fetchall()
-    except:
-        return error_status_response("error while getting all groups")
+
+        if len(rows) is 0:
+            return group_list_to_json(rows, columns)
+
+        # Search for a specific group
+        if place_id is None:
+            trie = Trie(item[1] for item in rows)
+            suggestions = trie.get_auto_suggestions(query)
+            rows = get_filtered_list2(rows, suggestions)
+
+    except Exception as e:
+        return error_status_response("error while getting groups. Exception was: " + str(e))
 
     return group_list_to_json(rows, columns)
 
