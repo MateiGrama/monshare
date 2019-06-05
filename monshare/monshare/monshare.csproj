@@ -23,7 +23,7 @@
     <Compile Update="Pages\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Pages\GroupDescriptionPage.xaml.cs">
+    <Compile Update="Pages\GroupDescription\GroupDescriptionPage.xaml.cs">
       <DependentUpon>GroupDescriptionPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <EmbeddedResource Update="Pages\CreateGroupPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\EditGroupDetailsPage.xaml">
+    <EmbeddedResource Update="Pages\GroupDescription\EditGroupDetailsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\GroupsAroundPage.xaml">
@@ -53,7 +53,7 @@
     <EmbeddedResource Update="Pages\MyGroupsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\GroupDescriptionPage.xaml">
+    <EmbeddedResource Update="Pages\GroupDescription\GroupDescriptionPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\RegisterPage.xaml">
