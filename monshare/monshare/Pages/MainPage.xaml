@@ -19,6 +19,10 @@
             Clicked="CreateGroupButtonPressed"
             Text="Create Group">
         </Button>
+        <Button 
+            Clicked="SearchButtonPressed"
+            Text="SearchPage"
+            />
         <StackLayout Padding="0, 20, 0, 0">
             <Label x:Name="LoggedInLabel"
                    HorizontalOptions="CenterAndExpand"

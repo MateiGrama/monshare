@@ -1,4 +1,5 @@
-﻿using monshare.Utils;
+﻿using monshare.Pages;
+using monshare.Utils;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
