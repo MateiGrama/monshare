@@ -207,7 +207,7 @@ def update_group():
 
 @app.route("/getGroups")
 def get_groups():
-    def _filter(dictionary, edit_distance=2):
+    def get_filtered_list(dictionary, edit_distance=2):
         return [k for k, v in dictionary.items() if v <= edit_distance]
 
     user_id, session_id, lat, long, query, place_id = get_fields('user_id', 'session_id', 'lat',
@@ -220,21 +220,29 @@ def get_groups():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        rows = db.get_groups_around(lat, long, DEFAULT_RANGE)
-
-        if place_id is None:
-            # Search for a specific group
-            _dict = dict()
-            rows = [tuple([items for items in row]) for row in rows]
-            for result in rows:
-                _dict[result] = levenshtein(query, result[1])
-            rows = _filter(_dict, 2)
-            rows.sort()
-        else:
+        if place_id is not None:
             # Search for a place
-            pass
+            rows = db.get_group_located_at(place_id)
+        else:
+            # Get groups around given position
+            rows = db.get_groups_around(lat, long, DEFAULT_RANGE)
 
         columns = [column_description[0] for column_description in cursor.description]
+
+        if len(rows) is 0:
+            return group_list_to_json(rows, columns)
+
+        # Search for a specific group
+        if place_id is None:
+            _dict = dict()
+            rows = [tuple([items for items in row]) for row in rows]
+
+            for result in rows:
+                _dict[result] = levenshtein(query, result[1])
+
+            rows = get_filtered_list(_dict, edit_distance=2)
+            rows.sort()
+
     except Exception as e:
         return error_status_response("error while getting groups. Exception was: " + str(e))
 

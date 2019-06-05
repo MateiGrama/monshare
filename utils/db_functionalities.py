@@ -128,3 +128,7 @@ class Db:
 								where ResultTable.Distance < {2}
                              """.format(lat, long, default_range, earth_radius_in_km))
         return self.cursor.fetchall()
+
+    def get_group_located_at(self, place_id):
+        self.cursor.execute("select * from Groups where PlaceId={}".format(place_id))
+        return self.cursor.fetchall()
