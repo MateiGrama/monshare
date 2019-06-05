@@ -31,7 +31,8 @@ namespace monshare.Utils
         private static readonly string DELETE_GROUP_API = BASEURL + "/deleteGroup";
         private static readonly string CHECK_IS_LOGGED_IN = BASEURL + "/isLoggedIn";
         private static readonly string SEND_MESSAGE_API = BASEURL + "/sendMessage";
-        
+        private static readonly string UPDATE_GROUP_GROUP_API = BASEURL + "/updateGroup";
+
 
 
         public static async Task<User> Login(string email, string password)
@@ -83,13 +84,32 @@ namespace monshare.Utils
 
             try
             {
-             return result["status"] == SUCCESS;
+                return result["status"] == SUCCESS;
             }
             catch { }
             return false;
         }
 
-        internal static async Task<Chat> getGroupChatAsync(Group group)
+        internal static async Task<bool> UpdateGroup(Group group)
+        {
+            string url = UPDATE_GROUP_GROUP_API + "?" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "group_id=" + group.GroupId + "&" +
+                "group_name=" + group.Title + "&" +
+                "group_description=" + group.Description;
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch { }
+            return false;
+        }
+
+        internal static async Task<Chat> GetGroupChatAsync(Group group)
         {
             Chat chat = Chat.NullInstance;
             List<Message> messages = new List<Message>();
@@ -108,14 +128,16 @@ namespace monshare.Utils
             {
                 if (result["status"] == SUCCESS)
                 {
-                    chat = new Chat {
+                    chat = new Chat
+                    {
                         group = group,
                         messages = new List<Message>()
                     };
 
-                    foreach(JsonValue jsonMessage in result["messages"])
+                    foreach (JsonValue jsonMessage in result["messages"])
                     {
-                        chat.messages.Add(new Message() {
+                        chat.messages.Add(new Message()
+                        {
                             SenderId = jsonMessage["msg_sender_id"],
                             Text = jsonMessage["msg"],
                             DateTime = DateTime.Parse(jsonMessage["date_time"])
@@ -135,7 +157,7 @@ namespace monshare.Utils
 
             return chat;
         }
-      
+
         public static async Task<User> Register(string email, string firstName, string lastName, string password)
         {
             User newUser = User.NullInstance;
@@ -175,7 +197,7 @@ namespace monshare.Utils
             }
             return newUser;
         }
-      
+
         public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople)
         {
             var status = await Utils.CheckPermissions(Permission.Location);
@@ -211,7 +233,7 @@ namespace monshare.Utils
             }
             return false;
         }
-      
+
         public static async Task<List<Group>> GetMyGroupsAsync()
         {
             List<Group> myGroups = new List<Group>();
@@ -293,11 +315,12 @@ namespace monshare.Utils
         }
 
 
-        public static async Task<bool> isLoggedIn() {
+        public static async Task<bool> isLoggedIn()
+        {
             string url = CHECK_IS_LOGGED_IN + "?" +
                "user_id=" + LocalStorage.GetUserId() + "&" +
                "session_id=" + LocalStorage.GetSessionId();
-            
+
             JsonValue result = await GetResponse(url);
 
             try
@@ -348,8 +371,8 @@ namespace monshare.Utils
             }
             return false;
         }
-        
-      
+
+
         internal static async Task<JsonValue> GetResponse(string url)
         {
             HttpClient client = new HttpClient();

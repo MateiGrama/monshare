@@ -8,9 +8,12 @@ namespace monshare.Utils
 {
     class GroupDetailVisualElementsGenerator
     {
-        public static void CreateGroupDetailFields(Group group, bool isReadOnly, StackLayout groupDetailsLayout)
+
+        public Entry GroupNameEntry;
+        public Editor GroupDescriptionEditor;
+        public void CreateGroupDetailFields(Group group, bool isReadOnly, StackLayout groupDetailsLayout)
         {
-            var groupNameEntry = new Entry()
+            GroupNameEntry = new Entry()
             {
                 BackgroundColor = Color.LightGray,
                 IsReadOnly = isReadOnly,
@@ -21,7 +24,7 @@ namespace monshare.Utils
                 Text = group.Title
             };
 
-            var groupDescriptionEditor = new Editor()
+            GroupDescriptionEditor = new Editor()
             {
                 BackgroundColor = Color.LightGray,
                 IsReadOnly = isReadOnly,
@@ -33,8 +36,8 @@ namespace monshare.Utils
                 Text = group.Title
             };
 
-            groupDetailsLayout.Children.Add(groupNameEntry);
-            groupDetailsLayout.Children.Add(groupDescriptionEditor);
+            groupDetailsLayout.Children.Add(GroupNameEntry);
+            groupDetailsLayout.Children.Add(GroupDescriptionEditor);
         }
     }
 }

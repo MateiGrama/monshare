@@ -31,7 +31,7 @@ namespace monshare.Pages
 
         private async void loadMessagesAsync()
         {
-            Chat chat = await ServerCommunication.getGroupChatAsync(group);
+            Chat chat = await ServerCommunication.GetGroupChatAsync(group);
             bool isAPICallSuccessful = chat != Chat.NullInstance;
 
             if (!isAPICallSuccessful)

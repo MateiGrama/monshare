@@ -16,15 +16,24 @@ namespace monshare.Pages
     {
 
         private Group CurrentGroup;
+        private readonly GroupDetailVisualElementsGenerator groupDetailsFields;
 
         public GroupDescriptionPage(Group group)
         {
             InitializeComponent();
             CurrentGroup = group;
-
-            GroupDetailVisualElementsGenerator.CreateGroupDetailFields(group, true, GroupDetailsLayout);
+            groupDetailsFields = new GroupDetailVisualElementsGenerator();
+            groupDetailsFields.CreateGroupDetailFields(group, true, GroupDetailsLayout);
             DisplayToolbarItems();
             GenerateViewChatButton();
+        }
+
+        protected override void OnAppearing()
+        {
+            groupDetailsFields.GroupNameEntry.Text = CurrentGroup.Title;
+            groupDetailsFields.GroupDescriptionEditor.Text = CurrentGroup.Description;
+
+            base.OnAppearing();
         }
 
         private void GenerateViewChatButton()

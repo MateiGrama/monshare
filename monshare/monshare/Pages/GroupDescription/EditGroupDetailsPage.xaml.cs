@@ -15,12 +15,14 @@ namespace monshare.Pages
     public partial class EditGroupDetailsPage : ContentPage
     {
         private readonly Group group;
+        private readonly GroupDetailVisualElementsGenerator groupDetailsFields;
 
         public EditGroupDetailsPage(Group group)
         {
             InitializeComponent();
             this.group = group;
-            GroupDetailVisualElementsGenerator.CreateGroupDetailFields(group, false, GroupDetailsLayout);
+            groupDetailsFields = new GroupDetailVisualElementsGenerator();
+            groupDetailsFields.CreateGroupDetailFields(group, false, GroupDetailsLayout);
             GenerateSaveDiscardButtons();
 
         }
@@ -59,6 +61,21 @@ namespace monshare.Pages
 
         private async void SaveChangesButtonPressed(object sender, EventArgs e)
         {
+            string oldTitle = group.Title;
+            string oldDescription = group.Description;
+
+            group.Title = groupDetailsFields.GroupNameEntry.Text;
+            group.Description = groupDetailsFields.GroupDescriptionEditor.Text;
+
+            bool successfulCall = await ServerCommunication.UpdateGroup(group);
+
+            await DisplayAlert("Updated", (successfulCall ? "" : "not ") + "successful", "OK");
+
+            if (!successfulCall) {
+                group.Title = oldTitle;
+                group.Description = oldDescription;
+            }
+
             await Navigation.PopAsync();
         }
     }
