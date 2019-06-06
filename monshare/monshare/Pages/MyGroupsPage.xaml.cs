@@ -34,7 +34,7 @@ namespace monshare.Pages
             if (Groups.Count > 0)
             {
                 groupListLayout.Children.Clear();
-                Groups.ForEach(g => groupListLayout.Children.Add(GenericViews.GroupListElement(g)));
+                Groups.ForEach(async g => groupListLayout.Children.Add(await GenericViews.GroupListElement(g)));
 
                 Utils.Utils.DisplayVisualElement(groupListLayout, true);
                 Utils.Utils.DisplayVisualElement(resultsView, true);

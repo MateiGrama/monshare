@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Json;
 using System.Text;
+using System.Threading.Tasks;
+using monshare.Utils;
+using Xamarin.Essentials;
 
 namespace monshare.Models
 {
@@ -18,6 +21,14 @@ namespace monshare.Models
         public int OwnerId { get; internal set; }
         public double Latitude { get; internal set; }
         public double Longitude { get; internal set; }
+
+        internal async Task<double> GetDistanceInKm()
+        {
+            var userPostion = await Utils.Utils.GetLocationAfterCheckingPermisionsAsync();
+            return Xamarin.Essentials.Location.CalculateDistance(
+                userPostion.Latitude, userPostion.Longitude,
+                Latitude, Longitude, DistanceUnits.Kilometers);
+        }
 
         /*Propriety showing whether current user has joined the group.*/
         public bool HasJoined { get; internal set; }

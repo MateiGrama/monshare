@@ -16,7 +16,12 @@ namespace monshare
 
         private void loggedInStatusRouting()
         {
-            MainPage = new NavigationPage(new MainPage());
+            MainPage = new NavigationPage(new SearchPage())
+            {
+                BarTextColor = Color.FromHex("#ececeb"),
+                BarBackgroundColor = Color.FromHex("#351E29")
+            };
+
 
         }
 

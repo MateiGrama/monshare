@@ -1,35 +1,73 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="monshare.Pages.SearchPage">
-    <ContentPage.Content>
+             x:Class="monshare.Pages.SearchPage"
+             Title="MonShare">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem 
+            Name="My groups" 
+            Order="Secondary"
+            Clicked="MyGroupsButtonPressed"/>
+        <ToolbarItem 
+            Name="My account" 
+            Order="Secondary"
+            Clicked="MyAccountButtonPressed"/>
+        <ToolbarItem 
+            Name="Logout" 
+            Order="Secondary" 
+            Clicked="LogoutButtonPressed"/>
+        
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <x:Double x:Key="CreateGroupButtonHeight">60</x:Double>
+            <x:Double x:Key="NegCreateGroupButtonHeight">-60</x:Double>
+        </ResourceDictionary>
+    </ContentPage.Resources>
         <RelativeLayout HorizontalOptions="FillAndExpand"
                         x:Name="pageLayout">
+
+
+            <Image Source="pennant.png" 
+                   x:Name="pennant"
+                        RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+                        RelativeLayout.YConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+                        RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"/>
+
             <Frame Padding="10" Margin="10,10,10,0" x:Name="searchBar" HorizontalOptions="FillAndExpand"
+                   RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=pennant, Property=Height, Factor=1,Constant=20}"
                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1,Constant=0}">
                 <Entry x:Name="queryEntry"  Placeholder="Where do you wanna save money?" HorizontalOptions="FillAndExpand"
                        Completed="QueryEntryCompleted"/>
             </Frame>
 
-            <ActivityIndicator x:Name="activityIndicator"
+        <ActivityIndicator x:Name="activityIndicator"
                     RelativeLayout.WidthConstraint="{ConstraintExpression Type=Constant, Constant=30}"
                     RelativeLayout.HeightConstraint="{ConstraintExpression Type=Constant, Constant=30}"
                     RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5,Constant=-15}"
-                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.5,Constant=-15}"
+                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView,ElementName=pennant, Property=Height, Factor=1,Constant=-5}"
                     IsVisible="False"
                     Color="Red" 
                     IsRunning="true" />
 
-            <ScrollView  x:Name="resultsView"
-                         RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=searchBar, Property=Height,Factor=1,Constant=20}"
-                         RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"
-                         >
-                <StackLayout x:Name="resultLayout"
-                         Padding="5"
-                         HorizontalOptions="FillAndExpand">
-                </StackLayout>
-            </ScrollView>
-            
+        <StackLayout
+                    x:Name="CreateGroupButton"
+                    BackgroundColor="#351E29"
+                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"
+                    RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.1,Constant=0}}"
+                    RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=0.9,Constant=0}"
+                >
+                <Label Text="+ Create a group"
+                       TextColor="#ECECEB"
+                       HorizontalOptions="CenterAndExpand"
+                       VerticalOptions="CenterAndExpand"/>
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="CreateNewGroupTapped"/>
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
+
         </RelativeLayout>
-    </ContentPage.Content>
 </ContentPage>

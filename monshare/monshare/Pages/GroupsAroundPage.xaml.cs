@@ -32,7 +32,7 @@ namespace monshare.Pages
         {
             List<Group> groups = await ServerCommunication.GetGroupsAround();
             resultLayout.Children.Clear();
-            groups.ForEach(g => resultLayout.Children.Add(GenericViews.GroupListElement(g)));
+            groups.ForEach(async g => resultLayout.Children.Add(await GenericViews.GroupListElement(g)));
             
         }
     }

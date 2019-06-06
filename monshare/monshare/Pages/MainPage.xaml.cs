@@ -19,6 +19,7 @@ namespace monshare
         public MainPage()
         {
             InitializeComponent();
+
             CheckCredentials();
             Children.Add(new SearchPage());
             Children.Add(new GroupsAroundPage());

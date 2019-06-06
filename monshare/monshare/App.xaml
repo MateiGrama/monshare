@@ -6,6 +6,6 @@
              mc:Ignorable="d"
              x:Class="monshare.App">
     <Application.Resources>
-
+        
     </Application.Resources>
 </Application>

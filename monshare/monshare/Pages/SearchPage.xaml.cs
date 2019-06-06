@@ -14,22 +14,95 @@ namespace monshare.Pages
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class SearchPage : ContentPage
-	{
-        private bool ableToProcessInput;
+    {
+        private StackLayout resultLayout;
+        private StackLayout groupsAroundLayout;
+        private List<StackLayout> suggestionsLayouts = new List<StackLayout>();
         private Place selectedPlace = Place.DummyPlace;
+        private bool ableToProcessInput;
+        private bool freeToSuggest = true;
 
         public SearchPage ()
 		{
 			InitializeComponent ();
-            Title = "🔍 Find";
+            CheckCredentials();
 
+            intializeScrollView();
+
+            //Title = "🔍 Find";
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
             queryEntry.TextChanged += (s,a) => { ProcessingInput(); };
+            resetPageAsync();
+        }
+
+        private void resetPageAsync()
+        {
+            RemoveCurrentPredictionFromRelativeLayout();
+            loadGroupsAroundAsync();
+
+            resultLayout.IsVisible = false;
+            groupsAroundLayout.IsVisible = true;
+
+            pageLayout.RaiseChild((Layout)groupsAroundLayout.Parent);
+        }
+
+        private async void CheckCredentials()
+        {
+            if (!await ServerCommunication.isLoggedIn())
+            {
+                await Navigation.PushAsync(new AuthentificationPage());
+            }
+
+        }
+
+        private void intializeScrollView()
+        {
+            resultLayout = new StackLayout() { Padding = 20,
+                IsVisible = false,
+                HorizontalOptions = LayoutOptions.FillAndExpand };
+            ScrollView resultsScrollView = new ScrollView() {
+                Content = resultLayout
+            };
+
+            pageLayout.Children.Add(resultsScrollView, Constraint.RelativeToParent((parent) => {
+                return parent.X;
+            }), Constraint.RelativeToView(searchBar, (Parent, sibling) => {
+                return sibling.Y + sibling.Height + 30;
+            }), Constraint.RelativeToParent((parent) => {
+                return parent.Width;
+            }), Constraint.RelativeToView(searchBar, (parent, sibling) => {
+                return 0.9 * parent.Height - (sibling.Y + sibling.Height) -30;
+            }));;
+            pageLayout.RaiseChild(CreateGroupButton);
+
+
+            groupsAroundLayout = new StackLayout() { Padding = 20,
+                Margin = 20,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Orientation = StackOrientation.Horizontal,
+            };
+
+            ScrollView groupsAroundScrollView = new ScrollView()
+            {
+                Content = groupsAroundLayout,
+                Orientation = ScrollOrientation.Horizontal 
+            };
+
+            pageLayout.Children.Add(groupsAroundScrollView, Constraint.RelativeToParent((parent) => {
+                return parent.X;
+            }), Constraint.RelativeToView(searchBar, (Parent, sibling) => {
+                return sibling.Y + sibling.Height + 30;
+            }), Constraint.RelativeToParent((parent) => {
+                return parent.Width;
+            }), Constraint.RelativeToView(searchBar, (parent, sibling) => {
+                return 0.9 * parent.Height - (sibling.Y + sibling.Height) - 30;
+            })); ;
+            pageLayout.RaiseChild(groupsAroundScrollView);
+
         }
 
         private async void ProcessingInput()
@@ -38,6 +111,7 @@ namespace monshare.Pages
             await Task.Delay(250);
             if(old == queryEntry.Text)
             {
+                freeToSuggest = true;
                 ableToProcessInput = false;
                 LoadPredictions();
             }
@@ -53,6 +127,7 @@ namespace monshare.Pages
 
             const int suggestionFrameHeight = 30;
             StackLayout suggestionsLayout = new StackLayout() { Opacity = 0.9, Padding = new Thickness(10,2,10,0) , Spacing = 2 };
+            RemoveCurrentPredictionFromRelativeLayout();
 
             if (queryEntry.Text != null && queryEntry.Text != "")
             {
@@ -77,8 +152,11 @@ namespace monshare.Pages
 
                 }
             }
+            if (!freeToSuggest)
+            {
+                return;
+            }
 
-            RemoveCurrentPredictionFromRelativeLayout();
             pageLayout.Children.Add(suggestionsLayout, Constraint.RelativeToParent((parent) => {
                 return parent.X;
             }), Constraint.RelativeToView(searchBar, (Parent, sibling) => {
@@ -88,22 +166,47 @@ namespace monshare.Pages
             }), Constraint.RelativeToParent((parent) => {
                 return suggestionsLayout.Padding.VerticalThickness + suggestionsLayout.Children.Count * suggestionFrameHeight;
             }));
-            ableToProcessInput =  false;
+
+            ableToProcessInput = true;
+
+            suggestionsLayouts.Add(suggestionsLayout);
+        }
+
+        private void toggleShownGroupList()
+        {
+            Utils.Utils.DisplayVisualElement(resultLayout, !resultLayout.IsVisible);
+            Utils.Utils.DisplayVisualElement(groupsAroundLayout, !groupsAroundLayout.IsVisible);
+            if (resultLayout.IsVisible) {
+                pageLayout.RaiseChild((Layout)resultLayout.Parent);
+            }
+            else
+            {
+                pageLayout.RaiseChild((Layout)groupsAroundLayout.Parent);
+            }
+            pageLayout.RaiseChild(CreateGroupButton);
+            
         }
 
         private void RemoveCurrentPredictionFromRelativeLayout()
         {
-            if (pageLayout.Children[pageLayout.Children.Count - 1] != resultsView)
+            foreach (StackLayout s in suggestionsLayouts)
             {
-                pageLayout.Children.Remove(pageLayout.Children[pageLayout.Children.Count - 1]);
+                try
+                {
+                    pageLayout.Children.Remove(s);
+                }
+                catch { }
             }
+            suggestionsLayouts.Clear();
         }
 
         private void QueryEntryCompleted(object sender, EventArgs e)
         {
+            RemoveCurrentPredictionFromRelativeLayout();
             if (queryEntry.Text == null || queryEntry.Text == "" ) { 
                 return;
             }
+            freeToSuggest = false;
             loadGroupsAsync();
         }
 
@@ -112,13 +215,66 @@ namespace monshare.Pages
             toggleLoadingVisibility(true);
             List<Group> groups= await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
             resultLayout.Children.Clear();
-            groups.ForEach(g => resultLayout.Children.Add(GenericViews.GroupListElement(g)));
+            groups.ForEach(async g => resultLayout.Children.Add(await GenericViews.GroupListElement(g)));
+            toggleShownGroupList();
+            toggleLoadingVisibility(false);
+        }
+
+        private async void loadGroupsAroundAsync()
+        {
+            toggleLoadingVisibility(true);
+            List<Group> groups = await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
+            groupsAroundLayout.Children.Clear();
+            groups.ForEach(async g => groupsAroundLayout.Children.Add(await GenericViews.GroupCardList(g)));
             toggleLoadingVisibility(false);
         }
 
         private void toggleLoadingVisibility(bool show)
         {
             activityIndicator.IsVisible = show;
+        }
+
+        private async void CreateNewGroupTapped(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new CreateGroupPage());
+        }
+
+        private void SetGroupsAroundVisibility(bool show)
+        {
+            groupsAroundLayout.IsVisible = false;
+        }
+
+        /* IMPORTED FROM GMAIN PAGE*/
+        public async void LogoutButtonPressed(object sender, EventArgs args)
+        {
+            bool successfulCall = await ServerCommunication.logout();
+
+            await DisplayAlert("Logout", (successfulCall ? "" : "not ") + "successful", "OK");
+
+            if (successfulCall)
+            {
+                await Navigation.PushAsync(new AuthentificationPage());
+            }
+        }
+
+        public async void MyGroupsButtonPressed(object sender, EventArgs args)
+        {
+            await Navigation.PushAsync(new MyGroupsPage());
+        }
+
+        public async void SearchButtonPressed(object sender, EventArgs args)
+        {
+            await Navigation.PushAsync(new SearchPage());
+        }
+
+        public async void MyAccountButtonPressed(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new MyAccountPage());
+        }
+
+        private async void GroupsAroundPressed(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new GroupsAroundPage());
         }
     }
 }
