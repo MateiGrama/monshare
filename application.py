@@ -10,7 +10,7 @@ from utils.search_engine import levenshtein, Trie
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
 
-DEBUG = True
+DEBUG = False
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 # The default value in kilometres used when the user searches for groups.
