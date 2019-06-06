@@ -149,7 +149,7 @@ class Db:
                      from (
                          select topGroups.groupId, (case when userId = {1} then 1 else 0 end) as isMember 
                          from (
-                             select groupId from Groups where PlaceId = {0}) as topGroups
+                             select groupId from Groups where PlaceId = '{0}') as topGroups
                          inner join UserToGroup on UserToGroup.groupId=topGroups.groupId) as topGroups2
                      group by groupId) as topGroups3
                  join groups on topGroups3.groupId = groups.groupId
