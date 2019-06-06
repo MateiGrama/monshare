@@ -53,11 +53,10 @@ namespace monshare.Pages
         {
             if (await ServerCommunication.sendMessage(messageEntry.Text, group.GroupId))
             {
-                await DisplayAlert("Message Sent", "", "Ok");
                 addMessageInLayout(new Message() { SenderId = LocalStorage.GetUserId(), Text = messageEntry.Text });
-
                 scrollToBottom();
             }
+            messageEntry.Text = "";
         }
 
         private void addMessageInLayout(Message msg) {

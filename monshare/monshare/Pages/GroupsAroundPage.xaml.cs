@@ -18,6 +18,7 @@ namespace monshare.Pages
         public GroupsAroundPage()
         {
             InitializeComponent();
+            Title = "🗺️ Around";
         }
 
         protected override void OnAppearing()

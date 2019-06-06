@@ -29,6 +29,7 @@ namespace monshare.Utils
         private static readonly string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
         private static readonly string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
         private static readonly string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";
+        private static readonly string JOIN_GROUP_API = BASEURL + "/joinGroup";
         private static readonly string DELETE_GROUP_API = BASEURL + "/deleteGroup";
         private static readonly string CHECK_IS_LOGGED_IN = BASEURL + "/isLoggedIn";
         private static readonly string SEND_MESSAGE_API = BASEURL + "/sendMessage";
@@ -359,6 +360,26 @@ namespace monshare.Utils
             try
             {
                 //TODO: Update local cache to remove the group identified by @param groupId from MyGroups list
+                return result["status"] == SUCCESS;
+            }
+            catch (Exception e)
+            {
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
+            }
+            return false;
+        }
+
+        public static async Task<bool> JoinGroup(int groupId)
+        {
+            String url = JOIN_GROUP_API + "?" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
+                "group_id=" + groupId;
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
                 return result["status"] == SUCCESS;
             }
             catch (Exception e)

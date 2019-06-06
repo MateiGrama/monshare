@@ -102,16 +102,20 @@ namespace monshare.Pages
 
                 };
                 editToolbarItem.Clicked += EditGroupButtonPressed;
+                this.ToolbarItems.Add(editToolbarItem);
+            }
 
+            var leaveGroupToolbarItem = new ToolbarItem()
+            {
+                Text = "Leave Group",
+                Order = ToolbarItemOrder.Secondary
 
-                var leaveGroupToolbarItem = new ToolbarItem()
-                {
-                    Text = "Leave Group",
-                    Order = ToolbarItemOrder.Secondary
+            };
+            leaveGroupToolbarItem.Clicked += LeaveGroupClicked;
+            this.ToolbarItems.Add(leaveGroupToolbarItem);
 
-                };
-                leaveGroupToolbarItem.Clicked += LeaveGroupClicked;
-
+            if (Group.OwnerId == LocalStorage.GetUserId())
+            {
                 var deleteGroupToolbarItem = new ToolbarItem()
                 {
                     Text = "Delete group",
@@ -119,11 +123,9 @@ namespace monshare.Pages
 
                 };
                 deleteGroupToolbarItem.Clicked += DeleteGroupButtonPressed;
-
-                this.ToolbarItems.Add(editToolbarItem);
-                this.ToolbarItems.Add(leaveGroupToolbarItem);
                 this.ToolbarItems.Add(deleteGroupToolbarItem);
             }
+            
         }
 
         private async void ViewChatButtonClicked(object sender, EventArgs e)

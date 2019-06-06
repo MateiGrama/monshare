@@ -23,7 +23,7 @@ namespace monshare.Pages
 
             title.Text = group.Title;
             description.Text = group.Description;
-            targetNoPeople.Title = group.TargetNumberOfPeople.ToString();
+            targetNoPeople.SelectedItem = targetNoPeople.Items[group.TargetNumberOfPeople / 5 - 1];
 
             GenerateSaveDiscardButtons();
 
@@ -71,7 +71,7 @@ namespace monshare.Pages
             group.Description = description.Text;
             group.TargetNumberOfPeople = Int32.Parse(targetNoPeople.SelectedItem.ToString());
 
-            bool successfulCall = await ServerCommunication.UpdateGroup(group);
+            bool successfulCall = await ServerCommunication.UpdateGroup(group); 
 
             await DisplayAlert("Updated", (successfulCall ? "" : "not ") + "successful", "OK");
 

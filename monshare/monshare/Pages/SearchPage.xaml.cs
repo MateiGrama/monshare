@@ -21,7 +21,9 @@ namespace monshare.Pages
         public SearchPage ()
 		{
 			InitializeComponent ();
-		}
+            Title = "🔍 Find";
+
+        }
 
         protected override void OnAppearing()
         {
