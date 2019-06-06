@@ -81,7 +81,6 @@ namespace monshare.Pages
 
 
             groupsAroundLayout = new StackLayout() { Padding = 20,
-                Margin = 20,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Orientation = StackOrientation.Horizontal,
             };

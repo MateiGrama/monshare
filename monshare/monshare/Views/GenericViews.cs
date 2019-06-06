@@ -96,7 +96,7 @@ namespace monshare.Views
 
             detailStackLayout.Children.Add(new Label()
             {
-                Text = distance > 0.15 ? string.Format("🏃‍♀️ {0:N2}km away", distance) : "🚶‍♂️ Near you",
+                Text = distance > 0.15 ? string.Format("🏃‍♀️ {0:N2}km away", distance) : "🚶‍♂️Near you",
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                 HorizontalOptions = LayoutOptions.StartAndExpand
             });
@@ -148,6 +148,8 @@ namespace monshare.Views
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Padding = 30,
+                WidthRequest = Application.Current.MainPage.Width * 0.6,
+                Margin = new Thickness(10, 20),
                 Content = frameStackLayout,
             };
 
