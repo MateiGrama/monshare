@@ -22,6 +22,7 @@ steps:
     pip3.7 install --upgrade pip
     pip3.7 install setuptools
     pip3.7 install -r requirements.txt
+    pip3.7 install numpy
 
   # The displayName is shows in the pipeline UI when a build runs
   displayName: 'Install Dependencies'
