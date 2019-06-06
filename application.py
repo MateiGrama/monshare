@@ -244,10 +244,10 @@ def get_groups():
 
         if place_id is not None and place_id != '':
             # Search for a place
-            rows = db.get_group_located_at(place_id)
+            rows = db.get_group_located_at(place_id, user_id)
         else:
             # Get groups around given position
-            rows = db.get_groups_around(lat, long, DEFAULT_RANGE)
+            rows = db.get_groups_around(user_id, lat, long, DEFAULT_RANGE)
 
         columns = [column_description[0] for column_description in cursor.description]
 
