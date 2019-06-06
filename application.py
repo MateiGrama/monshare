@@ -213,12 +213,24 @@ def get_groups():
 
     def get_filtered_list2(l, keys):
         new_list = []
-
         for key in keys:
             for k in l:
                 if k[1] == key:
                     new_list.append(k)
         return new_list
+
+    def merge(suggested_rows, rows):
+        def fetch_groups(unique_group_ids, ans, list_of_groups):
+            for r in list_of_groups:
+                if r[0] not in unique_group_ids:
+                    unique_group_ids.add(r[0])
+                    ans.append(r)
+
+        final_answer = []
+        added_groups = set()
+        fetch_groups(added_groups, final_answer, suggested_rows)
+        fetch_groups(added_groups, final_answer, rows)
+        return final_answer
 
     user_id, session_id, lat, long, query, place_id = get_fields('user_id', 'session_id', 'lat',
                                                                  'long', 'query', 'place_id')
@@ -249,7 +261,16 @@ def get_groups():
         if place_id is None or place_id == '':
             trie = Trie(item[1] for item in rows)
             suggestions = trie.get_auto_suggestions(query)
-            rows = get_filtered_list2(rows, suggestions)
+            suggested_rows = get_filtered_list2(rows, suggestions)
+
+            _dict = dict()
+            rows = [tuple([items for items in row]) for row in rows]
+
+            for result in rows:
+                _dict[result] = levenshtein(query, result[1])
+
+            rows = get_filtered_list(_dict, edit_distance=2)
+            rows = merge(suggested_rows, rows)
 
     except Exception as e:
         return error_status_response("error while getting groups. Exception was: " + str(e))
@@ -281,9 +302,8 @@ def get_my_groups():
 
 @app.route("/joinGroup")
 def join_group():
-    user_id = request.args.get('user_id')
-    session_id = request.args.get('session_id')
-    group_id = request.args.get('group_id')
+    user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
+
     try:
         if not user_id or not session_id:
             return error_status_response("invalid id or sessionid")
