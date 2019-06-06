@@ -1,4 +1,5 @@
-﻿using monshare.Utils;
+﻿using monshare.Models;
+using monshare.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +14,20 @@ namespace monshare.Pages.GroupDescription
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class groupMembersPage : ContentPage
     {
-        public groupMembersPage(int group_id)
+        public groupMembersPage(int groupId)
         {
             InitializeComponent();
-            DisplayGroupMembers(group_id);
+            DisplayGroupMembers(groupId);
         }
 
         private async void DisplayGroupMembers(int groupId)
         {
-            List<string> groupMembersData = new List<string>();
-            (await ServerCommunication.getGroupMembers(groupId)).ForEach(user =>
-            groupMembersData.Add(user.FirstName + " " + user.LastName + " id: " + user.UserId.ToString()));
+            List<User> members = await ServerCommunication.getGroupMembers(groupId);
 
             var listView = new ListView()
             {
-                ItemsSource = groupMembersData
+                ItemsSource = members.Select(user => 
+                    user.FirstName + " " + user.LastName + " id: " + user.UserId.ToString())
             };
 
             PageLayout.Children.Add(listView);
