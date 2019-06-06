@@ -78,17 +78,21 @@ namespace monshare.Pages
                 Margin = new Thickness(30),
                 Content = stackLayout,
             };
-            var viewChatButton = new Button()
-            {
-                Text = "View chat",
-                HorizontalOptions = LayoutOptions.Center
-            };
-            viewChatButton.Clicked += ViewChatButtonClicked;
 
             GroupDetailsLayout.Children.Clear();
 
             GroupDetailsLayout.Children.Add(frame);
-            GroupDetailsLayout.Children.Add(viewChatButton);
+
+            if (Group.HasJoined)
+            {
+                var viewChatButton = new Button()
+                {
+                    Text = "View chat",
+                    HorizontalOptions = LayoutOptions.Center
+                };
+                viewChatButton.Clicked += ViewChatButtonClicked;
+                GroupDetailsLayout.Children.Add(viewChatButton);
+            }
         }
 
         private void DisplayToolbarItems()
@@ -105,14 +109,17 @@ namespace monshare.Pages
                 this.ToolbarItems.Add(editToolbarItem);
             }
 
-            var leaveGroupToolbarItem = new ToolbarItem()
+            if (Group.HasJoined)
             {
-                Text = "Leave Group",
-                Order = ToolbarItemOrder.Secondary
+                var leaveGroupToolbarItem = new ToolbarItem()
+                {
+                    Text = "Leave Group",
+                    Order = ToolbarItemOrder.Secondary
 
-            };
-            leaveGroupToolbarItem.Clicked += LeaveGroupClicked;
-            this.ToolbarItems.Add(leaveGroupToolbarItem);
+                };
+                leaveGroupToolbarItem.Clicked += LeaveGroupClicked;
+                this.ToolbarItems.Add(leaveGroupToolbarItem);
+            }
 
             if (Group.OwnerId == LocalStorage.GetUserId())
             {

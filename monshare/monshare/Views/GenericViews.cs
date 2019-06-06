@@ -28,11 +28,18 @@ namespace monshare.Views
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
             });
 
-            Button joinGroupButton = new Button() { Text = "J🌟in"};
-            joinGroupButton.Clicked += async (s, e) => { await ServerCommunication.JoinGroup(group.GroupId); };
-
             wrapperLayout.Children.Add(stackLayout);
-            wrapperLayout.Children.Add(joinGroupButton);
+
+            if (!group.HasJoined)
+            {
+                Button joinGroupButton = new Button() { Text = "Join" };
+                joinGroupButton.Clicked += async (s, e) => {
+                    if (await ServerCommunication.JoinGroup(group.GroupId)) {
+                        wrapperLayout.Children.Remove(joinGroupButton);
+                    }
+                };
+                wrapperLayout.Children.Add(joinGroupButton);
+            }
 
             Frame frame = new Frame()
             {

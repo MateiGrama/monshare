@@ -18,5 +18,9 @@ namespace monshare.Models
         public int OwnerId { get; internal set; }
         public double Latitude { get; internal set; }
         public double Longitude { get; internal set; }
+
+        /*Propriety showing whether current user has joined the group.*/
+        public bool HasJoined { get; internal set; }
+
     }
 }

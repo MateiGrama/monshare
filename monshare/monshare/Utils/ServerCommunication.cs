@@ -322,6 +322,12 @@ namespace monshare.Utils
                 newGroup.TargetNumberOfPeople = group["targetNum"] ?? 1;
                 newGroup.Latitude = group["lat"] ?? 0;
                 newGroup.Longitude = group["long"] ?? 0;
+                newGroup.HasJoined = true;
+                try
+                {
+                    newGroup.HasJoined = group["isMember"];
+                }
+                catch { }
 
                 result.Add(newGroup);
             }
