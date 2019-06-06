@@ -29,9 +29,11 @@ namespace monshare.Utils
         private static readonly string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
         private static readonly string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
         private static readonly string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";
+        private static readonly string JOIN_GROUP_API = BASEURL + "/joinGroup";
         private static readonly string DELETE_GROUP_API = BASEURL + "/deleteGroup";
         private static readonly string CHECK_IS_LOGGED_IN = BASEURL + "/isLoggedIn";
         private static readonly string SEND_MESSAGE_API = BASEURL + "/sendMessage";
+        private static readonly string UPDATE_GROUP_GROUP_API = BASEURL + "/updateGroup";
 
         private static async Task<string> GetUserIDSeesionIdLocationAPICallParams () {  
             var pos = await Utils.GetLocationAfterCheckingPermisionsAsync();
@@ -41,8 +43,6 @@ namespace monshare.Utils
                    "lat="        + pos.Latitude                + "&" +
                    "long="       + pos.Longitude               ;
         }
-            
-
 
         public static async Task<User> Login(string email, string password)
         {
@@ -93,13 +93,33 @@ namespace monshare.Utils
 
             try
             {
-             return result["status"] == SUCCESS;
+                return result["status"] == SUCCESS;
             }
             catch { }
             return false;
         }
 
-        internal static async Task<Chat> getGroupChatAsync(Group group)
+        internal static async Task<bool> UpdateGroup(Group group)
+        {
+            string url = UPDATE_GROUP_GROUP_API + "?" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "group_id=" + group.GroupId + "&" +
+                "group_name=" + group.Title + "&" +
+                "group_description=" + group.Description + "&" +
+                "target=" + group.TargetNumberOfPeople.ToString();
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch { }
+            return false;
+        }
+
+        internal static async Task<Chat> GetGroupChatAsync(Group group)
         {
             Chat chat = Chat.NullInstance;
             List<Message> messages = new List<Message>();
@@ -118,14 +138,16 @@ namespace monshare.Utils
             {
                 if (result["status"] == SUCCESS)
                 {
-                    chat = new Chat {
+                    chat = new Chat
+                    {
                         group = group,
                         messages = new List<Message>()
                     };
 
-                    foreach(JsonValue jsonMessage in result["messages"])
+                    foreach (JsonValue jsonMessage in result["messages"])
                     {
-                        chat.messages.Add(new Message() {
+                        chat.messages.Add(new Message()
+                        {
                             SenderId = jsonMessage["msg_sender_id"],
                             Text = jsonMessage["msg"],
                             DateTime = DateTime.Parse(jsonMessage["date_time"])
@@ -145,7 +167,7 @@ namespace monshare.Utils
 
             return chat;
         }
-      
+
         public static async Task<User> Register(string email, string firstName, string lastName, string password)
         {
             User newUser = User.NullInstance;
@@ -185,7 +207,7 @@ namespace monshare.Utils
             }
             return newUser;
         }
-      
+
         public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople)
         {
             var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
@@ -218,7 +240,7 @@ namespace monshare.Utils
             }
             return false;
         }
-      
+
         public static async Task<List<Group>> GetMyGroupsAsync()
         {
             var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
@@ -255,8 +277,8 @@ namespace monshare.Utils
             {
                 return new List<Group>();
             }
-            string url = SEARCH_GRPUPS_API + "?" + await GetUserIDSeesionIdLocationAPICallParams()
-                                   + "querry="   + query + "&"
+            string url = SEARCH_GRPUPS_API + "?" + await GetUserIDSeesionIdLocationAPICallParams() + "&" 
+                                   + "query="   + query + "&"
                                    + "place_id=" + placeId;
 
             return await RequestGroupList(url);
@@ -298,6 +320,8 @@ namespace monshare.Utils
                 newGroup.MembersNumber = group["MembersNumber"] ?? 1;
                 newGroup.OwnerId = group["ownerId"];
                 newGroup.TargetNumberOfPeople = group["targetNum"] ?? 1;
+                newGroup.Latitude = group["lat"] ?? 0;
+                newGroup.Longitude = group["long"] ?? 0;
 
                 result.Add(newGroup);
             }
@@ -345,11 +369,32 @@ namespace monshare.Utils
             return false;
         }
 
-        public static async Task<bool> isLoggedIn() {
+        public static async Task<bool> JoinGroup(int groupId)
+        {
+            String url = JOIN_GROUP_API + "?" +
+                "user_id=" + LocalStorage.GetUserId() + "&" +
+                "session_id=" + LocalStorage.GetSessionId() + "&" +
+                "group_id=" + groupId;
+
+            JsonValue result = await GetResponse(url);
+
+            try
+            {
+                return result["status"] == SUCCESS;
+            }
+            catch (Exception e)
+            {
+                await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
+            }
+            return false;
+        }
+
+        public static async Task<bool> isLoggedIn()
+        {
             string url = CHECK_IS_LOGGED_IN + "?" +
                "user_id=" + LocalStorage.GetUserId() + "&" +
                "session_id=" + LocalStorage.GetSessionId();
-            
+
             JsonValue result = await GetResponse(url);
 
             try
@@ -400,8 +445,8 @@ namespace monshare.Utils
             }
             return false;
         }
-        
-      
+
+
         internal static async Task<JsonValue> GetResponse(string url)
         {
             HttpClient client = new HttpClient();

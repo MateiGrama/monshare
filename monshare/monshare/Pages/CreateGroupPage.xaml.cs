@@ -13,6 +13,7 @@ namespace monshare.Pages
         {
             InitializeComponent();
             timePicker.Time = DateTime.Now.TimeOfDay;
+            Title = "➕ Create";
         }
 
         private async void CreateGroupClicked(object sender, EventArgs e)

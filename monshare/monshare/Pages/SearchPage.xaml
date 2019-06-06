@@ -26,10 +26,7 @@
                          >
                 <StackLayout x:Name="resultLayout"
                          Padding="5"
-                         HorizontalOptions="FillAndExpand"
-                         >
-
-
+                         HorizontalOptions="FillAndExpand">
                 </StackLayout>
             </ScrollView>
             

@@ -7,6 +7,7 @@ namespace monshare.Models
 {
     public class Group
     {
+
         public int GroupId { get; internal set; }
         public string Title { get; internal set; }
         public string Description { get; internal set; }
@@ -15,5 +16,7 @@ namespace monshare.Models
         public int MembersNumber { get; internal set; }
         public int TargetNumberOfPeople { get; internal set; }
         public int OwnerId { get; internal set; }
+        public double Latitude { get; internal set; }
+        public double Longitude { get; internal set; }
     }
 }

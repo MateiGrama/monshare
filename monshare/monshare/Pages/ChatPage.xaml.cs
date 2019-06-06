@@ -31,7 +31,7 @@ namespace monshare.Pages
 
         private async void loadMessagesAsync()
         {
-            Chat chat = await ServerCommunication.getGroupChatAsync(group);
+            Chat chat = await ServerCommunication.GetGroupChatAsync(group);
             bool isAPICallSuccessful = chat != Chat.NullInstance;
 
             if (!isAPICallSuccessful)
@@ -53,11 +53,10 @@ namespace monshare.Pages
         {
             if (await ServerCommunication.sendMessage(messageEntry.Text, group.GroupId))
             {
-                await DisplayAlert("Message Sent", "", "Ok");
                 addMessageInLayout(new Message() { SenderId = LocalStorage.GetUserId(), Text = messageEntry.Text });
-
                 scrollToBottom();
             }
+            messageEntry.Text = "";
         }
 
         private void addMessageInLayout(Message msg) {

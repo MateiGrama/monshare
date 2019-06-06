@@ -16,12 +16,14 @@ namespace monshare.Pages
 	public partial class SearchPage : ContentPage
 	{
         private bool ableToProcessInput;
-        private Place selectedPlace = new Place() { Name = ""}; 
+        private Place selectedPlace = Place.DummyPlace;
 
         public SearchPage ()
 		{
 			InitializeComponent ();
-		}
+            Title = "🔍 Find";
+
+        }
 
         protected override void OnAppearing()
         {
@@ -108,7 +110,7 @@ namespace monshare.Pages
         private async void loadGroupsAsync()
         {
             toggleLoadingVisibility(true);
-            List<Group> groups= await ServerCommunication.GetMyGroupsAsync();
+            List<Group> groups= await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
             resultLayout.Children.Clear();
             groups.ForEach(g => resultLayout.Children.Add(GenericViews.GroupListElement(g)));
             toggleLoadingVisibility(false);

@@ -5,6 +5,7 @@ using System.Text;
 using Xamarin.Forms;
 using monshare.Pages;
 using System.Threading.Tasks;
+using monshare.Utils;
 
 namespace monshare.Views
 {
@@ -13,8 +14,8 @@ namespace monshare.Views
         internal static View GroupListElement(Group group)
         {
 
-            StackLayout stackLayout = new StackLayout();
-
+            StackLayout stackLayout = new StackLayout() { HorizontalOptions = LayoutOptions.FillAndExpand};
+            StackLayout wrapperLayout = new StackLayout() { Orientation = StackOrientation.Horizontal };
             stackLayout.Children.Add(new Label()
             {
                 Text = "👋 " + group.Title,
@@ -27,17 +28,22 @@ namespace monshare.Views
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
             });
 
+            Button joinGroupButton = new Button() { Text = "J🌟in"};
+            joinGroupButton.Clicked += async (s, e) => { await ServerCommunication.JoinGroup(group.GroupId); };
+
+            wrapperLayout.Children.Add(stackLayout);
+            wrapperLayout.Children.Add(joinGroupButton);
+
             Frame frame = new Frame()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Padding = 30,
-                Margin = new Thickness(20, 3),
-                Content = stackLayout,
+                Content = wrapperLayout,
             };
 
             TapGestureRecognizer gestureRecognizer = new TapGestureRecognizer();
             gestureRecognizer.Tapped += async (s, e) => await Application.Current.MainPage.Navigation.PushAsync(new GroupDescriptionPage(group));
-            frame.GestureRecognizers.Add(gestureRecognizer);
+            stackLayout.GestureRecognizers.Add(gestureRecognizer);
 
             return frame;
             

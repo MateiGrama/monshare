@@ -10,5 +10,7 @@ namespace monshare.Models
         public string Name { get; internal set; }
         public Location Location { get; internal set; }
 
+        public static Place DummyPlace = new Place() { Id = "", Name = "", Location = null };
+
     }
 }

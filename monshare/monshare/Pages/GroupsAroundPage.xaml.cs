@@ -18,6 +18,7 @@ namespace monshare.Pages
         public GroupsAroundPage()
         {
             InitializeComponent();
+            Title = "🗺️ Around";
         }
 
         protected override void OnAppearing()
@@ -29,7 +30,7 @@ namespace monshare.Pages
 
         private async void loadGroupsAsync()
         {
-            List<Group> groups = await ServerCommunication.GetMyGroupsAsync();
+            List<Group> groups = await ServerCommunication.GetGroupsAround();
             resultLayout.Children.Clear();
             groups.ForEach(g => resultLayout.Children.Add(GenericViews.GroupListElement(g)));
             
