@@ -33,7 +33,7 @@ namespace monshare.Pages
 
             if (APICallResult)
             {
-                await Navigation.PopAsync();
+                await Navigation.PushAsync(new MyGroupsPage());
             }
         }
     }
