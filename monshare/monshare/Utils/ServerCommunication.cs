@@ -27,6 +27,7 @@ namespace monshare.Utils
         private static readonly string SEARCH_GRPUPS_API =GET_GROUPS_AROUND_API;
         private static readonly string GET_GROUP_CHAT_API = BASEURL + "/getGroupChat";
         private static readonly string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
+        private static readonly string GET_GROUP_MEMBERS_API = BASEURL + "/getGroupMembers";
         private static readonly string LEAVE_GROUP_API = BASEURL + "/leaveGroup";
         private static readonly string DELETE_ACCOUNT_API = BASEURL + "/deleteAccount";
         private static readonly string JOIN_GROUP_API = BASEURL + "/joinGroup";
@@ -117,6 +118,39 @@ namespace monshare.Utils
             }
             catch { }
             return false;
+        }
+
+        internal static async Task<List<User>> getGroupMembers(int groupId)
+        {
+            String url = GET_GROUP_MEMBERS_API + "?" +
+            "user_id=" + LocalStorage.GetUserId() + "&" +
+            "session_id=" + LocalStorage.GetSessionId() + "&" +
+            "group_id=" + groupId.ToString();
+
+            JsonValue result = await GetResponse(url);
+
+            List<User> members = new List<User>();
+
+            try
+            {
+                if (result["status"] == SUCCESS)
+                {
+                    foreach (JsonValue user in result["groups"])
+                    {
+                        members.Add(new User()
+                        {
+                            UserId = user["UserId"],
+                            FirstName = user["FirstName"],
+                            LastName = user["LastName"]
+                        });
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return members;
         }
 
         internal static async Task<Chat> GetGroupChatAsync(Group group)

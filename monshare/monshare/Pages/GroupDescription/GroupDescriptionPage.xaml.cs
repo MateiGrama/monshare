@@ -1,4 +1,5 @@
 ﻿using monshare.Models;
+using monshare.Pages.GroupDescription;
 using monshare.Utils;
 using System;
 using System.Collections.Generic;
@@ -97,6 +98,12 @@ namespace monshare.Pages
 
         private void DisplayToolbarItems()
         {
+
+            if (!Group.HasJoined)
+            {
+                return;
+            }
+
             if (Group.OwnerId == LocalStorage.GetUserId())
             {
                 var editToolbarItem = new ToolbarItem()
@@ -109,17 +116,23 @@ namespace monshare.Pages
                 this.ToolbarItems.Add(editToolbarItem);
             }
 
-            if (Group.HasJoined)
+            var groupMembersToolbarItem = new ToolbarItem()
             {
-                var leaveGroupToolbarItem = new ToolbarItem()
-                {
-                    Text = "Leave Group",
-                    Order = ToolbarItemOrder.Secondary
+                Text = "Group members",
+                Order = ToolbarItemOrder.Secondary
 
-                };
-                leaveGroupToolbarItem.Clicked += LeaveGroupClicked;
-                this.ToolbarItems.Add(leaveGroupToolbarItem);
-            }
+            };
+            groupMembersToolbarItem.Clicked += GroupMembersClicked;
+            this.ToolbarItems.Add(groupMembersToolbarItem);
+
+            var leaveGroupToolbarItem = new ToolbarItem()
+            {
+                Text = "Leave Group",
+                Order = ToolbarItemOrder.Secondary
+
+            };
+            leaveGroupToolbarItem.Clicked += LeaveGroupClicked;
+            this.ToolbarItems.Add(leaveGroupToolbarItem);
 
             if (Group.OwnerId == LocalStorage.GetUserId())
             {
@@ -132,6 +145,7 @@ namespace monshare.Pages
                 deleteGroupToolbarItem.Clicked += DeleteGroupButtonPressed;
                 this.ToolbarItems.Add(deleteGroupToolbarItem);
             }
+            
             
         }
 
@@ -156,6 +170,11 @@ namespace monshare.Pages
                     await Navigation.PopAsync();
                 }
             }
+        }
+
+        private async void GroupMembersClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new groupMembersPage(Group.GroupId));
         }
 
 
