@@ -10,7 +10,7 @@ from utils.search_engine import levenshtein, Trie
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
 
-DEBUG = False
+DEBUG = True
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 # The default value in kilometres used when the user searches for groups.
@@ -259,7 +259,8 @@ def get_groups():
 
         # Search for a specific group
         if place_id is None or place_id == '':
-            trie = Trie(item[1] for item in rows)
+            query = query.lower()
+            trie = Trie(item[1].lower() for item in rows)
             suggestions = trie.get_auto_suggestions(query)
             suggested_rows = get_filtered_list2(rows, suggestions)
 
@@ -267,7 +268,7 @@ def get_groups():
             rows = [tuple([items for items in row]) for row in rows]
 
             for result in rows:
-                _dict[result] = levenshtein(query, result[1])
+                _dict[result] = levenshtein(query, result[1].lower())
 
             rows = get_filtered_list(_dict, edit_distance=2)
             rows = merge(suggested_rows, rows)
