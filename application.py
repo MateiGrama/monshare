@@ -279,6 +279,24 @@ def get_groups():
     return group_list_to_json(rows, columns)
 
 
+@app.route("/getGroupMembers")
+def get_group_members():
+    user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
+
+    if not (user_id and session_id):
+        return error_status_response("invalid id or session id")
+
+    try:
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
+        rows = db.get_group_members(group_id)
+        columns = [column_description[0] for column_description in cursor.description]
+
+        return group_list_to_json(rows, columns)
+    except:
+        return error_status_response("Error while getting group members.")
+
+
 @app.route("/getMyGroups")
 def get_my_groups():
     user_id, session_id = get_fields('user_id', 'session_id')

@@ -95,7 +95,7 @@ class Db:
         return self.cursor.fetchone()
 
     def get_group_members(self, group_id):
-        self.cursor.execute(""" select Users.UserId
+        self.cursor.execute(""" select Users.UserId, Users.FirstName, Users.LastName
                                 from Users
                                 join UserToGroup on UserToGroup.UserId = Users.UserId
                                 where UserToGroup.GroupId = {}
