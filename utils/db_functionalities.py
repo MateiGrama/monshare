@@ -118,16 +118,16 @@ class Db:
         earth_radius_in_km = 6371
         self.cursor.execute(
             """
-             select topGroups3.GroupId, Title, Description, CreationDateTime, EndDateTime, ownerId, lat, long, 
-                    MembersNumber, targetNum, groupRange, PlaceId, isMember 
+             select topGroups3.GroupId, Title, Description, CreationDateTime, EndDateTime, ownerId, lat, long,
+                    MembersNumber, targetNum, groupRange, PlaceId, isMember
              from (
-                select groupId, sum(isMember) as isMember 
+                select groupId, sum(isMember) as isMember
                 from (
-                    select topGroups.groupId, (case when userId = {4} then 1 else 0 end) as isMember 
+                    select topGroups.groupId, (case when userId = {4} then 1 else 0 end) as isMember
                     from (
-                        select TOP 50 groupId 
+                        select TOP 50 groupId
                         from (
-                            select *, ( {0} * acos(cos(radians({1})) * cos(radians(lat)) * cos(radians(long) 
+                            select *, ( {0} * acos(cos(radians({1})) * cos(radians(lat)) * cos(radians(long)
                                                     - radians({2})) + sin(radians({1})) * sin(radians(lat)))
                                       ) as Distance
                             from Groups) as ResultTable

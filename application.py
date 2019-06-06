@@ -211,11 +211,11 @@ def get_groups():
     def get_filtered_list(l, edit_distance=2):
         return [k for k, v in l.items() if v <= edit_distance]
 
-    def get_filtered_list2(l, keys):
+    def get_filtered_list2(rows, keys):
         new_list = []
         for key in keys:
-            for k in l:
-                if k[1] == key:
+            for k in rows:
+                if key in k[1].lower():
                     new_list.append(k)
         return new_list
 
@@ -270,7 +270,7 @@ def get_groups():
             for result in rows:
                 _dict[result] = levenshtein(query, result[1].lower())
 
-            rows = get_filtered_list(_dict, edit_distance=2)
+            rows = get_filtered_list(_dict, edit_distance=3)
             rows = merge(suggested_rows, rows)
 
     except Exception as e:
