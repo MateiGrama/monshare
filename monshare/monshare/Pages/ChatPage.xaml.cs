@@ -16,6 +16,7 @@ namespace monshare.Pages
 	public partial class ChatPage : ContentPage
 	{
         Group group;
+        List<User> members;
 
 		public ChatPage (Group group)
 		{
@@ -31,6 +32,7 @@ namespace monshare.Pages
 
         private async void loadMessagesAsync()
         {
+            members = await ServerCommunication.getGroupMembers(group.GroupId);
             Chat chat = await ServerCommunication.GetGroupChatAsync(group);
             bool isAPICallSuccessful = chat != Chat.NullInstance;
 
@@ -71,9 +73,25 @@ namespace monshare.Pages
                 };
 
                 StackLayout stack = new StackLayout() { HorizontalOptions = LayoutOptions.FillAndExpand };
+                if (msg.SenderId != LocalStorage.GetUserId())
+                {
+                    stack.Children.Add(new Label() { Text = getSenderName(msg.SenderId), Font = Font.SystemFontOfSize(15, FontAttributes.Bold) });
+                }
                 stack.Children.Add(new Label() { Text = msg.Text });
                 msgFrame.Content = stack;
                 chatLayout.Children.Add(msgFrame);
+        }
+
+        private string getSenderName(int senderId)
+        {
+            foreach (User user in members)
+            {
+                if (user.UserId == senderId) {
+                    return user.FirstName + " " + user.LastName;
+                }
+            }
+
+            return "Random User";
         }
 
         private async void scrollToBottom()
