@@ -118,8 +118,8 @@ class Db:
         earth_radius_in_km = 6371
         self.cursor.execute(
             """
-             select topGroups3.groupId, title, description, creationDatetime, endDatetime, ownerId, lat, long, 
-                    membersNumber, targetNum, groupRange, placeId, isMember 
+             select topGroups3.GroupId, Title, Description, CreationDateTime, EndDateTime, ownerId, lat, long, 
+                    MembersNumber, targetNum, groupRange, PlaceId, isMember 
              from (
                 select groupId, sum(isMember) as isMember 
                 from (
@@ -133,7 +133,7 @@ class Db:
                             from Groups) as ResultTable
                             where ResultTable.Distance < {3}
                         order by ResultTable.Distance asc) as topGroups
-                    inner join UserToGroup on UserToGroup.groupId=topGroups.groupId) as topGroups2
+                    join UserToGroup on UserToGroup.groupId=topGroups.groupId) as topGroups2
                 group by groupId) as topGroups3
             join groups on topGroups3.groupId = groups.groupId
             """.format(earth_radius_in_km, lat, long, default_range, user_id))
@@ -142,16 +142,16 @@ class Db:
     def get_group_located_at(self, place_id, user_id):
         self.cursor.execute(
             """ 
-             select topGroups3.groupId, title, description, creationDatetime, endDatetime, ownerId, lat, long, 
-                         membersNumber, targetNum, groupRange, placeId, isMember 
-                  from (
-                     select groupId, sum(isMember) as isMember 
-                     from (
-                         select topGroups.groupId, (case when userId = {1} then 1 else 0 end) as isMember 
-                         from (
-                             select groupId from Groups where PlaceId = '{0}') as topGroups
-                         inner join UserToGroup on UserToGroup.groupId=topGroups.groupId) as topGroups2
-                     group by groupId) as topGroups3
-                 join groups on topGroups3.groupId = groups.groupId
+             select topGroups3.GroupId, Title, Description, CreationDateTime, EndDateTime, ownerId, lat, long,
+                    MembersNumber, targetNum, groupRange, PlaceId, isMember 
+             from (
+                select groupId, sum(isMember) as isMember 
+                from (
+                    select topGroups.groupId, (case when userId = {1} then 1 else 0 end) as isMember 
+                    from (
+                        select groupId from Groups where PlaceId = '{0}') as topGroups
+                    inner join UserToGroup on UserToGroup.groupId=topGroups.groupId) as topGroups2
+             group by groupId) as topGroups3
+             join groups on topGroups3.groupId = groups.groupId
             """.format(place_id, user_id))
         return self.cursor.fetchall()
