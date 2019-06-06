@@ -35,12 +35,13 @@ def group_list_to_json(rows, columns):
     try:
         groups = []
         for row in rows:
+            row = list(row)
             if len(row) > 5:
                 if not row[3] is None:
                     row[3] = row[3].strftime('%Y-%m-%dT%H:%M:%S.%f')
                 if not row[4] is None:
                     row[4] = row[4].strftime('%Y-%m-%dT%H:%M:%S.%f')
-            groups.append(dict(zip(columns, row)))
+            groups.append(dict(zip(columns, tuple(row))))
         result = {'status': 'success', 'groups': groups}
         return json.dumps(result)
     except:
