@@ -152,6 +152,7 @@ namespace monshare.Pages
                 if (await ServerCommunication.LeaveGroupAsync(Group.GroupId))
                 {
                     await DisplayAlert("Group Left", "You have successfully left the group", "OK");
+                    Group.HasJoined = false;
                     await Navigation.PopAsync();
                 }
             }

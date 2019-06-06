@@ -36,6 +36,7 @@ namespace monshare.Views
                 joinGroupButton.Clicked += async (s, e) => {
                     if (await ServerCommunication.JoinGroup(group.GroupId)) {
                         wrapperLayout.Children.Remove(joinGroupButton);
+                        group.HasJoined = true;
                     }
                 };
                 wrapperLayout.Children.Add(joinGroupButton);
