@@ -12,7 +12,7 @@ namespace monshare.Pages
         public CreateGroupPage()
         {
             InitializeComponent();
-            timePicker.Time = DateTime.Now.TimeOfDay;
+            timePicker.Time = DateTime.Now.AddDays(1).TimeOfDay;
             Title = "➕ Create";
         }
 

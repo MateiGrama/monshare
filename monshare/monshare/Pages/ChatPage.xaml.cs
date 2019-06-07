@@ -96,7 +96,7 @@ namespace monshare.Pages
 
         private async void scrollToBottom()
         {
-            await chatScrollView.ScrollToAsync(chatLayout, ScrollToPosition.End, true);
+            await chatScrollView.ScrollToAsync(chatLayout, ScrollToPosition.End, false);
         }
 
     }

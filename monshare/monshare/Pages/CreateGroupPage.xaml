@@ -31,7 +31,9 @@
                     </Picker>
 
                     <StackLayout Orientation="Horizontal"
-                                 HorizontalOptions="FillAndExpand">
+                                 HorizontalOptions="FillAndExpand"
+                                 IsVisible="False"
+                                 HeightRequest="0">
                         <Label Text="Keep it alive until:"/>
                         <TimePicker x:Name="timePicker"
                                     Time="11:00"/>

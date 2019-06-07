@@ -28,15 +28,17 @@ namespace monshare.Pages
 
         private Map GetMapView()
         {
-           var map = new Map(
-               MapSpan.FromCenterAndRadius(
-                  new Position(Group.Latitude, Group.Longitude), Distance.FromMiles(0.3)))
-                    {
-                        IsShowingUser = true,
-                        HeightRequest = 200,
-                        WidthRequest = 960,
-                        VerticalOptions = LayoutOptions.FillAndExpand
-                    };
+            var map = new Map(
+                MapSpan.FromCenterAndRadius(
+                   new Position(Group.Latitude, Group.Longitude), Distance.FromMiles(0.3)))
+            {
+                IsShowingUser = true,
+                HeightRequest = 200,
+                WidthRequest = 960,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Margin = 0,
+            };
 
             var pin = new Pin()
             {
@@ -56,28 +58,39 @@ namespace monshare.Pages
 
         private void populateView()
         {
-            StackLayout stackLayout = new StackLayout();
+            StackLayout frameStackLayout = new StackLayout() { Padding = 0 };
+            StackLayout detailsStackLayout = new StackLayout()
+            {
+                Margin = 30,
+                Spacing = 15
+            };
 
-            stackLayout.Children.Add(new Label()
+            detailsStackLayout.Children.Add(new Label()
             {
                 Text = Group.Title,
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
 
-            stackLayout.Children.Add(new Label()
+            detailsStackLayout.Children.Add(new Label()
             {
                 Text = Group.Description,
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
             });
 
-            stackLayout.Children.Add(GetMapView());
+            detailsStackLayout.Children.Add(new Label()
+            {
+                HorizontalOptions = LayoutOptions.End,
+                Text = "~" + (new Random()).Next(5, 15) + " min estimated waiting ⏰ ",
+                FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label))
+            }); ;
+
+            frameStackLayout.Children.Add(detailsStackLayout);
+            frameStackLayout.Children.Add(GetMapView());
 
             Frame frame = new Frame()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Padding = 30,
-                Margin = new Thickness(30),
-                Content = stackLayout,
+                Content = frameStackLayout,
             };
 
             GroupDetailsLayout.Children.Clear();
@@ -145,8 +158,8 @@ namespace monshare.Pages
                 deleteGroupToolbarItem.Clicked += DeleteGroupButtonPressed;
                 this.ToolbarItems.Add(deleteGroupToolbarItem);
             }
-            
-            
+
+
         }
 
         private async void ViewChatButtonClicked(object sender, EventArgs e)
@@ -193,6 +206,8 @@ namespace monshare.Pages
         private async Task<bool> ShowLeaveGroupDialog()
         {
             return await DisplayAlert("Leave group", "Are you sure you want to leave the group?", "Yes", "No");
+
+
 
         }
     }

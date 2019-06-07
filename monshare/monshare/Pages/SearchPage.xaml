@@ -39,7 +39,7 @@
             <Frame Padding="10" Margin="10,10,10,0" x:Name="searchBar" HorizontalOptions="FillAndExpand"
                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=pennant, Property=Height, Factor=1,Constant=20}"
                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1,Constant=0}">
-                <Entry x:Name="queryEntry"  Placeholder="Where do you wanna save money?" HorizontalOptions="FillAndExpand"
+                <Entry x:Name="queryEntry"  Placeholder="Where do you want to save money?" HorizontalOptions="FillAndExpand"
                        Completed="QueryEntryCompleted"/>
             </Frame>
 
