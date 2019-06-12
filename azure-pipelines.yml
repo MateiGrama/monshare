@@ -17,8 +17,8 @@ steps:
     architecture: 'x64'
 
 - script: |
-    python3.7 -m venv antenv3.7
-    source antenv3.7/bin/activate
+    python3.7 -m venv antenv
+    source antenv/bin/activate
     pip3.7 install --upgrade pip
     pip3.7 install setuptools
     pip3.7 install -r requirements.txt
