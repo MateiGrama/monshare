@@ -21,13 +21,21 @@ namespace monshare.Utils
         private static readonly string AUTH_URL_PARAMS = "client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET + "&v=20190604";
 
         //TODO limit those to more relevant subcategories: https://developer.foursquare.com/docs/resources/categories
-        private static readonly string CATEGORIES_IDS = "4d4b7104d754a06370d81259," + //Arts & Entertainment
-                                                        "4d4b7105d754a06373d81259," + //Event
-                                                        "4d4b7105d754a06376d81259," + //Nightlife Spot
-                                                        "4d4b7105d754a06377d81259," + //Outdoors & Recreation
-                                                        "4d4b7105d754a06378d81259," + //shop&service
-                                                        "4d4b7105d754a06379d81259," + //travel&transport
-                                                        "4d4b7105d754a06377d81259";   //outdoors
+        private static readonly string CATEGORIES_IDS = "4bf58dd8d48988d1e2931735," + //Art Gallery
+                                                        "4bf58dd8d48988d1e4931735," + //Bowling Alley
+                                                        "4bf58dd8d48988d18e941735," + //Comedy Club
+                                                        "4deefb944765f83613cdba6e," + //Historic Site
+                                                        "5642206c498e4bfca532186c," + //Memorial Site
+                                                        "52e81612bcbc57f1066b79eb," + //Mini Golf
+                                                        "4bf58dd8d48988d17f941735," + //Movie Theatre
+                                                        "4bf58dd8d48988d181941735," + //Museums
+                                                        "4bf58dd8d48988d1f2931735," + //Performing Arts Venue
+                                                        "507c8c4091d498d9fc8c67a9," + //Public Art
+                                                        "4bf58dd8d48988d182941735," + //Theme Park
+                                                        "56aa371be4b08b9a8d573520," + //Tour Provider
+                                                        "4bf58dd8d48988d193941735," + //Water Park
+                                                        "4bf58dd8d48988d17b941735," + //Zoo
+                                                        "4bf58dd8d48988d1df941735"; 
 
 
         //docs: https://developer.foursquare.com/docs/api/venues/search
