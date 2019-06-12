@@ -139,8 +139,9 @@ def logout():
 
 @app.route("/createGroup")
 def create_group():
-    user_id, session_id, group_name, group_description, target_num, lifetime, lat, long, group_range = get_fields(
-        'user_id', 'session_id', 'group_name', 'group_description', 'target', 'lifetime', 'lat', 'long', 'range')
+    user_id, session_id, group_name, group_description, target_num, lifetime, lat, long, group_range, place_id = \
+        get_fields('user_id', 'session_id', 'group_name', 'group_description',
+                   'target', 'lifetime', 'lat', 'long', 'range', 'place_id')
 
     if not user_id or not session_id:
         return error_status_response("invalid id or sessionid")
@@ -149,9 +150,11 @@ def create_group():
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
-        result = cursor.execute("""insert into groups
-                (title, description, creationdatetime, enddatetime, ownerid, lat, long, membersnumber, targetnum, groupRange)
-                values ('{}','{}',GETDATE(), {}, {}, {}, {}, {}, {}, {})""".format(
+        result = cursor.execute("""
+            insert into groups
+            (title, description, creationdatetime, enddatetime, ownerid, 
+             lat, long, membersnumber, targetnum, groupRange, placeId)
+            values ('{}','{}',GETDATE(), {}, {}, {}, {}, {}, {}, {})""".format(
             group_name,
             group_description,
             'DATEADD(minute, {}, GETDATE())'.format(lifetime) if lifetime else 'null',
@@ -160,7 +163,8 @@ def create_group():
             long if long else 'null',
             1,
             target_num if target_num else 'null',
-            group_range if group_range else 'null'
+            group_range if group_range else 'null',
+            place_id if place_id else 'null'
         ))
         connection.commit()
 
