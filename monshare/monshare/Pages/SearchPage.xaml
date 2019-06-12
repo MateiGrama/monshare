@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="monshare.Pages.SearchPage"
+             BackgroundColor="#d9d9d9"
              Title="MonShare">
 
     <ContentPage.ToolbarItems>
@@ -36,12 +37,45 @@
                         RelativeLayout.YConstraint="{ConstraintExpression Type=Constant, Constant=0}"
                         RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"/>
 
-            <Frame Padding="10" Margin="10,10,10,0" x:Name="searchBar" HorizontalOptions="FillAndExpand"
+            <Frame CornerRadius="100"
+                   Margin="30,15,30,0" 
+                   x:Name="searchBar"
+                   BackgroundColor="#f0f0f0"
+                   Padding="0" 
+                   HorizontalOptions="FillAndExpand"
                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=pennant, Property=Height, Factor=1,Constant=20}"
                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1,Constant=0}">
-                <Entry x:Name="queryEntry"  Placeholder="Where do you want to save money?" HorizontalOptions="FillAndExpand"
-                       Completed="QueryEntryCompleted"/>
-            </Frame>
+            
+                <StackLayout Orientation="Horizontal"
+                             Spacing="0"
+                             Padding="0">
+                
+                    <Entry x:Name="queryEntry"  
+                           Margin="30, 10, 30, 10"
+                           FontSize="Micro"
+                           Placeholder="Where do you want to save money?" 
+                           HorizontalOptions="StartAndExpand"
+                           VerticalOptions="CenterAndExpand"
+                           Completed="QueryEntryCompleted"/>
+                    
+                    <Frame 
+                           CornerRadius="20"
+                           HorizontalOptions="End"
+                           BackgroundColor="#9e2a2b"
+                           OutlineColor="Red"
+                           Margin="10"
+                           HeightRequest="35"
+                           WidthRequest="35"
+                           Padding="0">
+                    
+                        <Label VerticalOptions ="CenterAndExpand"
+                               HorizontalOptions ="CenterAndExpand"
+                               TextColor="White"
+                               FontSize="Micro"
+                               Text="&#x0001F50D;"/>
+                    </Frame>
+                </StackLayout>
+        </Frame>
 
         <ActivityIndicator x:Name="activityIndicator"
                     RelativeLayout.WidthConstraint="{ConstraintExpression Type=Constant, Constant=30}"

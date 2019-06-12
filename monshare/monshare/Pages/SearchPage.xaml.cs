@@ -201,6 +201,7 @@ namespace monshare.Pages
 
         private void QueryEntryCompleted(object sender, EventArgs e)
         {
+            queryEntry.Unfocus();
             RemoveCurrentPredictionFromRelativeLayout();
             if (queryEntry.Text == null || queryEntry.Text == "" ) { 
                 return;
