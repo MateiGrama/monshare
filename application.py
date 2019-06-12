@@ -1,16 +1,15 @@
 import json
-
 import pyodbc
 from flask import Flask
 from flask import request
-
+from threading import Timer
 from utils import keys
 from utils.db_functionalities import Db
 from utils.search_engine import levenshtein, Trie
 from utils.utils import get_fields, error_status_response, SUCCESS_STATUS, logged_in, unauthorized_user, success_status, \
     get_random_ssid, group_list_to_json, messages_list_to_json, group_to_json, get_fields_in_dict
 
-DEBUG = False
+DEBUG = True
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 # The default value in kilometres used when the user searches for groups.
@@ -173,6 +172,7 @@ def create_group():
 
         if result:
             result = {"status": SUCCESS_STATUS, "group_id": group_id.GroupId}
+            # Timer(10, delete_group_api, [user_id, session_id, group_id], {args: 1})
             return json.dumps(result)
     except Exception as e:
         return error_status_response("error while inserting group in db. Exception was: " + str(e))
@@ -392,8 +392,15 @@ def delete_account():
 
 
 @app.route("/deleteGroup")
-def delete_group_api():
-    user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
+def delete_group_api(*args):
+    if len(args) is not 0 and len(args) is not 3:
+        return error_status_response("Incorrect number of arguments."
+                                     "Expected 0 or 3, but found {}. {}".format(len(args), args))
+
+    if len(args) is 0:
+        user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
+    else:
+        user_id, session_id, group_id = args
 
     if not user_id or not session_id:
         return error_status_response("invalid id or session id")
