@@ -24,7 +24,7 @@ namespace monshare.Utils
         private static readonly string LOGOUT_API = BASEURL + "/logout";
         private static readonly string CREATE_GROUP_API = BASEURL + "/createGroup";
         private static readonly string GET_GROUPS_AROUND_API = BASEURL + "/getGroups";
-        private static readonly string SEARCH_GRPUPS_API =GET_GROUPS_AROUND_API;
+        private static readonly string SEARCH_GRPUPS_API = GET_GROUPS_AROUND_API;
         private static readonly string GET_GROUP_CHAT_API = BASEURL + "/getGroupChat";
         private static readonly string GET_MY_GROUPS_API = BASEURL + "/getMyGroups";
         private static readonly string GET_GROUP_MEMBERS_API = BASEURL + "/getGroupMembers";
@@ -36,13 +36,14 @@ namespace monshare.Utils
         private static readonly string SEND_MESSAGE_API = BASEURL + "/sendMessage";
         private static readonly string UPDATE_GROUP_GROUP_API = BASEURL + "/updateGroup";
 
-        private static async Task<string> GetUserIDSeesionIdLocationAPICallParams () {  
+        private static async Task<string> GetUserIDSeesionIdLocationAPICallParams()
+        {
             var pos = await Utils.GetLocationAfterCheckingPermisionsAsync();
-           
-            return "user_id="    + LocalStorage.GetUserId()    + "&" +
+
+            return "user_id=" + LocalStorage.GetUserId() + "&" +
                    "session_id=" + LocalStorage.GetSessionId() + "&" +
-                   "lat="        + pos.Latitude                + "&" +
-                   "long="       + pos.Longitude               ;
+                   "lat=" + pos.Latitude + "&" +
+                   "long=" + pos.Longitude;
         }
 
         public static async Task<User> Login(string email, string password)
@@ -311,8 +312,8 @@ namespace monshare.Utils
             {
                 return new List<Group>();
             }
-            string url = SEARCH_GRPUPS_API + "?" + await GetUserIDSeesionIdLocationAPICallParams() + "&" 
-                                   + "query="   + query + "&"
+            string url = SEARCH_GRPUPS_API + "?" + await GetUserIDSeesionIdLocationAPICallParams() + "&"
+                                   + "query=" + query + "&"
                                    + "place_id=" + placeId;
 
             return await RequestGroupList(url);
@@ -411,10 +412,15 @@ namespace monshare.Utils
 
         public static async Task<bool> JoinGroup(int groupId)
         {
+            return await JoinGroup(groupId, LocalStorage.GetUserId(), LocalStorage.GetSessionId());
+        }
+
+        public static async Task<bool> JoinGroup(int groupId, int userId, int sessionId)
+        {
             String url = JOIN_GROUP_API + "?" +
-                "user_id=" + LocalStorage.GetUserId() + "&" +
-                "session_id=" + LocalStorage.GetSessionId() + "&" +
-                "group_id=" + groupId;
+               "user_id=" + userId + "&" +
+               "session_id=" + sessionId + "&" +
+               "group_id=" + groupId;
 
             JsonValue result = await GetResponse(url);
 
@@ -463,6 +469,30 @@ namespace monshare.Utils
                 await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
             }
             return false;
+        }
+
+        public static async Task<bool> MergeGroups(Group parentGroup, Group requester)
+        {
+            int targetNumberOfPeople = Math.Max(parentGroup.MembersNumber + requester.MembersNumber,
+                Math.Max(parentGroup.TargetNumberOfPeople, requester.TargetNumberOfPeople));
+
+            parentGroup.TargetNumberOfPeople = targetNumberOfPeople;
+            if (!await UpdateGroup(parentGroup))
+            {
+                return false;
+            }
+
+            // Add all members of the requester to the parent group
+            foreach (User member in await getGroupMembers(requester.GroupId))
+            {
+                if (!await JoinGroup(parentGroup.GroupId, member.UserId, LocalStorage.GetSessionId()))
+                {
+                    return false;
+                }
+            }
+
+            //Delete the requester's group
+            return await DeleteGroup(requester.GroupId);
         }
 
         internal static async Task<bool> sendMessage(String messageToBeSent, int groupId)
