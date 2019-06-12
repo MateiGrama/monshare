@@ -323,11 +323,12 @@ def get_my_groups():
 def join_group():
     user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
 
+    if not user_id or not session_id:
+        return error_status_response("invalid id or sessionid")
+    if not group_id:
+        return error_status_response("No group id provided.")
+
     try:
-        if not user_id or not session_id:
-            return error_status_response("invalid id or sessionid")
-        if not group_id:
-            return error_status_response("No group id provided.")
         if not logged_in(user_id, session_id):
             return unauthorized_user()
 
@@ -393,7 +394,29 @@ def delete_account():
 @app.route("/deleteGroup")
 def delete_group_api():
     user_id, session_id, group_id = get_fields('user_id', 'session_id', 'group_id')
-    return leave_group(user_id, session_id, group_id)
+
+    if not user_id or not session_id:
+        return error_status_response("invalid id or session id")
+    if not group_id:
+        return error_status_response("No group id provided.")
+
+    try:
+        if not logged_in(user_id, session_id):
+            return unauthorized_user()
+
+        # Get group members
+        members = db.get_group_members(group_id)
+
+        try:
+            for member in members:
+                leave_group(member[0], session_id, group_id)
+        except:
+            return error_status_response("Error while removing users from group")
+
+    except:
+        return error_status_response("Error while deleting group {}".format(group_id))
+
+    return success_status("Group {} has been successfully deleted".format(group_id))
 
 
 @app.route("/getGroupChat")
