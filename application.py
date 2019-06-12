@@ -172,7 +172,7 @@ def create_group():
 
         if result:
             result = {"status": SUCCESS_STATUS, "group_id": group_id.GroupId}
-            # Timer(10, delete_group_api, [user_id, session_id, group_id], {args: 1})
+            schedule_for_deletion(24, group_id, session_id, user_id)
             return json.dumps(result)
     except Exception as e:
         return error_status_response("error while inserting group in db. Exception was: " + str(e))
@@ -471,3 +471,7 @@ def send_message():
     except:
         return error_status_response("Error while processing sendMessage request.")
     return success_status("successfully sent a message.")
+
+
+def schedule_for_deletion(interval, group_id, session_id, user_id):
+    Timer(interval * 3600, delete_group_api, args=[user_id, session_id, group_id[0]], kwargs={}).start()
