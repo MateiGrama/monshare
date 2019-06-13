@@ -243,13 +243,31 @@ namespace monshare.Utils
             return newUser;
         }
 
-        public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople, string placeId)
+        public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople, Place selectedPlace)
         {
-            var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
+           
+            string placeId;
+            string latitude;
+            string longitude;
 
-            if (position == null)
+            if (selectedPlace != Place.DummyPlace)
             {
-                return false;
+                placeId = selectedPlace.Id;
+                latitude = selectedPlace.Location.Lat.ToString();
+                longitude = selectedPlace.Location.Long.ToString();
+            }
+            else
+            {
+                var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
+
+                if (position == null)
+                {
+                    return false;
+                }
+
+                placeId = "";
+                latitude = position.Latitude.ToString();
+                longitude = position.Longitude.ToString();
             }
 
             string url = CREATE_GROUP_API + "?" +
@@ -259,8 +277,8 @@ namespace monshare.Utils
                 "group_description=" + description + "&" +
                 "target=" + targetNoPeople + "&" +
                 "lifetime=" + time.Subtract(DateTime.Now).TotalMinutes + "&" +
-                "lat=" + position.Latitude + "&" +
-                "long=" + position.Longitude + "&" +
+                "lat=" + latitude + "&" +
+                "long=" + longitude + "&" +
                 "range=" + range + "&" +
                 "place_id=" + placeId;
 

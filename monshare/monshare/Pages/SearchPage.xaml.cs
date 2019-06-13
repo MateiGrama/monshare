@@ -41,17 +41,19 @@ namespace monshare.Pages
             resetPageAsync();
         }
 
-        private void UpdateGroupCards()
+        private async void UpdateGroupCards()
         {
-            groupsAroundLayout.Children.Clear();
-            GroupsToCardsViews.Clear();
-            GroupsAround.ForEach(async g =>
+            List<View> groupCards = new List<View>();
+
+            foreach (Group group in GroupsAround)
             {
-                View groupCard = await GenericViews.GroupCardList(g);
-                groupsAroundLayout.Children.Add(groupCard);
-                GroupsToCardsViews.Add(g, groupCard);
+                View groupCard = await GenericViews.GroupCardList(group);
+                groupCards.Add(groupCard);
             }
-            );
+
+            groupsAroundLayout.Children.Clear();
+            groupCards.ForEach(card => groupsAroundLayout.Children.Add(card));
+
         }
 
         private void resetPageAsync()
@@ -389,6 +391,7 @@ namespace monshare.Pages
 
         private void toggleLoadingVisibility(bool show)
         {
+            pageLayout.RaiseChild(activityIndicator);
             activityIndicator.IsVisible = show;
         }
 

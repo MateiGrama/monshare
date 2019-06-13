@@ -37,7 +37,7 @@ namespace monshare.Pages
                 Int32.Parse(rangeString),
                 DateTime.Parse(timePicker.Time.ToString()),
                 Int32.Parse(targetNoPeople.SelectedItem.ToString() ?? "0"),
-                SelectedPlace != Place.DummyPlace ? SelectedPlace.Id : "");
+                SelectedPlace);
 
             await DisplayAlert("Create group", (APICallResult ? "" : "not ") + "successful", "OK");
 
