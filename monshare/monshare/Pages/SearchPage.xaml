@@ -80,7 +80,7 @@
                         <Label VerticalOptions ="CenterAndExpand"
                                HorizontalOptions ="CenterAndExpand"
                                TextColor="White"
-                               FontSize="Micro"
+                               FontSize="Small"
                                Text="&#xf002;"
                                FontFamily="{StaticResource AwesomeFont}"/>
                         
