@@ -43,15 +43,23 @@ namespace monshare.Pages
         private async void UpdateGroupCards()
         {
             List<View> groupCards = new List<View>();
+            bool addCardsOneByOne = groupsAroundLayout.Children.Count == 0;
 
             foreach (Group group in GroupsAround)
             {
                 View groupCard = await GenericViews.GroupCardList(group);
                 groupCards.Add(groupCard);
+                if (addCardsOneByOne)
+                {
+                    groupsAroundLayout.Children.Add(groupCard);
+                }
             }
 
-            groupsAroundLayout.Children.Clear();
-            groupCards.ForEach(card => groupsAroundLayout.Children.Add(card));
+            if (!addCardsOneByOne)
+            {
+                groupsAroundLayout.Children.Clear();
+                groupCards.ForEach(card => groupsAroundLayout.Children.Add(card));
+            }
 
         }
 
