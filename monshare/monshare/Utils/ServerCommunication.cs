@@ -243,7 +243,7 @@ namespace monshare.Utils
             return newUser;
         }
 
-        public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople)
+        public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople, string placeId)
         {
             var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
 
@@ -261,7 +261,8 @@ namespace monshare.Utils
                 "lifetime=" + time.Subtract(DateTime.Now).TotalMinutes + "&" +
                 "lat=" + position.Latitude + "&" +
                 "long=" + position.Longitude + "&" +
-                "range=" + range;
+                "range=" + range + "&" +
+                "place_id=" + placeId;
 
             JsonValue result = await GetResponse(url);
 

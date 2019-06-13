@@ -7,6 +7,7 @@
              x:Class="monshare.Pages.CreateGroupPage">
     <ContentPage.Content>
         <StackLayout>
+            <Label x:Name="PositionInfo" HorizontalOptions="CenterAndExpand"/>
             <Frame HorizontalOptions="CenterAndExpand"
                    VerticalOptions="CenterAndExpand">
                 <StackLayout>

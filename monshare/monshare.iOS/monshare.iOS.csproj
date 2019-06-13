@@ -72,6 +72,7 @@
     <BundleResource Include="scroll.json" />
     <BundleResource Include="Resources\Roboto-Black.ttf" />
     <BundleResource Include="Resources\Roboto-Bold.ttf" />
+    <BundleResource Include="Resources\fa-solid-900.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\LaunchImages.launchimage\Contents.json">

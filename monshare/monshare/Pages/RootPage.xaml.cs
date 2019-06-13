@@ -19,7 +19,6 @@ namespace monshare.Pages
             
             Children.Add(new SearchPage());
             Children.Add(new GroupsAroundPage());
-            Children.Add(new CreateGroupPage());
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using monshare.Utils;
+﻿using monshare.Models;
+using monshare.Utils;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -9,11 +10,15 @@ namespace monshare.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CreateGroupPage : ContentPage
     {
-        public CreateGroupPage()
+
+        private Place SelectedPlace;
+        public CreateGroupPage(Place SelectedPlace)
         {
             InitializeComponent();
             timePicker.Time = DateTime.Now.AddDays(1).TimeOfDay;
-            Title = "➕ Create";
+            Title = "Create Group";
+            PositionInfo.Text = "The group will be created for " + (SelectedPlace != Place.DummyPlace ? SelectedPlace.Name : "your location");
+            this.SelectedPlace = SelectedPlace;
         }
 
         private async void CreateGroupClicked(object sender, EventArgs e)
@@ -27,7 +32,8 @@ namespace monshare.Pages
                 groupDescription,
                 Int32.Parse(rangeString),
                 DateTime.Parse(timePicker.Time.ToString()),
-                Int32.Parse(targetNoPeople.SelectedItem.ToString() ?? "0"));
+                Int32.Parse(targetNoPeople.SelectedItem.ToString() ?? "0"),
+                SelectedPlace != Place.DummyPlace ? SelectedPlace.Id : "");
 
             await DisplayAlert("Create group", (APICallResult ? "" : "not ") + "successful", "OK");
 

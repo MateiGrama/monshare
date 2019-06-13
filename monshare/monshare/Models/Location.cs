@@ -4,7 +4,7 @@ using System.Text;
 
 namespace monshare.Models
 {
-    class Location
+    public class Location
     {
         public string Address { get; internal set; }
         public double Lat { get; internal set; }

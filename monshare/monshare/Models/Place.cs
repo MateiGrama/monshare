@@ -4,7 +4,7 @@ using System.Text;
 
 namespace monshare.Models
 {
-    class Place
+    public class Place
     {
         public string Id { get; internal set; }
         public string Name { get; internal set; }

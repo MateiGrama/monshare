@@ -25,9 +25,9 @@ namespace monshare.Pages
 
         public SearchPage ()
 		{
-			InitializeComponent ();
-            CheckCredentials();
 
+            InitializeComponent ();
+            CheckCredentials();
             intializeScrollView();
 
             //Title = "🔍 Find";
@@ -42,11 +42,18 @@ namespace monshare.Pages
 
         private void resetPageAsync()
         {
-            RemoveCurrentPredictionFromRelativeLayout();
-            loadGroupsAroundAsync();
 
+            freeToSuggest = false;
+            selectedPlace = Place.DummyPlace;
+            CreateGroupButtonLabel.Text = "+ Create a group";
+            AddTapGestureRecognizerToCreateGroupButton(CreateNewGroupTapped);
             resultLayout.IsVisible = false;
+
+            RemoveCurrentPredictionFromRelativeLayout();
+
             titleAndGroupsAroundLayout.IsVisible = true;
+
+            loadGroupsAroundAsync();
 
             pageLayout.RaiseChild((Layout)groupsAroundLayout.Parent);
         }
@@ -62,23 +69,31 @@ namespace monshare.Pages
 
         private void intializeScrollView()
         {
-            resultLayout = new StackLayout() { Padding = 20,
+            resultLayout = new StackLayout()
+            {
+                Padding = 20,
                 IsVisible = false,
-                HorizontalOptions = LayoutOptions.FillAndExpand };
-            ScrollView resultsScrollView = new ScrollView() {
+                HorizontalOptions = LayoutOptions.FillAndExpand
+            };
+            ScrollView resultsScrollView = new ScrollView()
+            {
                 Content = resultLayout
             };
 
-            pageLayout.Children.Add(resultsScrollView, Constraint.RelativeToParent((parent) => {
+            pageLayout.Children.Add(resultsScrollView, Constraint.RelativeToParent((parent) =>
+            {
                 return parent.X;
-            }), Constraint.RelativeToView(searchBar, (Parent, sibling) => {
+            }), Constraint.RelativeToView(searchBar, (Parent, sibling) =>
+            {
                 return sibling.Y + sibling.Height + 30;
-            }), Constraint.RelativeToParent((parent) => {
+            }), Constraint.RelativeToParent((parent) =>
+            {
                 return parent.Width;
-            }), Constraint.RelativeToView(searchBar, (parent, sibling) => {
-                return 0.9 * parent.Height - (sibling.Y + sibling.Height) -30;
-            }));
-            pageLayout.RaiseChild(CreateGroupButton);
+            }), Constraint.RelativeToView(searchBar, (parent, sibling) =>
+            {
+                return 0.9 * parent.Height - (sibling.Y + sibling.Height) - 30;
+            })); ;
+           pageLayout.RaiseChild(CreateGroupButton);
 
             titleAndGroupsAroundLayout = new StackLayout()
             {
@@ -95,8 +110,9 @@ namespace monshare.Pages
             ScrollView groupsAroundScrollView = new ScrollView()
             {
                 Content = groupsAroundLayout,
-                Orientation = ScrollOrientation.Horizontal 
+                Orientation = ScrollOrientation.Horizontal
             };
+
             titleAndGroupsAroundLayout.Children.Add(new Label()
             {
                 Text = "GROUPS NEARBY",
@@ -110,28 +126,48 @@ namespace monshare.Pages
 
             titleAndGroupsAroundLayout.Children.Add(groupsAroundScrollView);
 
-            pageLayout.Children.Add(titleAndGroupsAroundLayout, Constraint.RelativeToParent((parent) => {
+            pageLayout.Children.Add(titleAndGroupsAroundLayout, Constraint.RelativeToParent((parent) =>
+            {
                 return parent.X;
-            }), Constraint.RelativeToView(searchBar, (Parent, sibling) => {
+            }), Constraint.RelativeToView(searchBar, (Parent, sibling) =>
+            {
                 return sibling.Y + sibling.Height + 30;
-            }), Constraint.RelativeToParent((parent) => {
+            }), Constraint.RelativeToParent((parent) =>
+            {
                 return parent.Width;
-            }), Constraint.RelativeToView(searchBar, (parent, sibling) => {
+            }), Constraint.RelativeToView(searchBar, (parent, sibling) =>
+            {
                 return 0.9 * parent.Height - (sibling.Y + sibling.Height) - 30;
-            })); ;
-            pageLayout.RaiseChild(titleAndGroupsAroundLayout);
+            }));
 
+            AddTapGestureRecognizerToCreateGroupButton(CreateNewGroupTapped);
+
+            pageLayout.RaiseChild(groupsAroundScrollView);
+
+        }
+
+        private void AddTapGestureRecognizerToCreateGroupButton(Action<object, EventArgs> ButtonTappedHandler)
+        {
+            TapGestureRecognizer tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += (o, e) => ButtonTappedHandler(o, e);
+            CreateGroupButton.GestureRecognizers.Clear();
+            CreateGroupButton.GestureRecognizers.Add(tapGestureRecognizer);
         }
 
         private async void ProcessingInput()
         {
             string old = String.Copy(queryEntry.Text);
             await Task.Delay(250);
-            if(old == queryEntry.Text)
+
+            if (queryEntry.Text != "" && old == queryEntry.Text)
             {
                 freeToSuggest = true;
                 ableToProcessInput = false;
                 LoadPredictions();
+            }
+
+            if (queryEntry.Text == "" && old != "" && resultLayout.IsVisible) {
+                resetPageAsync();
             }
         }
 
@@ -144,7 +180,7 @@ namespace monshare.Pages
             }
 
             const int suggestionFrameHeight = 30;
-            StackLayout suggestionsLayout = new StackLayout() { Opacity = 0.9, Padding = new Thickness(10,2,10,0) , Spacing = 2 };
+            StackLayout suggestionsLayout = new StackLayout() { Opacity = 0.9, Padding = new Thickness(10,2,10,0) , Spacing = 2};
             RemoveCurrentPredictionFromRelativeLayout();
 
             if (queryEntry.Text != null && queryEntry.Text != "")
@@ -176,11 +212,11 @@ namespace monshare.Pages
             }
 
             pageLayout.Children.Add(suggestionsLayout, Constraint.RelativeToParent((parent) => {
-                return parent.X;
+                return parent.Width * 0.1;
             }), Constraint.RelativeToView(searchBar, (Parent, sibling) => {
                 return sibling.Y + sibling.Height;
             }), Constraint.RelativeToParent((parent) => {
-                return parent.Width;
+                return parent.Width * 0.8;
             }), Constraint.RelativeToParent((parent) => {
                 return suggestionsLayout.Padding.VerticalThickness + suggestionsLayout.Children.Count * suggestionFrameHeight;
             }));
@@ -199,7 +235,7 @@ namespace monshare.Pages
             }
             else
             {
-                pageLayout.RaiseChild((Layout)titleAndGroupsAroundLayout.Parent);
+                pageLayout.RaiseChild((Layout)groupsAroundLayout.Parent);
             }
             pageLayout.RaiseChild(CreateGroupButton);
             
@@ -233,9 +269,39 @@ namespace monshare.Pages
         {
             toggleLoadingVisibility(true);
             List<Group> groups= await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
+    
             resultLayout.Children.Clear();
             groups.ForEach(async g => resultLayout.Children.Add(await GenericViews.GroupListElement(g)));
             toggleShownGroupList();
+
+            if (groups.Count == 0 && selectedPlace != Place.DummyPlace)
+            {
+                resultLayout.Children.Add(new Label()
+                {
+                    Text = "No results found.",
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    FontSize = 16,
+                    Margin = new Thickness(0, 30, 0, 0)
+                });
+
+                resultLayout.Children.Add(new Label()
+                {
+                    Text = "Press the button below to create one!",
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    FontSize = 16,
+                    Margin = new Thickness(0, 30, 0, 0)
+                });
+
+                CreateGroupButtonLabel.Text = "+ Create a group for this location";
+                AddTapGestureRecognizerToCreateGroupButton(CreateNewGroupWithPlaceIdTapped);
+
+            }
+            else
+            {
+                CreateGroupButtonLabel.Text = "+ Create a group";
+                AddTapGestureRecognizerToCreateGroupButton(CreateNewGroupTapped);
+            }
+
             toggleLoadingVisibility(false);
         }
 
@@ -246,6 +312,7 @@ namespace monshare.Pages
             groupsAroundLayout.Children.Clear();
             groups.ForEach(async g => groupsAroundLayout.Children.Add(await GenericViews.GroupCardList(g)));
             toggleLoadingVisibility(false);
+  
         }
 
         private void toggleLoadingVisibility(bool show)
@@ -255,7 +322,13 @@ namespace monshare.Pages
 
         private async void CreateNewGroupTapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateGroupPage());
+            await Navigation.PushAsync(new CreateGroupPage(selectedPlace));
+        }
+
+
+        private async void CreateNewGroupWithPlaceIdTapped(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new CreateGroupPage(selectedPlace));
         }
 
 
