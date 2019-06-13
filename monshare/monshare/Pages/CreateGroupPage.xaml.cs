@@ -10,7 +10,7 @@ namespace monshare.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CreateGroupPage : ContentPage
     {
-
+        private TimePicker timePicker = new TimePicker();
         private Place SelectedPlace;
         public CreateGroupPage(Place SelectedPlace)
         {

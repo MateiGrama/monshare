@@ -2,63 +2,134 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             BackgroundColor="#d9d9d9"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
              x:Class="monshare.Pages.CreateGroupPage">
     <ContentPage.Content>
-        <StackLayout>
-            <Label x:Name="PositionInfo" HorizontalOptions="CenterAndExpand"/>
-            <Frame HorizontalOptions="CenterAndExpand"
-                   VerticalOptions="CenterAndExpand">
-                <StackLayout>
+
+      <RelativeLayout HorizontalOptions="FillAndExpand"
+                      x:Name="pageLayout">
+
+        <Image Source="pennant.png"
+               x:Name="pennant"
+               RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+               RelativeLayout.YConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+               RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"/>
+        
+        
+        
+          
+         <Label x:Name="PositionInfo" HorizontalOptions="CenterAndExpand"/>
+
+
+         <Frame BackgroundColor="#f0f0f0"
+                CornerRadius="30"
+                
+                RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.05,Constant=0}"
+                RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.3,Constant=0}"
+                RelativeLayout.WidthConstraint ="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.9,Constant=0}"
+                RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=0.4,Constant=0}">
+          
+          <StackLayout>
                     <Entry x:Name="title"
+                           FontSize="Large"
+                           FontFamily="{StaticResource AwesomeFont}"
                            Placeholder="Enter group name"
                            HorizontalOptions="FillAndExpand"/>
 
-                    <Editor x:Name="description" 
+                    <StackLayout Orientation="Horizontal"
+                         HorizontalOptions="FillAndExpand">
+
+                        <Label VerticalOptions="CenterAndExpand"
+                             FontFamily="{StaticResource AwesomeFont}"
+                             Text=" &#xf039; "/>
+
+                        <Editor x:Name="description"
+                            FontFamily="{StaticResource AwesomeFont}"
                             Placeholder="Add a short description"
                             HorizontalOptions="FillAndExpand"/>
 
-                    <Picker x:Name="range"
-                            Title="Select a range"
-                            HorizontalOptions="FillAndExpand">
-                
-                        <Picker.Items>
-                            <x:String>500m</x:String>
-                            <x:String>1000m</x:String>
-                            <x:String>1500m</x:String>
-                            <x:String>2000m</x:String>
-                        </Picker.Items>
-                    </Picker>
-
-                    <StackLayout Orientation="Horizontal"
-                                 HorizontalOptions="FillAndExpand"
-                                 IsVisible="False"
-                                 HeightRequest="0">
-                        <Label Text="Keep it alive until:"/>
-                        <TimePicker x:Name="timePicker"
-                                    Time="11:00"/>
-
                     </StackLayout>
+
                     <StackLayout Orientation="Horizontal"
-                                 HorizontalOptions="FillAndExpand">
-                        <Label Text="Target number of people:"/>
-                        <Picker x:Name="targetNoPeople"
-                            Title="Target number"
+                         HorizontalOptions="FillAndExpand">
+
+                        <Label VerticalOptions="CenterAndExpand"
+                             FontFamily="{StaticResource AwesomeFont}"
+                             Text="  &#xf0d7; "/>
+
+                        <Picker x:Name="range"
+                            Title="Select a range"
+                            FontFamily="{StaticResource AwesomeFont}"
                             HorizontalOptions="FillAndExpand">
                             <Picker.Items>
-                                <x:String>5</x:String>
-                                <x:String>10</x:String>
-                                <x:String>15</x:String>
-                                <x:String>20</x:String>
+                                <x:String>500m</x:String>
+                                <x:String>1000m</x:String>
+                                <x:String>1500m</x:String>
+                                <x:String>2000m</x:String>
                             </Picker.Items>
                         </Picker>
                     </StackLayout>
-                </StackLayout>
-            </Frame>
-            <Button Text="Done"
-                    Clicked="CreateGroupClicked"/>
+                    
 
+              
+
+           
+
+            <!--<StackLayout Orientation="Horizontal"
+                         HorizontalOptions="FillAndExpand"
+                         IsVisible="False"
+                         HeightRequest="0">
+              <Label Text="Keep it alive until:"/>
+              <TimePicker x:Name="timePicker"
+                          Time="11:00"/>
+
+            </StackLayout>-->
+            
+
+            <StackLayout Orientation="Horizontal"
+                         VerticalOptions="CenterAndExpand"
+                         HorizontalOptions="FillAndExpand">
+                        <Label VerticalOptions="CenterAndExpand" 
+                             FontFamily="{StaticResource AwesomeFont}"
+                             FontSize="Medium"
+                             Text="&#xf0c0; Target number of people:"/>
+                
+              <Picker x:Name="targetNoPeople"
+                  Title="Target number"
+                  HorizontalOptions="FillAndExpand">
+                <Picker.Items>
+                  <x:String>5</x:String>
+                  <x:String>10</x:String>
+                  <x:String>15</x:String>
+                  <x:String>20</x:String>
+                </Picker.Items>
+              </Picker>
+            </StackLayout>
+          </StackLayout>
+        </Frame>
+          <!--<Button Text="Done"
+                  Clicked="CreateGroupClicked"/>-->
+
+        <StackLayout
+                   x:Name="CreateGroupButton"
+                   BackgroundColor="#351E29"
+                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"
+                   RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.1,Constant=0}}"
+                   RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
+                   RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=0.9,Constant=0}"
+                >
+          <Label FontSize="Small"
+                 FontFamily="{StaticResource AwesomeFont}"
+                 Text="&#xf00c; Done"
+                 TextColor="#ECECEB"
+                 HorizontalOptions="CenterAndExpand"
+                 VerticalOptions="CenterAndExpand"/>
+          <StackLayout.GestureRecognizers>
+            <TapGestureRecognizer Tapped="CreateGroupClicked"/>
+          </StackLayout.GestureRecognizers>
         </StackLayout>
+        
+      </RelativeLayout>
     </ContentPage.Content>
 </ContentPage>

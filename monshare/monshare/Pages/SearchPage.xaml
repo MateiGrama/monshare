@@ -40,7 +40,6 @@
         <RelativeLayout HorizontalOptions="FillAndExpand"
                         x:Name="pageLayout">
 
-
             <Image Source="pennant.png" 
                    x:Name="pennant"
                         RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
