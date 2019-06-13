@@ -72,7 +72,6 @@
                            CornerRadius="20"
                            HorizontalOptions="End"
                            BackgroundColor="#9e2a2b"
-                           OutlineColor="Red"
                            Margin="10"
                            HeightRequest="35"
                            WidthRequest="35"
@@ -81,7 +80,7 @@
                         <Label VerticalOptions ="CenterAndExpand"
                                HorizontalOptions ="CenterAndExpand"
                                TextColor="White"
-                               FontSize="Micro"
+                               FontSize="Small"
                                Text="&#xf002;"
                                FontFamily="{StaticResource AwesomeFont}"/>
                     <Frame.GestureRecognizers>

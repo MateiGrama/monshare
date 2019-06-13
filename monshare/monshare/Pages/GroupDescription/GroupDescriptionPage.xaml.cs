@@ -18,8 +18,10 @@ namespace monshare.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GroupDescriptionPage : ContentPage
     {
+        private string FontAwsomeName = FontAwesome.GetFontAwsomeName();
         private Group Group;
         List<User> Members;
+
 
         public GroupDescriptionPage(Group group)
         {
@@ -107,15 +109,18 @@ namespace monshare.Pages
             {
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 TextColor = Color.FromHex("351e29"),
-                Text = await getOwnerName(),
+                Text = "by " + await getOwnerName(),
                 FontSize = 16
             });
+
+
 
             purpleText.Children.Add(new Label()
             {
                 HorizontalOptions = LayoutOptions.End,
                 TextColor = Color.FromHex("351e29"),
-                Text = Group.MembersNumber + "/" + Group.TargetNumberOfPeople + "🙎‍♂️",
+                FontFamily = FontAwsomeName,
+                Text = Group.MembersNumber + "/" + Group.TargetNumberOfPeople + " " + FontAwesome.Group,
                 FontSize = 16
             });
 
@@ -170,7 +175,6 @@ namespace monshare.Pages
             GroupDetailsLayout.Children.Clear();
             GroupDetailsLayout.Children.Add(detailsRelativeLayout);
 
-            StackLayout frameStackLayout = new StackLayout() { Padding = 0 };
         }
 
         private async Task<string> getOwnerName()
@@ -348,7 +352,7 @@ namespace monshare.Pages
         private void addMessageInLayout(Message msg)
         {
             Thickness margin = msg.IsOwnMessage ? new Thickness(60, 5, 15, 0) : new Thickness(15, 5, 60, 0);
-            Color color = msg.IsOwnMessage ? Color.FromHex("657b83") : Color.FromHex("93a1a1");
+            Color color = msg.IsOwnMessage ? Color.FromHex("f0f0f0") : Color.FromHex("dcdcdc");
 
             Frame msgFrame = new Frame()
             {

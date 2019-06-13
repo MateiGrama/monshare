@@ -11,8 +11,11 @@ namespace monshare.Views
 {
     class GenericViews
     {
+        private static string FontAwsomeName = FontAwesome.GetFontAwsomeName();
+
         internal static async Task<View> GroupListElement(Group group)
         {
+
             StackLayout detailStackLayout = new StackLayout() { Orientation = StackOrientation.Horizontal,
                                                           HorizontalOptions = LayoutOptions.FillAndExpand };
             StackLayout labelStackLayout = new StackLayout() { HorizontalOptions = LayoutOptions.FillAndExpand};
@@ -22,21 +25,24 @@ namespace monshare.Views
             
             detailStackLayout.Children.Add(new Label()
             {
-                Text = distance > 0.15 ? string.Format("🚶 {0:N2}km away", distance) : "Near you",
+                FontFamily = FontAwsomeName,
+                Text = distance > 0.15 ? string.Format(FontAwesome.Walking + " {0:N2}km away", distance) : FontAwesome.StreetView + " Near you",
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                 HorizontalOptions = LayoutOptions.StartAndExpand
             });
 
             detailStackLayout.Children.Add(new Label()
             {
-                Text = group.MembersNumber + "/"+ group.TargetNumberOfPeople + "🙎‍♂️",
+                FontFamily = FontAwesome.GetFontAwsomeName(),
+                Text = group.MembersNumber + "/"+ group.TargetNumberOfPeople + " " + FontAwesome.Group,
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                 HorizontalOptions = LayoutOptions.EndAndExpand
             });
 
             labelStackLayout.Children.Add(new Label()
             {
-                Text = "👋 " + group.Title,
+                FontFamily = FontAwesome.GetFontAwsomeName(),
+                Text = FontAwesome.RandomGroupIcon() + " " + group.Title,
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
 
@@ -72,6 +78,7 @@ namespace monshare.Views
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Padding = 30,
                 Content = frameStackLayout,
+                BackgroundColor = Color.FromHex("f0f0f0")
             };
 
             TapGestureRecognizer gestureRecognizer = new TapGestureRecognizer();
@@ -96,21 +103,24 @@ namespace monshare.Views
 
             detailStackLayout.Children.Add(new Label()
             {
-                Text = distance > 0.15 ? string.Format("🏃‍♀️ {0:N2}km away", distance) : "🚶‍♂️Near you",
+                FontFamily = FontAwesome.GetFontAwsomeName(),
+                Text = distance > 0.15 ? string.Format( FontAwesome.Walking + " {0:N2}km away", distance) : FontAwesome.StreetView + "♂️Near you",
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                 HorizontalOptions = LayoutOptions.StartAndExpand
             });
 
             detailStackLayout.Children.Add(new Label()
             {
-                Text = group.MembersNumber + "/" + group.TargetNumberOfPeople + "🙎‍♂️",
+                FontFamily = FontAwesome.GetFontAwsomeName(),
+                Text = group.MembersNumber + "/" + group.TargetNumberOfPeople + " " + FontAwesome.Group,
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                 HorizontalOptions = LayoutOptions.EndAndExpand
             });
 
             labelStackLayout.Children.Add(new Label()
             {
-                Text = getRandomEmoji() + " " + group.Title,
+                FontFamily = FontAwesome.GetFontAwsomeName(),
+                Text = FontAwesome.RandomGroupIcon() + " " + group.Title,
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
 
@@ -151,6 +161,7 @@ namespace monshare.Views
                 WidthRequest = Application.Current.MainPage.Width * 0.6,
                 Margin = new Thickness(10, 20),
                 Content = frameStackLayout,
+                BackgroundColor = Color.FromHex("f0f0f0")
             };
 
             TapGestureRecognizer gestureRecognizer = new TapGestureRecognizer();
@@ -161,10 +172,10 @@ namespace monshare.Views
 
         }
 
-        private static string getRandomEmoji()
-        {
-            string[] s = { "🗺", "🗿", "🗽", "🗼", "🏰", "🏯", "🏟", "🎡", "🎢", "🎠", "⛲️", "⛱", "🏖", "🏝", "🏜", "🌋", "⛰" };
-            return s[(new Random()).Next(0, s.Length - 1)];
-        }
+        //private static string getRandomEmoji()
+        //{
+        //    string[] s = { "🗺", "🗿", "🗽", "🗼", "🏰", "🏯", "🏟", "🎡", "🎢", "🎠", "⛲️", "⛱", "🏖", "🏝", "🏜", "🌋", "⛰" };
+        //    return s[(new Random()).Next(0, s.Length - 1)];
+        //}
     }
 }

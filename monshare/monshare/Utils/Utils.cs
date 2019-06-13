@@ -147,5 +147,6 @@ namespace monshare.Utils
 
             return await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromSeconds(5));
         }
+        
     }
 }

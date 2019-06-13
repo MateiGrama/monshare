@@ -50,15 +50,46 @@
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="FillAndExpand"/>
                 </ScrollView>
-                <StackLayout Orientation="Horizontal" Grid.Row="1" Padding="10,0" BackgroundColor="#EEEEEE" VerticalOptions="EndAndExpand">
+                <StackLayout Orientation="Horizontal"
+                             Padding="10,0"
+                             BackgroundColor="#EEEEEE"
+                             VerticalOptions="End">
                     <Entry 
                         x:Name="messageEntry"
 			            HorizontalOptions="FillAndExpand" 
 				        HeightRequest="25" 
 				        Placeholder="Message" />
-                    <Button 
-	        			Text="Send" 
-                        Clicked="SendButtonPressed"/>
+
+                    <Frame 
+                           CornerRadius="20"
+                           HorizontalOptions="End"
+                           BackgroundColor="#9e2a2b"
+                           Margin="5"
+                           HeightRequest="35"
+                           WidthRequest="35"
+                           Padding="0">
+
+                        <Label  
+                            VerticalOptions ="CenterAndExpand"
+                                   HorizontalOptions ="CenterAndExpand"
+                                   TextColor="White"
+                                   FontSize="Small"
+                                   Text="&#xf1d8;"
+                                   FontFamily="{StaticResource AwesomeFont}"/>
+
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="SendButtonPressed"></TapGestureRecognizer>
+                        </Frame.GestureRecognizers>
+
+                    </Frame>
+
+                    <!--<Button 
+                        Margin="5"
+                        CornerRadius="10"
+	        			TextColor="AntiqueWhite"
+                        Text="Send" 
+                        BackgroundColor="#9e2a2b"
+                        Clicked="SendButtonPressed"/>-->
                 </StackLayout>
 
             </StackLayout>
