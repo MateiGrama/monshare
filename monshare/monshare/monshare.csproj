@@ -74,4 +74,58 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\AuthentificationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\ChatPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\CreateGroupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\GroupDescription\EditGroupDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\GroupDescription\GroupDescriptionPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\GroupDescription\groupMembersPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\GroupsAroundPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\Login.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\MyAccountPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\MyGroupsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\RegisterPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\RootPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Pages\SearchPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\ReceivedMessageView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\SentMessageVIew.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
 </Project>

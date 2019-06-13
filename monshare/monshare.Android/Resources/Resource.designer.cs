@@ -5934,26 +5934,26 @@ namespace monshare.Droid
 			// aapt resource value: 0x7f020054
 			public const int avd_hide_password = 2130837588;
 			
-			// aapt resource value: 0x7f02014e
-			public const int avd_hide_password_1 = 2130837838;
-			
-			// aapt resource value: 0x7f02014f
-			public const int avd_hide_password_2 = 2130837839;
-			
 			// aapt resource value: 0x7f020150
-			public const int avd_hide_password_3 = 2130837840;
+			public const int avd_hide_password_1 = 2130837840;
+			
+			// aapt resource value: 0x7f020151
+			public const int avd_hide_password_2 = 2130837841;
+			
+			// aapt resource value: 0x7f020152
+			public const int avd_hide_password_3 = 2130837842;
 			
 			// aapt resource value: 0x7f020055
 			public const int avd_show_password = 2130837589;
 			
-			// aapt resource value: 0x7f020151
-			public const int avd_show_password_1 = 2130837841;
-			
-			// aapt resource value: 0x7f020152
-			public const int avd_show_password_2 = 2130837842;
-			
 			// aapt resource value: 0x7f020153
-			public const int avd_show_password_3 = 2130837843;
+			public const int avd_show_password_1 = 2130837843;
+			
+			// aapt resource value: 0x7f020154
+			public const int avd_show_password_2 = 2130837844;
+			
+			// aapt resource value: 0x7f020155
+			public const int avd_show_password_3 = 2130837845;
 			
 			// aapt resource value: 0x7f020056
 			public const int common_full_open_on_phone = 2130837590;
@@ -6675,11 +6675,11 @@ namespace monshare.Droid
 			// aapt resource value: 0x7f020145
 			public const int notification_icon_background = 2130837829;
 			
-			// aapt resource value: 0x7f02014c
-			public const int notification_template_icon_bg = 2130837836;
+			// aapt resource value: 0x7f02014e
+			public const int notification_template_icon_bg = 2130837838;
 			
-			// aapt resource value: 0x7f02014d
-			public const int notification_template_icon_low_bg = 2130837837;
+			// aapt resource value: 0x7f02014f
+			public const int notification_template_icon_low_bg = 2130837839;
 			
 			// aapt resource value: 0x7f020146
 			public const int notification_tile_bg = 2130837830;
@@ -6691,13 +6691,19 @@ namespace monshare.Droid
 			public const int pennant = 2130837832;
 			
 			// aapt resource value: 0x7f020149
-			public const int text_monshare = 2130837833;
+			public const int splash = 2130837833;
 			
 			// aapt resource value: 0x7f02014a
-			public const int tooltip_frame_dark = 2130837834;
+			public const int splash_drawable = 2130837834;
 			
 			// aapt resource value: 0x7f02014b
-			public const int tooltip_frame_light = 2130837835;
+			public const int text_monshare = 2130837835;
+			
+			// aapt resource value: 0x7f02014c
+			public const int tooltip_frame_dark = 2130837836;
+			
+			// aapt resource value: 0x7f02014d
+			public const int tooltip_frame_light = 2130837837;
 			
 			static Drawable()
 			{
@@ -8239,11 +8245,11 @@ namespace monshare.Droid
 			// aapt resource value: 0x7f0e016d
 			public const int Animation_Design_BottomSheetDialog = 2131624301;
 			
-			// aapt resource value: 0x7f0e0201
-			public const int AppCompatDialogStyle = 2131624449;
-			
 			// aapt resource value: 0x7f0e0202
-			public const int AppToolbarTheme = 2131624450;
+			public const int AppCompatDialogStyle = 2131624450;
+			
+			// aapt resource value: 0x7f0e0203
+			public const int AppToolbarTheme = 2131624451;
 			
 			// aapt resource value: 0x7f0e009d
 			public const int Base_AlertDialog_AppCompat = 2131624093;
@@ -8818,11 +8824,11 @@ namespace monshare.Droid
 			// aapt resource value: 0x7f0e000e
 			public const int CardView_Light = 2131623950;
 			
-			// aapt resource value: 0x7f0e01ff
-			public const int MainTheme = 2131624447;
-			
 			// aapt resource value: 0x7f0e0200
-			public const int MainTheme_Base = 2131624448;
+			public const int MainTheme = 2131624448;
+			
+			// aapt resource value: 0x7f0e0201
+			public const int MainTheme_Base = 2131624449;
 			
 			// aapt resource value: 0x7f0e007e
 			public const int Platform_AppCompat = 2131624062;
@@ -9333,6 +9339,9 @@ namespace monshare.Droid
 			
 			// aapt resource value: 0x7f0e0006
 			public const int Theme_MediaRouter_LightControlPanel = 2131623942;
+			
+			// aapt resource value: 0x7f0e01ff
+			public const int Theme_Splash = 2131624447;
 			
 			// aapt resource value: 0x7f0e0112
 			public const int ThemeOverlay_AppCompat = 2131624210;

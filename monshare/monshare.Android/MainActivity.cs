@@ -10,7 +10,10 @@ using Lottie.Forms.Droid;
 
 namespace monshare.Droid
 {
-    [Activity(Label = "monshare", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "monshare", Icon = "@mipmap/icon", 
+        Theme = "@style/Theme.Splash",
+        ScreenOrientation = ScreenOrientation.Portrait,
+        MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
