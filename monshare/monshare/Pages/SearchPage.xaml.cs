@@ -442,5 +442,16 @@ namespace monshare.Pages
             queryEntry.Text = "";
             resetPageAsync();
         }
+
+        private async void PageLayoutSwiped(object sender, SwipedEventArgs e)
+        {
+            if (titleAndGroupsAroundLayout.IsVisible)
+            {
+                toggleLoadingVisibility(true);
+                GroupsAround = await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
+                UpdateGroupCards();
+                toggleLoadingVisibility(false);
+            }
+        }
     }
 }

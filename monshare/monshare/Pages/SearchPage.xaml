@@ -40,7 +40,9 @@
         <RelativeLayout HorizontalOptions="FillAndExpand"
                         x:Name="pageLayout">
 
-
+        <RelativeLayout.GestureRecognizers>
+            <SwipeGestureRecognizer Swiped="PageLayoutSwiped" Direction="Down"/>
+        </RelativeLayout.GestureRecognizers>
             <Image Source="pennant.png" 
                    x:Name="pennant"
                         RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
