@@ -8242,6 +8242,9 @@ namespace monshare.Droid
 			// aapt resource value: 0x7f0e0201
 			public const int AppCompatDialogStyle = 2131624449;
 			
+			// aapt resource value: 0x7f0e0202
+			public const int AppToolbarTheme = 2131624450;
+			
 			// aapt resource value: 0x7f0e009d
 			public const int Base_AlertDialog_AppCompat = 2131624093;
 			

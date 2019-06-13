@@ -24,6 +24,16 @@
         <ResourceDictionary>
             <x:Double x:Key="CreateGroupButtonHeight">60</x:Double>
             <x:Double x:Key="NegCreateGroupButtonHeight">-60</x:Double>
+            <OnPlatform x:TypeArguments="x:String" x:Key="BlackFont">
+                <On Platform="Android" Value="Roboto-Black.ttf#Roboto Black" />
+                <On Platform="UWP" Value="/Assets/Roboto-Black.ttf#Roboto Black" />
+                <On Platform="iOS" Value="Roboto-Black" />
+            </OnPlatform>
+            <OnPlatform x:TypeArguments="x:String" x:Key="BoldFont">
+                <On Platform="Android" Value="Roboto-Bold.ttf#Roboto Bold" />
+                <On Platform="UWP" Value="/Assets/Roboto-Bold.ttf#Roboto Bold" />
+                <On Platform="iOS" Value="Roboto-Bold"/>
+            </OnPlatform>
         </ResourceDictionary>
     </ContentPage.Resources>
     

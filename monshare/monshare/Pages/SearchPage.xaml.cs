@@ -17,6 +17,7 @@ namespace monshare.Pages
     {
         private StackLayout resultLayout;
         private StackLayout groupsAroundLayout;
+        private StackLayout titleAndGroupsAroundLayout;
         private List<StackLayout> suggestionsLayouts = new List<StackLayout>();
         private Place selectedPlace = Place.DummyPlace;
         private bool ableToProcessInput;
@@ -45,7 +46,7 @@ namespace monshare.Pages
             loadGroupsAroundAsync();
 
             resultLayout.IsVisible = false;
-            groupsAroundLayout.IsVisible = true;
+            titleAndGroupsAroundLayout.IsVisible = true;
 
             pageLayout.RaiseChild((Layout)groupsAroundLayout.Parent);
         }
@@ -79,8 +80,14 @@ namespace monshare.Pages
             }));
             pageLayout.RaiseChild(CreateGroupButton);
 
+            titleAndGroupsAroundLayout = new StackLayout()
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand
+            };
 
-            groupsAroundLayout = new StackLayout() { Padding = 20,
+            groupsAroundLayout = new StackLayout()
+            {
+                Padding = 20,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Orientation = StackOrientation.Horizontal,
             };
@@ -90,8 +97,20 @@ namespace monshare.Pages
                 Content = groupsAroundLayout,
                 Orientation = ScrollOrientation.Horizontal 
             };
+            titleAndGroupsAroundLayout.Children.Add(new Label()
+            {
+                Text = "GROUPS NEARBY",
+                FontSize = 22,
+                TextColor = Color.FromHex("#25151d"),
+                FontAttributes = FontAttributes.Bold,
+                FontFamily = "{StaticResource BlackFont}",
+                Margin = new Thickness(35, 0, 0, 0)
 
-            pageLayout.Children.Add(groupsAroundScrollView, Constraint.RelativeToParent((parent) => {
+            });
+
+            titleAndGroupsAroundLayout.Children.Add(groupsAroundScrollView);
+
+            pageLayout.Children.Add(titleAndGroupsAroundLayout, Constraint.RelativeToParent((parent) => {
                 return parent.X;
             }), Constraint.RelativeToView(searchBar, (Parent, sibling) => {
                 return sibling.Y + sibling.Height + 30;
@@ -100,7 +119,7 @@ namespace monshare.Pages
             }), Constraint.RelativeToView(searchBar, (parent, sibling) => {
                 return 0.9 * parent.Height - (sibling.Y + sibling.Height) - 30;
             })); ;
-            pageLayout.RaiseChild(groupsAroundScrollView);
+            pageLayout.RaiseChild(titleAndGroupsAroundLayout);
 
         }
 
@@ -174,13 +193,13 @@ namespace monshare.Pages
         private void toggleShownGroupList()
         {
             Utils.Utils.DisplayVisualElement(resultLayout, !resultLayout.IsVisible);
-            Utils.Utils.DisplayVisualElement(groupsAroundLayout, !groupsAroundLayout.IsVisible);
+            Utils.Utils.DisplayVisualElement(titleAndGroupsAroundLayout, !titleAndGroupsAroundLayout.IsVisible);
             if (resultLayout.IsVisible) {
                 pageLayout.RaiseChild((Layout)resultLayout.Parent);
             }
             else
             {
-                pageLayout.RaiseChild((Layout)groupsAroundLayout.Parent);
+                pageLayout.RaiseChild((Layout)titleAndGroupsAroundLayout.Parent);
             }
             pageLayout.RaiseChild(CreateGroupButton);
             
@@ -239,10 +258,6 @@ namespace monshare.Pages
             await Navigation.PushAsync(new CreateGroupPage());
         }
 
-        private void SetGroupsAroundVisibility(bool show)
-        {
-            groupsAroundLayout.IsVisible = false;
-        }
 
         ///* IMPORTED FROM GMAIN PAGE*/
         public async void LogoutButtonPressed(object sender, EventArgs args)
