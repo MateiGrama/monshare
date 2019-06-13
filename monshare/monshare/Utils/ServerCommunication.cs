@@ -288,6 +288,19 @@ namespace monshare.Utils
             try
             {
                 group = result["status"] == SUCCESS ? group : null;
+                if (group != null)
+                {
+                    group.GroupId = result["group_id"];
+                    group.Latitude = Convert.ToDouble(latitude);
+                    group.Longitude = Convert.ToDouble(longitude);
+                    group.Title = title;
+                    group.Description = description;
+                    group.TargetNumberOfPeople = targetNoPeople;
+                    group.OwnerId = LocalStorage.GetUserId();
+                    group.MembersNumber = 1;
+                    group.CreationDateTime = DateTime.Now;
+                    group.EndDateTime = time;
+                }
                 return group;
             }
             catch (Exception e)

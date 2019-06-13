@@ -18,7 +18,6 @@ namespace monshare.Pages
         private StackLayout resultLayout;
         private StackLayout groupsAroundLayout;
         private StackLayout titleAndGroupsAroundLayout;
-        Dictionary<Group, View> GroupsToCardsViews = new Dictionary<Group, View>();
         List<Group> GroupsAround = new List<Group>();
         private List<StackLayout> suggestionsLayouts = new List<StackLayout>();
         private Place selectedPlace = Place.DummyPlace;
@@ -164,6 +163,14 @@ namespace monshare.Pages
             AddTapGestureRecognizerToCreateGroupButton(CreateNewGroupTapped);
 
             pageLayout.RaiseChild(groupsAroundScrollView);
+
+        }
+
+        internal async void AddNearbyGroup(Group createdGroup)
+        {
+            GroupsAround.Add(createdGroup);
+            View groupCard = await GenericViews.GroupCardList(createdGroup);
+            groupsAroundLayout.Children.Add(groupCard);
 
         }
 

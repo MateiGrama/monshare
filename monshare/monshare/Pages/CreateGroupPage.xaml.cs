@@ -41,7 +41,7 @@ namespace monshare.Pages
 
             foreach (Group group in GroupsAround)
             {
-                if (group.Title.Equals(groupTitle)) {
+                if (group.Title.Equals(groupTitle) && !group.HasJoined) {
                     foundSimilarGroup = true;
                     similarGroup = group;
                     break;
@@ -54,19 +54,26 @@ namespace monshare.Pages
                 return;
             }
 
-            bool APICallResult = await ServerCommunication.CreateGroupAsync(
+            Group createdGroup = await ServerCommunication.CreateGroupAsync(
                 groupTitle,
                 groupDescription,
                 Int32.Parse(rangeString),
                 DateTime.Parse(timePicker.Time.ToString()),
                 Int32.Parse(targetNoPeople.SelectedItem.ToString() ?? "0"),
-                SelectedPlace) != null;
+                SelectedPlace);
 
-            await DisplayAlert("Create group", (APICallResult ? "" : "not ") + "successful", "OK");
+            await DisplayAlert("Create group", (createdGroup != null ? "" : "not ") + "successful", "OK");
 
-            if (APICallResult)
+            if (createdGroup != null)
             {
-                await Navigation.PushAsync(new MyGroupsPage());
+                SearchPage searchPage = Utils.Utils.GetSearchPage(Navigation);
+
+                if (searchPage != null)
+                {
+                    searchPage.AddNearbyGroup(createdGroup);
+                }
+
+                await Navigation.PopAsync();
             }
         }
     }
