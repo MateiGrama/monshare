@@ -68,7 +68,7 @@
                            VerticalOptions="CenterAndExpand"
                            Completed="QueryEntryCompleted"/>
                     
-                    <Frame 
+                    <Frame x:Name="MagnifierButton"
                            CornerRadius="20"
                            HorizontalOptions="End"
                            BackgroundColor="#9e2a2b"
@@ -88,6 +88,33 @@
                         <TapGestureRecognizer Tapped="QueryEntryCompleted"/>
                     </Frame.GestureRecognizers>
                         
+                    </Frame>
+                   
+                
+                    <Frame 
+                           x:Name="DeleteEntryButton"
+                           CornerRadius="20"
+                           HorizontalOptions="End"
+                           BackgroundColor="#9e2a2b"
+                           OutlineColor="Red"
+                           Margin="10"
+                           HeightRequest="35"
+                           WidthRequest="35"
+                           Padding="0"
+                           IsVisible="False"
+                           IsEnabled="False">
+                        
+                    
+                        <Label VerticalOptions ="CenterAndExpand"
+                               HorizontalOptions ="CenterAndExpand"
+                               TextColor="White"
+                               FontSize="Micro"
+                               Text="&#xf00d;"
+                               FontFamily="{StaticResource AwesomeFont}"/>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="DeleteSearchBarTextButtonTapped"/>
+                        </Frame.GestureRecognizers> 
+
                     </Frame>
                 </StackLayout>
         </Frame>
