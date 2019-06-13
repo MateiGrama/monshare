@@ -6,6 +6,11 @@
              mc:Ignorable="d"
              x:Class="monshare.App">
     <Application.Resources>
-        
+        <ResourceDictionary>
+            <OnPlatform x:TypeArguments="x:String" x:Key="AwesomeFont">
+                <On Platform="Android" Value="fa-solid-900.ttf#Font Awesome 5 Free Regular" />
+                <On Platform="iOS" Value="Font Awesome 5 Free Regular" />
+            </OnPlatform>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

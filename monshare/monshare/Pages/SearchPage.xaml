@@ -82,7 +82,9 @@
                                HorizontalOptions ="CenterAndExpand"
                                TextColor="White"
                                FontSize="Micro"
-                               Text="&#x0001F50D;"/>
+                               Text="&#xf002;"
+                               FontFamily="{StaticResource AwesomeFont}"/>
+                        
                     </Frame>
                 </StackLayout>
         </Frame>
@@ -104,13 +106,12 @@
                     RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
                     RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=0.9,Constant=0}"
                 >
-                <Label Text="+ Create a group"
+                <Label x:Name="CreateGroupButtonLabel" 
+                    Text="+ Create a group"
                        TextColor="#ECECEB"
                        HorizontalOptions="CenterAndExpand"
                        VerticalOptions="CenterAndExpand"/>
-                <StackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="CreateNewGroupTapped"/>
-                </StackLayout.GestureRecognizers>
+                
             </StackLayout>
 
         </RelativeLayout>

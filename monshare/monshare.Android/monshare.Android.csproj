@@ -90,6 +90,7 @@
   <ItemGroup>
     <AndroidAsset Include="Assets\Roboto-Black.ttf" />
     <AndroidAsset Include="Assets\Roboto-Bold.ttf" />
+    <AndroidAsset Include="Assets\fa-solid-900.ttf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

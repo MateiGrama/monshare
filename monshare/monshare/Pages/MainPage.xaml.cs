@@ -23,7 +23,6 @@ namespace monshare
             CheckCredentials();
             Children.Add(new SearchPage());
             Children.Add(new GroupsAroundPage());
-            Children.Add(new CreateGroupPage());
         }
 
         private async void CheckCredentials()
@@ -33,11 +32,6 @@ namespace monshare
                 await Navigation.PushAsync(new AuthentificationPage());
             }
 
-        }
-
-        public async void CreateGroupButtonPressed(object sender, EventArgs args)
-        {
-            await Navigation.PushAsync(new CreateGroupPage());
         }
 
         public async void LogoutButtonPressed(object sender, EventArgs args)
