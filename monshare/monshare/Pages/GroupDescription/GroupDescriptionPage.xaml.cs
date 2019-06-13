@@ -348,7 +348,7 @@ namespace monshare.Pages
         private void addMessageInLayout(Message msg)
         {
             Thickness margin = msg.IsOwnMessage ? new Thickness(60, 5, 15, 0) : new Thickness(15, 5, 60, 0);
-            Color color = msg.IsOwnMessage ? Color.FromHex("657b83") : Color.FromHex("93a1a1");
+            Color color = msg.IsOwnMessage ? Color.FromHex("f0f0f0") : Color.FromHex("dcdcdc");
 
             Frame msgFrame = new Frame()
             {

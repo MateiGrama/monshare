@@ -72,7 +72,6 @@
                            CornerRadius="20"
                            HorizontalOptions="End"
                            BackgroundColor="#9e2a2b"
-                           OutlineColor="Red"
                            Margin="10"
                            HeightRequest="35"
                            WidthRequest="35"

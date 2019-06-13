@@ -72,6 +72,7 @@ namespace monshare.Views
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Padding = 30,
                 Content = frameStackLayout,
+                BackgroundColor = Color.FromHex("f0f0f0")
             };
 
             TapGestureRecognizer gestureRecognizer = new TapGestureRecognizer();
