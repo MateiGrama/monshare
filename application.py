@@ -154,7 +154,7 @@ def create_group():
             insert into groups
             (title, description, creationdatetime, enddatetime, ownerid, 
              lat, long, membersnumber, targetnum, groupRange, placeId)
-            values ('{}','{}',GETDATE(), {}, {}, {}, {}, {}, {}, {}, '{}')""".format(
+            values ('{}','{}',GETDATE(), {}, {}, {}, {}, {}, {}, {}, {})""".format(
             group_name,
             group_description,
             'DATEADD(minute, {}, GETDATE())'.format(lifetime) if lifetime else 'null',
@@ -164,7 +164,7 @@ def create_group():
             1,
             target_num if target_num else 'null',
             group_range if group_range else 'null',
-            place_id if place_id else 'null'
+            place_id if ("'" + place_id + "'") else 'null'
         ))
         connection.commit()
 
