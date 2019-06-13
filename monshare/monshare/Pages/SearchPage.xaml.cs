@@ -18,7 +18,6 @@ namespace monshare.Pages
         private StackLayout resultLayout;
         private StackLayout groupsAroundLayout;
         private StackLayout titleAndGroupsAroundLayout;
-        Dictionary<Group, View> GroupsToCardsViews = new Dictionary<Group, View>();
         List<Group> GroupsAround = new List<Group>();
         private List<StackLayout> suggestionsLayouts = new List<StackLayout>();
         private Place selectedPlace = Place.DummyPlace;
@@ -41,17 +40,27 @@ namespace monshare.Pages
             resetPageAsync();
         }
 
-        private void UpdateGroupCards()
+        private async void UpdateGroupCards()
         {
-            groupsAroundLayout.Children.Clear();
-            GroupsToCardsViews.Clear();
-            GroupsAround.ForEach(async g =>
+            List<View> groupCards = new List<View>();
+            bool addCardsOneByOne = groupsAroundLayout.Children.Count == 0;
+
+            foreach (Group group in GroupsAround)
             {
-                View groupCard = await GenericViews.GroupCardList(g);
-                groupsAroundLayout.Children.Add(groupCard);
-                GroupsToCardsViews.Add(g, groupCard);
+                View groupCard = await GenericViews.GroupCardList(group);
+                groupCards.Add(groupCard);
+                if (addCardsOneByOne)
+                {
+                    groupsAroundLayout.Children.Add(groupCard);
+                }
             }
-            );
+
+            if (!addCardsOneByOne)
+            {
+                groupsAroundLayout.Children.Clear();
+                groupCards.ForEach(card => groupsAroundLayout.Children.Add(card));
+            }
+
         }
 
         private void resetPageAsync()
@@ -162,6 +171,14 @@ namespace monshare.Pages
             AddTapGestureRecognizerToCreateGroupButton(CreateNewGroupTapped);
 
             pageLayout.RaiseChild(groupsAroundScrollView);
+
+        }
+
+        internal async void AddNearbyGroup(Group createdGroup)
+        {
+            GroupsAround.Add(createdGroup);
+            View groupCard = await GenericViews.GroupCardList(createdGroup);
+            groupsAroundLayout.Children.Add(groupCard);
 
         }
 
@@ -389,18 +406,19 @@ namespace monshare.Pages
 
         private void toggleLoadingVisibility(bool show)
         {
+            pageLayout.RaiseChild(activityIndicator);
             activityIndicator.IsVisible = show;
         }
 
         private async void CreateNewGroupTapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateGroupPage(selectedPlace));
+            await Navigation.PushAsync(new CreateGroupPage(selectedPlace, GroupsAround));
         }
 
 
         private async void CreateNewGroupWithPlaceIdTapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateGroupPage(selectedPlace));
+            await Navigation.PushAsync(new CreateGroupPage(selectedPlace, GroupsAround));
         }
 
 

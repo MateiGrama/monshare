@@ -61,7 +61,7 @@ namespace monshare.Pages
 
         private async void CreateNewGroupButtonPressed(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateGroupPage(Place.DummyPlace));
+            await Navigation.PushAsync(new CreateGroupPage(Place.DummyPlace, new List<Group>()));
         }
     }
 }

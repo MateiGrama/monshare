@@ -9,6 +9,7 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
+using monshare.Pages;
 
 namespace monshare.Utils
 {
@@ -29,6 +30,18 @@ namespace monshare.Utils
                 sb.Append(b.ToString("X2"));
 
             return sb.ToString();
+        }
+
+        public static SearchPage GetSearchPage(INavigation navigation)
+        {
+            foreach (Page page in navigation.NavigationStack)
+            {
+                if (page.GetType() == typeof(SearchPage)) {
+                    return (SearchPage)page;
+                }
+            }
+
+            return null;
         }
 
         public static bool IsValidEmail(string emailaddress)

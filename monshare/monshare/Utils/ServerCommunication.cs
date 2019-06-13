@@ -243,13 +243,32 @@ namespace monshare.Utils
             return newUser;
         }
 
-        public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople, string placeId)
+        public static async Task<Group> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople, Place selectedPlace)
         {
-            var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
+           
+            string placeId;
+            string latitude;
+            string longitude;
+            Group group = new Group();
 
-            if (position == null)
+            if (selectedPlace != Place.DummyPlace)
             {
-                return false;
+                placeId = selectedPlace.Id;
+                latitude = selectedPlace.Location.Lat.ToString();
+                longitude = selectedPlace.Location.Long.ToString();
+            }
+            else
+            {
+                var position = await Utils.GetLocationAfterCheckingPermisionsAsync();
+
+                if (position == null)
+                {
+                    return null;
+                }
+
+                placeId = "";
+                latitude = position.Latitude.ToString();
+                longitude = position.Longitude.ToString();
             }
 
             string url = CREATE_GROUP_API + "?" +
@@ -259,8 +278,8 @@ namespace monshare.Utils
                 "group_description=" + description + "&" +
                 "target=" + targetNoPeople + "&" +
                 "lifetime=" + time.Subtract(DateTime.Now).TotalMinutes + "&" +
-                "lat=" + position.Latitude + "&" +
-                "long=" + position.Longitude + "&" +
+                "lat=" + latitude + "&" +
+                "long=" + longitude + "&" +
                 "range=" + range + "&" +
                 "place_id=" + placeId;
 
@@ -268,13 +287,27 @@ namespace monshare.Utils
 
             try
             {
-                return result["status"] == SUCCESS;
+                group = result["status"] == SUCCESS ? group : null;
+                if (group != null)
+                {
+                    group.GroupId = result["group_id"];
+                    group.Latitude = Convert.ToDouble(latitude);
+                    group.Longitude = Convert.ToDouble(longitude);
+                    group.Title = title;
+                    group.Description = description;
+                    group.TargetNumberOfPeople = targetNoPeople;
+                    group.OwnerId = LocalStorage.GetUserId();
+                    group.MembersNumber = 1;
+                    group.CreationDateTime = DateTime.Now;
+                    group.EndDateTime = time;
+                }
+                return group;
             }
             catch (Exception e)
             {
                 await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
             }
-            return false;
+            return null;
         }
 
         public static async Task<List<Group>> GetMyGroupsAsync()
