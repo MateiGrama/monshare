@@ -7,8 +7,6 @@ namespace monshare.Utils
 {
     class FontAwesome
     {
-        private static Random rndm = new Random();
-           
         public static string GetFontAwsomeName()
         {
             return ((OnPlatform<string>)Application.Current.Resources["AwesomeFont"]).Platforms[Device.RuntimePlatform == Device.Android ? 0 : 1].Value.ToString();
@@ -16,7 +14,16 @@ namespace monshare.Utils
 
         public static string RandomGroupIcon()
         {
-           return rndm.Next(0,1) == 0 ? MapSigns : ((rndm.Next(0, 1) == 0 ) ? MapPin : MapMarkedAlt);
+            int no = (new Random()).Next(0, 3);
+            if (no == 0)
+            {
+                return MapSigns;
+            }
+            if (no == 1)
+            {
+                return MapPin;
+            }
+            return MapMarkedAlt;
         }
 
         //public static string Group { get { return "\uf0c0"; } }
@@ -752,7 +759,6 @@ namespace monshare.Utils
         public const string GooglePlusCircle = "\uf2b3";
         public const string GooglePlusOfficial = "\uf2b3";
         public const string Fa = "\uf2b4";
-        public const string FontAwesome = "\uf2b4";
         public const string HandshakeO = "\uf2b5";
         public const string EnvelopeOpen = "\uf2b6";
         public const string EnvelopeOpenO = "\uf2b7";

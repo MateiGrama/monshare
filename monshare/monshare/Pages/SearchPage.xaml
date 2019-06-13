@@ -92,12 +92,12 @@
         </Frame>
 
         <ActivityIndicator x:Name="activityIndicator"
-                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=Constant, Constant=30}"
-                    RelativeLayout.HeightConstraint="{ConstraintExpression Type=Constant, Constant=30}"
-                    RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5,Constant=-15}"
-                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView,ElementName=pennant, Property=Height, Factor=1,Constant=-5}"
+                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=Constant, Constant=60}"
+                    RelativeLayout.HeightConstraint="{ConstraintExpression Type=Constant, Constant=60}"
+                    RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.5,Constant=-30}"
+                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.60,Constant=-30}"
                     IsVisible="False"
-                    Color="Red" 
+                    Color="#9E2A2B" 
                     IsRunning="true" />
 
         <StackLayout
