@@ -38,16 +38,20 @@ namespace monshare.Pages
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            UpdateLeaveGroupStatus();
             resetPageAsync();
         }
 
-        private void UpdateLeaveGroupStatus()
+        private void UpdateGroupCards()
         {
-            foreach (Group group in GroupsAround)
+            groupsAroundLayout.Children.Clear();
+            GroupsToCardsViews.Clear();
+            GroupsAround.ForEach(async g =>
             {
-                GenericViews.UpdateJoinButtonStatus(GroupsToCardsViews[group], group);
+                View groupCard = await GenericViews.GroupCardList(g);
+                groupsAroundLayout.Children.Add(groupCard);
+                GroupsToCardsViews.Add(g, groupCard);
             }
+            );
         }
 
         private void resetPageAsync()
@@ -211,16 +215,33 @@ namespace monshare.Pages
             }
 
             const int suggestionFrameHeight = 30;
-            StackLayout suggestionsLayout = new StackLayout() { Opacity = 0.9, Padding = new Thickness(10, 2, 10, 0), Spacing = 2 };
+
+            StackLayout suggestionsLayout = new StackLayout() {
+                Opacity = 0.95,
+                Padding = new Thickness(10,2,10,0),
+                Spacing = 1};
+
             RemoveCurrentPredictionFromRelativeLayout();
 
             if (queryEntry.Text != null && queryEntry.Text != "")
             {
                 List<Place> suggestedPlaces = await FoursquarePlaces.SearchPlacesAsync(queryEntry.Text);
+
                 foreach (Place place in suggestedPlaces)
                 {
-                    Frame frame = new Frame() { HeightRequest = suggestionFrameHeight, Padding = new Thickness(30, 0) };
-                    frame.Content = new Label() { Text = place.Name.Trim('"') };
+                    Frame frame = new Frame() {
+                        HeightRequest = suggestionFrameHeight,
+                        Padding = new Thickness(30, 0),
+                        BackgroundColor = Color.FromHex("f0f0f0"),
+                        HasShadow = false,
+                        BorderColor = Color.Transparent,
+                    };
+
+                    string suggestion = place.Name.Trim('"');
+                    frame.Content = new Label(){
+                        Text = suggestion.Length > 25 ? suggestion.Substring(0, 25) + " ..." : suggestion
+                    }; ;
+
                     suggestionsLayout.Children.Add(frame);
 
                     TapGestureRecognizer gestureRecognizer = new TapGestureRecognizer();
@@ -359,16 +380,9 @@ namespace monshare.Pages
             if (groupsAroundLayout.Children.Count == 0)
             {
                 GroupsAround = await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
-                groupsAroundLayout.Children.Clear();
-                GroupsAround.ForEach(async g =>
-                {
-                    View groupCard = await GenericViews.GroupCardList(g);
-                    groupsAroundLayout.Children.Add(groupCard);
-                    GroupsToCardsViews.Add(g, groupCard);
-                }
-                );
             }
 
+            UpdateGroupCards();
             toggleLoadingVisibility(false);
 
         }

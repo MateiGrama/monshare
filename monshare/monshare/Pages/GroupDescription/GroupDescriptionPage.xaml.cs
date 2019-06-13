@@ -34,8 +34,7 @@ namespace monshare.Pages
         {
             var map = new Map(
                 MapSpan.FromCenterAndRadius(
-                   new Position(Group.Latitude, Group.Longitude), Distance.FromMiles(0.3)))
-            {
+                   new Position(Group.Latitude, Group.Longitude), Distance.FromMiles(0.3))){
                 IsShowingUser = true,
                 HeightRequest = 200,
                 WidthRequest = 960,
@@ -46,11 +45,12 @@ namespace monshare.Pages
 
             var pin = new Pin()
             {
+
                 Position = new Position(Group.Latitude, Group.Longitude),
                 Label = "Meeting point!"
             };
-            map.Pins.Add(pin);
 
+            map.Pins.Add(pin);
             return map;
         }
 
@@ -93,16 +93,17 @@ namespace monshare.Pages
 
             detailsStackLayout.Children.Add(new Label()
             {
-                Margin  = new Thickness(0, 10),
+                Margin = new Thickness(0, 10),
                 TextColor = Color.FromHex("676767"),
                 Text = Group.Title,
                 FontSize = 32
             });
 
-            StackLayout purpleText = new StackLayout() {
+            StackLayout purpleText = new StackLayout()
+            {
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Margin = new Thickness(0,5,0,10),
+                Margin = new Thickness(0, 5, 0, 10),
             };
 
             purpleText.Children.Add(new Label()
@@ -125,10 +126,12 @@ namespace monshare.Pages
             });
 
             detailsStackLayout.Children.Add(purpleText);
-            detailsStackLayout.Children.Add(new BoxView() {
+            detailsStackLayout.Children.Add(new BoxView()
+            {
                 Color = Color.FromHex("9a9a9a"),
-                HorizontalOptions =LayoutOptions.FillAndExpand,
-                HeightRequest = 1 });
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HeightRequest = 1
+            });
 
             detailsStackLayout.Children.Add(new Label()
             {
@@ -137,7 +140,8 @@ namespace monshare.Pages
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label))
             });
 
-            RelativeLayout detailsRelativeLayout = new RelativeLayout(){
+            RelativeLayout detailsRelativeLayout = new RelativeLayout()
+            {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 Padding = 0,
@@ -151,26 +155,34 @@ namespace monshare.Pages
             };
 
             detailsRelativeLayout.Children.Add(GetMapView(),
-                Constraint.RelativeToParent((parent) => {
+                Constraint.RelativeToParent((parent) =>
+                {
                     return 0;
-                }), Constraint.RelativeToParent((parent) => {
+                }), Constraint.RelativeToParent((parent) =>
+                {
                     return 0;
-                }), Constraint.RelativeToParent((parent) => {
+                }), Constraint.RelativeToParent((parent) =>
+                {
                     return parent.Width;
-                }), Constraint.RelativeToParent((parent) => {
+                }), Constraint.RelativeToParent((parent) =>
+                {
                     return 0.6 * parent.Height;
                 }));
 
             detailsRelativeLayout.Children.Add(frame,
-                Constraint.RelativeToParent((parent) => {
-                return parent.Width * 0.1;
-            }), Constraint.RelativeToParent((parent) => {
-                return parent.Height * 0.4;
-            }), Constraint.RelativeToParent((parent) => {
-                return parent.Width * 0.8;
-            }), Constraint.RelativeToParent((parent) => {
-                return 0.6 * parent.Height;
-            }));
+                Constraint.RelativeToParent((parent) =>
+                {
+                    return parent.Width * 0.1;
+                }), Constraint.RelativeToParent((parent) =>
+                {
+                    return parent.Height * 0.4;
+                }), Constraint.RelativeToParent((parent) =>
+                {
+                    return parent.Width * 0.8;
+                }), Constraint.RelativeToParent((parent) =>
+                {
+                    return 0.6 * parent.Height;
+                }));
 
             GroupDetailsLayout.Children.Clear();
             GroupDetailsLayout.Children.Add(detailsRelativeLayout);
@@ -179,7 +191,7 @@ namespace monshare.Pages
 
         private async Task<string> getOwnerName()
         {
-            if(Members?.Count > 0)
+            if (Members?.Count > 0)
             {
                 User owner = Members.Where(m => m.UserId == Group.OwnerId).FirstOrDefault();
                 return owner.FirstName + " " + owner.LastName;
@@ -311,7 +323,7 @@ namespace monshare.Pages
             GroupRelativeLayout.RaiseChild(GroupDetailsLayout);
             GroupRelativeLayout.LowerChild(ChatLayout);
 
-            await GroupDetailsLayout.TranslateTo(0,  (-1) * Application.Current.MainPage.Height, 0);
+            await GroupDetailsLayout.TranslateTo(0, (-1) * Application.Current.MainPage.Height, 0);
             Utils.Utils.DisplayVisualElement(GroupDetailsLayout, true);
             await GroupDetailsLayout.TranslateTo(0, 0, 250, Easing.Linear);
             Utils.Utils.DisplayVisualElement(ChatLayout, false);
