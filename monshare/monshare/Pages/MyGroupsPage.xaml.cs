@@ -27,10 +27,17 @@ namespace monshare.Pages
             RefreshMyGroupsAsync();
         }
 
+        private void toggleLoadingVisibility(bool show)
+        {
+            activityIndicator.IsVisible = show;
+        }
+
         private async void RefreshMyGroupsAsync()
         {
             //TODO: cache locally
+            toggleLoadingVisibility(true);
             Groups = await ServerCommunication.GetMyGroupsAsync();
+
             if (Groups.Count > 0)
             {
                 groupListLayout.Children.Clear();
@@ -51,6 +58,8 @@ namespace monshare.Pages
                 Utils.Utils.DisplayVisualElement(NoGroupsLabel, true);
                 Utils.Utils.DisplayVisualElement(CreateGroupButton, true);
             }
+
+            toggleLoadingVisibility(false);
         }
 
 

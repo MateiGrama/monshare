@@ -43,6 +43,12 @@
                 IsVisible="False"
                 HeightRequest="0">
             </Label>
+            <ActivityIndicator x:Name="activityIndicator"
+                    HorizontalOptions="CenterAndExpand"
+                    VerticalOptions="CenterAndExpand"
+                    IsVisible="False"
+                    Color="#9E2A2B" 
+                    IsRunning="true" />
             <Button Text="Create a new Group"
                     x:Name="CreateGroupButton"
                     Clicked="CreateNewGroupButtonPressed"

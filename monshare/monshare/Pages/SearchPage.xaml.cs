@@ -49,17 +49,19 @@ namespace monshare.Pages
             {
                 View groupCard = await GenericViews.GroupCardList(group);
                 groupCards.Add(groupCard);
-                if (addCardsOneByOne)
+                if (addCardsOneByOne && groupCards.Count == 5)
                 {
-                    groupsAroundLayout.Children.Add(groupCard);
+                    groupCards.ForEach(card => groupsAroundLayout.Children.Add(card));
+                    groupCards.Clear();
                 }
             }
 
             if (!addCardsOneByOne)
             {
                 groupsAroundLayout.Children.Clear();
-                groupCards.ForEach(card => groupsAroundLayout.Children.Add(card));
             }
+            groupCards.ForEach(card => groupsAroundLayout.Children.Add(card));
+            
 
         }
 

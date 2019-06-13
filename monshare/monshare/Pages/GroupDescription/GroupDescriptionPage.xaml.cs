@@ -208,6 +208,8 @@ namespace monshare.Pages
                 UpdateMembersLabel();
                 Utils.Utils.DisplayVisualElement(joinButton, false);
                 Utils.Utils.DisplayVisualElement(AnimationLayout, true);
+                this.ToolbarItems.Clear();
+                DisplayToolbarItems();
                 GroupRelativeLayout.RaiseChild(AnimationLayout);
             }
         }

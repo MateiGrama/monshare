@@ -10,12 +10,13 @@ using Plugin.Permissions.Abstractions;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 using monshare.Pages;
+using monshare.Models;
 
 namespace monshare.Utils
 {
     public class Utils
     {
-
+        private static CachedData<Position> cachedPosition;
         public static byte[] GetHash(string inputString)
         {
             HashAlgorithm algorithm = SHA256.Create();
@@ -150,6 +151,11 @@ namespace monshare.Utils
 
         public static async Task<Position> GetLocationAfterCheckingPermisionsAsync()
         {
+            if (cachedPosition != null && cachedPosition.LastCached.AddSeconds(20) > DateTime.Now)
+            {
+                return cachedPosition.Data;
+            }
+
             var status = await CheckPermissions(Permission.Location);
 
             if (status != PermissionStatus.Granted)
@@ -158,8 +164,15 @@ namespace monshare.Utils
                 return null;
             }
 
-            return await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromSeconds(5));
+            cachedPosition = new CachedData<Position>()
+            {
+                Data = await CrossGeolocator.Current.GetPositionAsync(TimeSpan.FromSeconds(5)),
+                LastCached = DateTime.Now
+
+            };
+
+            return cachedPosition.Data;
         }
-        
+
     }
 }
