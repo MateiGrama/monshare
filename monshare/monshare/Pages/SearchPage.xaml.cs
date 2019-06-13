@@ -163,8 +163,13 @@ namespace monshare.Pages
             string old = String.Copy(queryEntry.Text);
             await Task.Delay(250);
 
-            // Don't update predictions continuosly
-            if (queryEntry.Text != "" && old == queryEntry.Text)
+            if (queryEntry.Text != "" && !DeleteEntryButton.IsVisible)
+            {   
+               ToggleDeleteTextEntryButton();
+            }
+
+                // Don't update predictions continuosly
+                if (queryEntry.Text != "" && old == queryEntry.Text)
             {
                 freeToSuggest = true;
                 ableToProcessInput = false;
@@ -173,6 +178,10 @@ namespace monshare.Pages
 
             if (queryEntry.Text == "")
             {
+                if (DeleteEntryButton.IsVisible)
+                {
+                    ToggleDeleteTextEntryButton();
+                }
                 RemoveCurrentPredictionFromRelativeLayout();
             }
 
@@ -209,7 +218,6 @@ namespace monshare.Pages
                         queryEntry.Text = place.Name.Trim('"');
                         queryEntry.Unfocus();
 
-                        ToggleMagnifierButton();
                         RemoveCurrentPredictionFromRelativeLayout();
                         loadGroupsAsync();
                     };
@@ -279,14 +287,10 @@ namespace monshare.Pages
             }
             freeToSuggest = false;
             loadGroupsAsync();
-
-            ToggleMagnifierButton();
         }
 
-        private void ToggleMagnifierButton()
+        private void ToggleDeleteTextEntryButton()
         {
-            MagnifierButton.IsVisible = !MagnifierButton.IsVisible;
-            MagnifierButton.IsEnabled = !MagnifierButton.IsEnabled;
             DeleteEntryButton.IsVisible = !DeleteEntryButton.IsVisible;
             DeleteEntryButton.IsEnabled = !DeleteEntryButton.IsEnabled;
         }

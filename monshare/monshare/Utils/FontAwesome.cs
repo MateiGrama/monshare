@@ -752,7 +752,6 @@ namespace monshare.Utils
         public const string GooglePlusCircle = "\uf2b3";
         public const string GooglePlusOfficial = "\uf2b3";
         public const string Fa = "\uf2b4";
-        public const string FontAwesome = "\uf2b4";
         public const string HandshakeO = "\uf2b5";
         public const string EnvelopeOpen = "\uf2b6";
         public const string EnvelopeOpenO = "\uf2b7";

@@ -61,23 +61,42 @@
                              Padding="0">
                 
                     <Entry x:Name="queryEntry"  
-                           Margin="30, 10, 30, 10"
+                           Margin="30, 10, 0, 10"
                            FontSize="Micro"
                            Placeholder="Where do you want to save money?" 
-                           HorizontalOptions="StartAndExpand"
+                           HorizontalOptions="Start"
                            VerticalOptions="CenterAndExpand"
                            Completed="QueryEntryCompleted"/>
                     
-                    <Frame x:Name="MagnifierButton"
+                <StackLayout x:Name="DeleteEntryButton"
+                       BackgroundColor="#f0f0f0"
+                        HorizontalOptions="EndAndExpand"
+                        VerticalOptions="FillAndExpand"
+                         Margin="5"
+                        Padding="0"
+                             IsVisible="False"
+                             IsEnabled="False">
+                    <Label VerticalOptions ="CenterAndExpand"
+                           HorizontalOptions="CenterAndExpand"
+                               TextColor="DarkGray"
+                               FontSize="Small"
+                               Text="&#xf00d;"
+                               FontFamily="{StaticResource AwesomeFont}"/>
+                    
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="DeleteSearchBarTextButtonTapped"/>
+                    </StackLayout.GestureRecognizers>
+                </StackLayout>
+                <Frame x:Name="MagnifierButton"
                            CornerRadius="20"
-                           HorizontalOptions="End"
+                           HorizontalOptions="EndAndExpand"
                            BackgroundColor="#9e2a2b"
-                           Margin="10"
+                           Margin="10, 10, 10, 10"
                            HeightRequest="35"
                            WidthRequest="35"
                            Padding="0">
-                    
-                        <Label VerticalOptions ="CenterAndExpand"
+
+                    <Label VerticalOptions ="CenterAndExpand"
                                HorizontalOptions ="CenterAndExpand"
                                TextColor="White"
                                FontSize="Small"
@@ -86,36 +105,9 @@
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="QueryEntryCompleted"/>
                     </Frame.GestureRecognizers>
-                        
-                    </Frame>
-                   
-                
-                    <Frame 
-                           x:Name="DeleteEntryButton"
-                           CornerRadius="20"
-                           HorizontalOptions="End"
-                           BackgroundColor="#9e2a2b"
-                           OutlineColor="Red"
-                           Margin="10"
-                           HeightRequest="35"
-                           WidthRequest="35"
-                           Padding="0"
-                           IsVisible="False"
-                           IsEnabled="False">
-                        
-                    
-                        <Label VerticalOptions ="CenterAndExpand"
-                               HorizontalOptions ="CenterAndExpand"
-                               TextColor="White"
-                               FontSize="Micro"
-                               Text="&#xf00d;"
-                               FontFamily="{StaticResource AwesomeFont}"/>
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="DeleteSearchBarTextButtonTapped"/>
-                        </Frame.GestureRecognizers> 
 
-                    </Frame>
-                </StackLayout>
+                </Frame>
+            </StackLayout>
         </Frame>
 
         <ActivityIndicator x:Name="activityIndicator"
