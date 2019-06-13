@@ -15,13 +15,13 @@ namespace monshare.Pages
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ChatPage : ContentPage
 	{
-        Group group;
+        Group Group;
         List<User> members;
 
 		public ChatPage (Group group)
 		{
 			InitializeComponent ();
-            this.group = group;
+            this.Group = group;
 		}
 
         protected override void OnAppearing()
@@ -32,8 +32,8 @@ namespace monshare.Pages
 
         private async void loadMessagesAsync()
         {
-            members = await ServerCommunication.getGroupMembers(group.GroupId);
-            Chat chat = await ServerCommunication.GetGroupChatAsync(group);
+            members = await ServerCommunication.getGroupMembers(Group.GroupId);
+            Chat chat = await ServerCommunication.GetGroupChatAsync(Group);
             bool isAPICallSuccessful = chat != Chat.NullInstance;
 
             if (!isAPICallSuccessful)
@@ -53,7 +53,7 @@ namespace monshare.Pages
 
         public async void SendButtonPressed(object sender, EventArgs args)
         {
-            if (await ServerCommunication.sendMessage(messageEntry.Text, group.GroupId))
+            if (await ServerCommunication.sendMessage(messageEntry.Text, Group.GroupId))
             {
                 addMessageInLayout(new Message() { SenderId = LocalStorage.GetUserId(), Text = messageEntry.Text });
                 scrollToBottom();

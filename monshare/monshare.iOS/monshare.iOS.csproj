@@ -69,6 +69,7 @@
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <BundleResource Include="scroll.json" />
     <BundleResource Include="Resources\Roboto-Black.ttf" />
     <BundleResource Include="Resources\Roboto-Bold.ttf" />
     <BundleResource Include="Resources\fa-solid-900.ttf" />
@@ -130,6 +131,9 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Com.Airbnb.Xamarin.Forms.Lottie">
+      <Version>2.7.1</Version>
+    </PackageReference>
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue">
       <Version>0.2.6</Version>
     </PackageReference>

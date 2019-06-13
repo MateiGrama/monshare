@@ -12,7 +12,7 @@
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="FillAndExpand"/>
             </ScrollView>
-            <StackLayout Orientation="Horizontal" Grid.Row="1" Padding="10,0" BackgroundColor="#EFEFEF" VerticalOptions="EndAndExpand">
+            <StackLayout Orientation="Horizontal" Grid.Row="1" Padding="10,0" BackgroundColor="#EEEEEE" VerticalOptions="EndAndExpand" AutomationProperties.IsInAccessibleTree="False">
                 <Entry 
                 x:Name="messageEntry"
 			    HorizontalOptions="FillAndExpand" 

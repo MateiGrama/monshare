@@ -57,6 +57,9 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Com.Airbnb.Xamarin.Forms.Lottie">
+      <Version>2.7.1</Version>
+    </PackageReference>
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue">
       <Version>0.2.6</Version>
     </PackageReference>
@@ -88,6 +91,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\scroll.json" />
     <AndroidAsset Include="Assets\Roboto-Black.ttf" />
     <AndroidAsset Include="Assets\Roboto-Bold.ttf" />
     <AndroidAsset Include="Assets\fa-solid-900.ttf" />

@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Lottie.Forms.Droid;
 
 namespace monshare.Droid
 {
@@ -22,6 +23,7 @@ namespace monshare.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Xamarin.FormsMaps.Init(this, savedInstanceState);
+            AnimationViewRenderer.Init();
             LoadApplication(new App());
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
