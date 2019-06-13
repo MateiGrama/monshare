@@ -12,21 +12,23 @@ using Xamarin.Forms.Xaml;
 
 namespace monshare.Pages
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class SearchPage : ContentPage
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class SearchPage : ContentPage
     {
         private StackLayout resultLayout;
         private StackLayout groupsAroundLayout;
         private StackLayout titleAndGroupsAroundLayout;
+        Dictionary<Group, View> GroupsToCardsViews = new Dictionary<Group, View>();
+        List<Group> GroupsAround = new List<Group>();
         private List<StackLayout> suggestionsLayouts = new List<StackLayout>();
         private Place selectedPlace = Place.DummyPlace;
         private bool ableToProcessInput;
         private bool freeToSuggest = true;
 
-        public SearchPage ()
-		{
+        public SearchPage()
+        {
 
-            InitializeComponent ();
+            InitializeComponent();
             CheckCredentials();
             intializeScrollView();
 
@@ -36,7 +38,16 @@ namespace monshare.Pages
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            UpdateLeaveGroupStatus();
             resetPageAsync();
+        }
+
+        private void UpdateLeaveGroupStatus()
+        {
+            foreach (Group group in GroupsAround)
+            {
+                GenericViews.UpdateJoinButtonStatus(GroupsToCardsViews[group], group);
+            }
         }
 
         private void resetPageAsync()
@@ -87,7 +98,7 @@ namespace monshare.Pages
             {
                 return parent.X;
             }), Constraint.RelativeToView(searchBar, (Parent, sibling) =>
-            
+
             {
                 return sibling.Y + sibling.Height + 30;
             }), Constraint.RelativeToParent((parent) =>
@@ -97,7 +108,7 @@ namespace monshare.Pages
             {
                 return 0.9 * parent.Height - (sibling.Y + sibling.Height) - 30;
             })); ;
-           pageLayout.RaiseChild(CreateGroupButton);
+            pageLayout.RaiseChild(CreateGroupButton);
 
             titleAndGroupsAroundLayout = new StackLayout()
             {
@@ -164,12 +175,12 @@ namespace monshare.Pages
             await Task.Delay(250);
 
             if (queryEntry.Text != "" && !DeleteEntryButton.IsVisible)
-            {   
-               ToggleDeleteTextEntryButton();
+            {
+                ToggleDeleteTextEntryButton();
             }
 
-                // Don't update predictions continuosly
-                if (queryEntry.Text != "" && old == queryEntry.Text)
+            // Don't update predictions continuosly
+            if (queryEntry.Text != "" && old == queryEntry.Text)
             {
                 freeToSuggest = true;
                 ableToProcessInput = false;
@@ -185,8 +196,9 @@ namespace monshare.Pages
                 RemoveCurrentPredictionFromRelativeLayout();
             }
 
-            if (queryEntry.Text == "" && resultLayout.IsVisible) {
-                resetPageAsync();   
+            if (queryEntry.Text == "" && resultLayout.IsVisible)
+            {
+                resetPageAsync();
             }
         }
 
@@ -199,7 +211,7 @@ namespace monshare.Pages
             }
 
             const int suggestionFrameHeight = 30;
-            StackLayout suggestionsLayout = new StackLayout() { Opacity = 0.9, Padding = new Thickness(10,2,10,0) , Spacing = 2};
+            StackLayout suggestionsLayout = new StackLayout() { Opacity = 0.9, Padding = new Thickness(10, 2, 10, 0), Spacing = 2 };
             RemoveCurrentPredictionFromRelativeLayout();
 
             if (queryEntry.Text != null && queryEntry.Text != "")
@@ -230,13 +242,17 @@ namespace monshare.Pages
                 return;
             }
 
-            pageLayout.Children.Add(suggestionsLayout, Constraint.RelativeToParent((parent) => {
+            pageLayout.Children.Add(suggestionsLayout, Constraint.RelativeToParent((parent) =>
+            {
                 return parent.Width * 0.1;
-            }), Constraint.RelativeToView(searchBar, (Parent, sibling) => {
+            }), Constraint.RelativeToView(searchBar, (Parent, sibling) =>
+            {
                 return sibling.Y + sibling.Height;
-            }), Constraint.RelativeToParent((parent) => {
+            }), Constraint.RelativeToParent((parent) =>
+            {
                 return parent.Width * 0.8;
-            }), Constraint.RelativeToParent((parent) => {
+            }), Constraint.RelativeToParent((parent) =>
+            {
                 return suggestionsLayout.Padding.VerticalThickness + suggestionsLayout.Children.Count * suggestionFrameHeight;
             }));
 
@@ -253,7 +269,8 @@ namespace monshare.Pages
             ((ScrollView)(resultLayout.Parent)).IsEnabled = resultLayout.IsVisible;
             ((ScrollView)(groupsAroundLayout.Parent)).IsEnabled = titleAndGroupsAroundLayout.IsVisible;
 
-            if (resultLayout.IsVisible) {
+            if (resultLayout.IsVisible)
+            {
                 pageLayout.RaiseChild((Layout)resultLayout.Parent);
             }
             else
@@ -261,7 +278,7 @@ namespace monshare.Pages
                 pageLayout.RaiseChild((Layout)groupsAroundLayout.Parent);
             }
             pageLayout.RaiseChild(CreateGroupButton);
-            
+
         }
 
         private void RemoveCurrentPredictionFromRelativeLayout()
@@ -298,8 +315,8 @@ namespace monshare.Pages
         private async void loadGroupsAsync()
         {
             toggleLoadingVisibility(true);
-            List<Group> groups= await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
-    
+            List<Group> groups = await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
+
             resultLayout.Children.Clear();
             groups.ForEach(async g => resultLayout.Children.Add(await GenericViews.GroupListElement(g)));
             ToggleShownGroupList();
@@ -341,13 +358,19 @@ namespace monshare.Pages
 
             if (groupsAroundLayout.Children.Count == 0)
             {
-                List<Group> groups = await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
+                GroupsAround = await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
                 groupsAroundLayout.Children.Clear();
-                groups.ForEach(async g => groupsAroundLayout.Children.Add(await GenericViews.GroupCardList(g)));
+                GroupsAround.ForEach(async g =>
+                {
+                    View groupCard = await GenericViews.GroupCardList(g);
+                    groupsAroundLayout.Children.Add(groupCard);
+                    GroupsToCardsViews.Add(g, groupCard);
+                }
+                );
             }
 
             toggleLoadingVisibility(false);
-  
+
         }
 
         private void toggleLoadingVisibility(bool show)

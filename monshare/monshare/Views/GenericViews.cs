@@ -89,6 +89,43 @@ namespace monshare.Views
             
         }
 
+        internal static void UpdateJoinButtonStatus(View GroupFrame, Group group)
+        {
+            StackLayout frameStackLayout = (StackLayout)((Frame)GroupFrame).Content;
+            RemoveJoinButtonFromLayout(frameStackLayout);
+
+            if (!group.HasJoined)
+            {
+                AddJoinButtonToLayout(group, frameStackLayout);
+            }
+
+        }
+
+        private static void AddJoinButtonToLayout(Group group, StackLayout frameStackLayout)
+        {
+            Button joinGroupButton = new Button() { Text = "Join" };
+            joinGroupButton.Clicked += async (s, e) =>
+            {
+                if (await ServerCommunication.JoinGroup(group.GroupId))
+                {
+                    frameStackLayout.Children.Remove(joinGroupButton);
+                    group.HasJoined = true;
+                }
+            };
+            frameStackLayout.Children.Add(joinGroupButton);
+        }
+
+        private static void RemoveJoinButtonFromLayout(StackLayout FrameStackLayout)
+        {
+            foreach(var child in FrameStackLayout.Children)
+            {
+                if (child.GetType() == typeof(Button))
+                {
+                    FrameStackLayout.Children.Remove(child);
+                    return;
+                }
+            }
+        }
 
         internal static async Task<View> GroupCardList(Group group)
         {
@@ -140,18 +177,7 @@ namespace monshare.Views
             frameStackLayout.Children.Add(detailStackLayout);
             if (!group.HasJoined)
             {
-                Button joinGroupButton = new Button() { Text = "Join"};
-
-                joinGroupButton.Clicked += async (s, e) =>
-                {
-                    if (await ServerCommunication.JoinGroup(group.GroupId))
-                    {
-                        frameStackLayout.Children.Remove(joinGroupButton);
-                        group.HasJoined = true;
-                    }
-                };
-
-                frameStackLayout.Children.Add(joinGroupButton);
+                AddJoinButtonToLayout(group, frameStackLayout);
             }
 
             Frame frame = new Frame()
