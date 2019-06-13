@@ -36,7 +36,6 @@ namespace monshare.Pages
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            queryEntry.TextChanged += (s,a) => { ProcessingInput(); };
             resetPageAsync();
         }
 
@@ -46,13 +45,14 @@ namespace monshare.Pages
             freeToSuggest = false;
             selectedPlace = Place.DummyPlace;
             CreateGroupButtonLabel.Text = "+ Create a group";
+
+            if (resultLayout.IsVisible)
+            {
+                ToggleShownGroupList();
+            }
+
             AddTapGestureRecognizerToCreateGroupButton(CreateNewGroupTapped);
-            resultLayout.IsVisible = false;
-
             RemoveCurrentPredictionFromRelativeLayout();
-
-            titleAndGroupsAroundLayout.IsVisible = true;
-
             loadGroupsAroundAsync();
 
             pageLayout.RaiseChild((Layout)groupsAroundLayout.Parent);
@@ -69,12 +69,15 @@ namespace monshare.Pages
 
         private void intializeScrollView()
         {
+            queryEntry.TextChanged += (s, a) => { ProcessingInput(); };
+
             resultLayout = new StackLayout()
             {
                 Padding = 20,
                 IsVisible = false,
                 HorizontalOptions = LayoutOptions.FillAndExpand
             };
+
             ScrollView resultsScrollView = new ScrollView()
             {
                 Content = resultLayout
@@ -84,6 +87,7 @@ namespace monshare.Pages
             {
                 return parent.X;
             }), Constraint.RelativeToView(searchBar, (Parent, sibling) =>
+            
             {
                 return sibling.Y + sibling.Height + 30;
             }), Constraint.RelativeToParent((parent) =>
@@ -159,6 +163,7 @@ namespace monshare.Pages
             string old = String.Copy(queryEntry.Text);
             await Task.Delay(250);
 
+
             if (queryEntry.Text != "" && old == queryEntry.Text)
             {
                 freeToSuggest = true;
@@ -166,8 +171,13 @@ namespace monshare.Pages
                 LoadPredictions();
             }
 
-            if (queryEntry.Text == "" && old != "" && resultLayout.IsVisible) {
-                resetPageAsync();
+            if (queryEntry.Text == "")
+            {
+                RemoveCurrentPredictionFromRelativeLayout();
+            }
+
+            if (queryEntry.Text == "" && resultLayout.IsVisible) {
+                resetPageAsync();   
             }
         }
 
@@ -226,10 +236,14 @@ namespace monshare.Pages
             suggestionsLayouts.Add(suggestionsLayout);
         }
 
-        private void toggleShownGroupList()
+        private void ToggleShownGroupList()
         {
             Utils.Utils.DisplayVisualElement(resultLayout, !resultLayout.IsVisible);
             Utils.Utils.DisplayVisualElement(titleAndGroupsAroundLayout, !titleAndGroupsAroundLayout.IsVisible);
+
+            ((ScrollView)(resultLayout.Parent)).IsEnabled = resultLayout.IsVisible;
+            ((ScrollView)(groupsAroundLayout.Parent)).IsEnabled = titleAndGroupsAroundLayout.IsVisible;
+
             if (resultLayout.IsVisible) {
                 pageLayout.RaiseChild((Layout)resultLayout.Parent);
             }
@@ -272,7 +286,7 @@ namespace monshare.Pages
     
             resultLayout.Children.Clear();
             groups.ForEach(async g => resultLayout.Children.Add(await GenericViews.GroupListElement(g)));
-            toggleShownGroupList();
+            ToggleShownGroupList();
 
             if (groups.Count == 0 && selectedPlace != Place.DummyPlace)
             {
@@ -309,8 +323,10 @@ namespace monshare.Pages
         {
             toggleLoadingVisibility(true);
             List<Group> groups = await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
+
             groupsAroundLayout.Children.Clear();
             groups.ForEach(async g => groupsAroundLayout.Children.Add(await GenericViews.GroupCardList(g)));
+
             toggleLoadingVisibility(false);
   
         }
