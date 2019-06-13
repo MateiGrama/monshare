@@ -163,8 +163,13 @@ namespace monshare.Pages
             string old = String.Copy(queryEntry.Text);
             await Task.Delay(250);
 
+            if (queryEntry.Text != "" && !DeleteEntryButton.IsVisible)
+            {   
+               ToggleDeleteTextEntryButton();
+            }
 
-            if (queryEntry.Text != "" && old == queryEntry.Text)
+                // Don't update predictions continuosly
+                if (queryEntry.Text != "" && old == queryEntry.Text)
             {
                 freeToSuggest = true;
                 ableToProcessInput = false;
@@ -173,6 +178,10 @@ namespace monshare.Pages
 
             if (queryEntry.Text == "")
             {
+                if (DeleteEntryButton.IsVisible)
+                {
+                    ToggleDeleteTextEntryButton();
+                }
                 RemoveCurrentPredictionFromRelativeLayout();
             }
 
@@ -288,11 +297,18 @@ namespace monshare.Pages
         {
             queryEntry.Unfocus();
             RemoveCurrentPredictionFromRelativeLayout();
-            if (queryEntry.Text == null || queryEntry.Text == "" ) { 
+            if (queryEntry.Text == null || queryEntry.Text == "")
+            {
                 return;
             }
             freeToSuggest = false;
             loadGroupsAsync();
+        }
+
+        private void ToggleDeleteTextEntryButton()
+        {
+            DeleteEntryButton.IsVisible = !DeleteEntryButton.IsVisible;
+            DeleteEntryButton.IsEnabled = !DeleteEntryButton.IsEnabled;
         }
 
         private async void loadGroupsAsync()
@@ -338,10 +354,13 @@ namespace monshare.Pages
         private async void loadGroupsAroundAsync()
         {
             toggleLoadingVisibility(true);
-            List<Group> groups = await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
 
-            groupsAroundLayout.Children.Clear();
-            groups.ForEach(async g => groupsAroundLayout.Children.Add(await GenericViews.GroupCardList(g)));
+            if (groupsAroundLayout.Children.Count == 0)
+            {
+                List<Group> groups = await ServerCommunication.SearchGroups(queryEntry.Text, selectedPlace.Id);
+                groupsAroundLayout.Children.Clear();
+                groups.ForEach(async g => groupsAroundLayout.Children.Add(await GenericViews.GroupCardList(g)));
+            }
 
             toggleLoadingVisibility(false);
   
@@ -395,6 +414,12 @@ namespace monshare.Pages
         private async void GroupsAroundPressed(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new GroupsAroundPage());
+        }
+
+        private void DeleteSearchBarTextButtonTapped(object sender, EventArgs e)
+        {
+            queryEntry.Text = "";
+            resetPageAsync();
         }
     }
 }
