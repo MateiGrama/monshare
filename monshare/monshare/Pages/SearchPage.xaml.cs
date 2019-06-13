@@ -397,13 +397,13 @@ namespace monshare.Pages
 
         private async void CreateNewGroupTapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateGroupPage(selectedPlace));
+            await Navigation.PushAsync(new CreateGroupPage(selectedPlace, GroupsAround));
         }
 
 
         private async void CreateNewGroupWithPlaceIdTapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateGroupPage(selectedPlace));
+            await Navigation.PushAsync(new CreateGroupPage(selectedPlace, GroupsAround));
         }
 
 

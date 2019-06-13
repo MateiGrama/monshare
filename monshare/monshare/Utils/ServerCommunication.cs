@@ -243,12 +243,13 @@ namespace monshare.Utils
             return newUser;
         }
 
-        public static async Task<bool> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople, Place selectedPlace)
+        public static async Task<Group> CreateGroupAsync(string title, string description, int range, DateTime time, int targetNoPeople, Place selectedPlace)
         {
            
             string placeId;
             string latitude;
             string longitude;
+            Group group = new Group();
 
             if (selectedPlace != Place.DummyPlace)
             {
@@ -262,7 +263,7 @@ namespace monshare.Utils
 
                 if (position == null)
                 {
-                    return false;
+                    return null;
                 }
 
                 placeId = "";
@@ -286,13 +287,14 @@ namespace monshare.Utils
 
             try
             {
-                return result["status"] == SUCCESS;
+                group = result["status"] == SUCCESS ? group : null;
+                return group;
             }
             catch (Exception e)
             {
                 await page.DisplayAlert("Database Error", "An error involving our database occurred. Please try again later.", "Ok");
             }
-            return false;
+            return null;
         }
 
         public static async Task<List<Group>> GetMyGroupsAsync()
