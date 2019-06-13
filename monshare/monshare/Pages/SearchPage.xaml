@@ -84,6 +84,9 @@
                                FontSize="Micro"
                                Text="&#xf002;"
                                FontFamily="{StaticResource AwesomeFont}"/>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="QueryEntryCompleted"/>
+                    </Frame.GestureRecognizers>
                         
                     </Frame>
                 </StackLayout>
