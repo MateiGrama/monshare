@@ -34,13 +34,15 @@ namespace monshare.Views
                 HorizontalOptions = LayoutOptions.StartAndExpand
             });
 
-            detailStackLayout.Children.Add(new Label()
+            Label detailsLabel = new Label()
             {
                 FontFamily = FontAwesome.GetFontAwsomeName(),
                 Text = group.MembersNumber + "/" + group.TargetNumberOfPeople + " " + FontAwesome.Group,
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                 HorizontalOptions = LayoutOptions.EndAndExpand
-            });
+            };
+
+            detailStackLayout.Children.Add(detailsLabel);
 
             labelStackLayout.Children.Add(new Label()
             {
@@ -63,8 +65,11 @@ namespace monshare.Views
                     if (await ServerCommunication.JoinGroup(group.GroupId)){
                         wrapperLayout.Children.Remove(joinGroupButton);
                         group.HasJoined = true;
+                        group.MembersNumber++;
+                        detailsLabel.Text = group.MembersNumber + "/" + group.TargetNumberOfPeople + " " + FontAwesome.Group;
                     }
                 };
+
                 wrapperLayout.Children.Add(joinGroupButton);
             }
 
@@ -113,13 +118,15 @@ namespace monshare.Views
                 HorizontalOptions = LayoutOptions.StartAndExpand
             });
 
-            detailStackLayout.Children.Add(new Label()
+            Label detailsLabel = new Label()
             {
                 FontFamily = FontAwesome.GetFontAwsomeName(),
                 Text = group.MembersNumber + "/" + group.TargetNumberOfPeople + " " + FontAwesome.Group,
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                 HorizontalOptions = LayoutOptions.EndAndExpand
-            });
+            };
+
+            detailStackLayout.Children.Add(detailsLabel);
 
             StackLayout firstRowLayout = new StackLayout{
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -147,6 +154,8 @@ namespace monshare.Views
                     {
                         firstRowLayout.Children.Remove(joinGroupButton);
                         group.HasJoined = true;
+                        group.MembersNumber++;
+                        detailsLabel.Text = group.MembersNumber + "/" + group.TargetNumberOfPeople + " " + FontAwesome.Group;
                     }
                 };
 
