@@ -237,11 +237,11 @@ namespace monshare.Views
         {
             Frame joinButton = new Frame()
             {
-                Margin = new Thickness(0, 15, 0, 0),
+                Margin = new Thickness(5, 15, 5, 0),
                 HasShadow = false,
-                Padding = 0,
+                Padding = 10,
                 BorderColor = Color.FromHex("9e2a2b"),
-                CornerRadius = 20,
+                CornerRadius = 5,
                 Content = new Label()
                 {
                     Text = "Join Group",

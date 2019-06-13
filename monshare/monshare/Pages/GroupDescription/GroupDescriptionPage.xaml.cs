@@ -22,6 +22,7 @@ namespace monshare.Pages
         private string FontAwsomeName = FontAwesome.GetFontAwsomeName();
         private Group Group;
         private Frame joinButton;
+        private Label membersLebal;
 
         List<User> Members;
         public GroupDescriptionPage(Group group)
@@ -111,16 +112,15 @@ namespace monshare.Pages
                 FontSize = 16
             });
 
-
-
-            purpleText.Children.Add(new Label()
+            membersLebal = new Label()
             {
                 HorizontalOptions = LayoutOptions.End,
                 TextColor = Color.FromHex("351e29"),
                 FontFamily = FontAwsomeName,
-                Text = Group.MembersNumber + "/" + Group.TargetNumberOfPeople + " " + FontAwesome.Group,
                 FontSize = 16
-            });
+            };
+            UpdateMembersLabel();
+            purpleText.Children.Add(membersLebal);
 
             detailsStackLayout.Children.Add(purpleText);
             detailsStackLayout.Children.Add(new BoxView()
@@ -193,15 +193,22 @@ namespace monshare.Pages
 
         }
 
+        private void UpdateMembersLabel()
+        {
+            membersLebal.Text = Group.MembersNumber + "/" + Group.TargetNumberOfPeople + " " + FontAwesome.Group;
+        }
+
         private async void joinGroupButton(object sender, EventArgs e)
         {
             bool apiCallResult = await ServerCommunication.JoinGroup(Group.GroupId);
             if (apiCallResult)
             {
                 Group.HasJoined = true;
+                Group.MembersNumber++;
+                UpdateMembersLabel();
                 Utils.Utils.DisplayVisualElement(joinButton, false);
-                Utils.Utils.DisplayVisualElement(AnimationView, true);
-                GroupRelativeLayout.RaiseChild(AnimationView);
+                Utils.Utils.DisplayVisualElement(AnimationLayout, true);
+                GroupRelativeLayout.RaiseChild(AnimationLayout);
             }
         }
 
