@@ -71,7 +71,7 @@ namespace monshare.Utils
                     foreach (JsonValue place in result["response"]["venues"])
                     {
                         Place newPlace = new Place();
-                        newPlace.Id = place["id"].ToString();
+                        newPlace.Id = place["id"];
                         newPlace.Name = place["name"].ToString();
                         newPlace.Location = new Location()
                         {
