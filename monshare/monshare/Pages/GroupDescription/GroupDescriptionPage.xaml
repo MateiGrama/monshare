@@ -4,12 +4,65 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:forms="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
              x:Class="monshare.Pages.GroupDescriptionPage">
     <ContentPage.ToolbarItems>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout x:Name="GroupDetailsLayout">
+        <RelativeLayout x:Name="GroupRelativeLayout">
             
-        </StackLayout>
+            <RelativeLayout.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Up" Swiped="OnSwipedUp" />
+                <SwipeGestureRecognizer Direction="Down" Swiped="OnSwipedDown" />
+            </RelativeLayout.GestureRecognizers>
+
+            <StackLayout x:Name="GroupDetailsLayout"
+                        RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"
+                        RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=1,Constant=0}">
+                
+            </StackLayout>
+            <StackLayout x:Name="AnimationLayout"
+                        Spacing="0"
+                        RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.40,Constant=0}"
+                        RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=0.87,Constant=0}"
+                        RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.2,Constant=0}"
+                        RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=0.1,Constant=0}">
+
+                <forms:AnimationView 
+                         Rotation="180"
+                         x:Name="AnimationView"
+                         Animation="scroll.json"
+                         Loop="True"
+                         AutoPlay="True"
+                         VerticalOptions="FillAndExpand"
+                         HorizontalOptions="FillAndExpand" />
+                <Label Text="Swipe up"  FontSize="Micro" HorizontalOptions="Center" HorizontalTextAlignment="Center"></Label>
+            </StackLayout>
+            <StackLayout x:Name="ChatLayout" 
+                         BackgroundColor="#d9d9d9"
+                        RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"
+                        RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=1,Constant=0}">
+
+                <ScrollView x:Name="chatScrollView"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand">
+                    <StackLayout x:Name="chatLayout"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"/>
+                </ScrollView>
+                <StackLayout Orientation="Horizontal" Grid.Row="1" Padding="10,0" BackgroundColor="#EEEEEE" VerticalOptions="EndAndExpand">
+                    <Entry 
+                        x:Name="messageEntry"
+			            HorizontalOptions="FillAndExpand" 
+				        HeightRequest="25" 
+				        Placeholder="Message" />
+                    <Button 
+	        			Text="Send" 
+                        Clicked="SendButtonPressed"/>
+                </StackLayout>
+
+            </StackLayout>
+        </RelativeLayout>
+
     </ContentPage.Content>
 </ContentPage>

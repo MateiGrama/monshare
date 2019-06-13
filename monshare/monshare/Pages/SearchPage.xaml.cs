@@ -76,7 +76,7 @@ namespace monshare.Pages
                 return parent.Width;
             }), Constraint.RelativeToView(searchBar, (parent, sibling) => {
                 return 0.9 * parent.Height - (sibling.Y + sibling.Height) -30;
-            }));;
+            }));
             pageLayout.RaiseChild(CreateGroupButton);
 
 
@@ -244,7 +244,7 @@ namespace monshare.Pages
             groupsAroundLayout.IsVisible = false;
         }
 
-        /* IMPORTED FROM GMAIN PAGE*/
+        ///* IMPORTED FROM GMAIN PAGE*/
         public async void LogoutButtonPressed(object sender, EventArgs args)
         {
             bool successfulCall = await ServerCommunication.logout();

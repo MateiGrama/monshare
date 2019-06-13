@@ -4,7 +4,6 @@
              x:Class="monshare.Pages.SearchPage"
              BackgroundColor="#d9d9d9"
              Title="MonShare">
-
     <ContentPage.ToolbarItems>
         <ToolbarItem 
             Name="My groups" 
@@ -27,6 +26,7 @@
             <x:Double x:Key="NegCreateGroupButtonHeight">-60</x:Double>
         </ResourceDictionary>
     </ContentPage.Resources>
+    
         <RelativeLayout HorizontalOptions="FillAndExpand"
                         x:Name="pageLayout">
 
