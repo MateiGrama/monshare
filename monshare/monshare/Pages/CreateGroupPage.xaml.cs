@@ -17,8 +17,12 @@ namespace monshare.Pages
             InitializeComponent();
             timePicker.Time = DateTime.Now.AddDays(1).TimeOfDay;
             Title = "Create Group";
-            PositionInfo.Text = "The group will be created for " + (SelectedPlace != Place.DummyPlace ? SelectedPlace.Name : "your location");
             this.SelectedPlace = SelectedPlace;
+
+            if(SelectedPlace != Place.DummyPlace)
+            {
+                title.Text = SelectedPlace.Name.Trim('"');
+            }
         }
 
         private async void CreateGroupClicked(object sender, EventArgs e)

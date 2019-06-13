@@ -10,41 +10,41 @@
       <RelativeLayout HorizontalOptions="FillAndExpand"
                       x:Name="pageLayout">
 
-        <Image Source="pennant.png"
+            <Image Source="pennant.png"
                x:Name="pennant"
                RelativeLayout.XConstraint="{ConstraintExpression Type=Constant, Constant=0}"
                RelativeLayout.YConstraint="{ConstraintExpression Type=Constant, Constant=0}"
                RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"/>
-        
-        
-        
-          
-         <Label x:Name="PositionInfo" HorizontalOptions="CenterAndExpand"/>
 
 
-         <Frame BackgroundColor="#f0f0f0"
+            <!--<Label x:Name="PositionInfo" HorizontalOptions="CenterAndExpand"/>-->
+
+            <Frame BackgroundColor="#f0f0f0"
                 CornerRadius="30"
-                
                 RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.05,Constant=0}"
-                RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.3,Constant=0}"
+                RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.33,Constant=0}"
                 RelativeLayout.WidthConstraint ="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.9,Constant=0}"
                 RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=0.4,Constant=0}">
           
           <StackLayout>
                     <Entry x:Name="title"
                            FontSize="Large"
+                           Margin="0,10,0,0"
                            FontFamily="{StaticResource AwesomeFont}"
                            Placeholder="Enter group name"
                            HorizontalOptions="FillAndExpand"/>
 
                     <StackLayout Orientation="Horizontal"
+                         Margin="0, 10"
                          HorizontalOptions="FillAndExpand">
 
                         <Label VerticalOptions="CenterAndExpand"
+                             FontSize="Small"
                              FontFamily="{StaticResource AwesomeFont}"
-                             Text=" &#xf039; "/>
+                             Text="  &#xf039; "/>
 
                         <Editor x:Name="description"
+                             FontSize="Small"
                             FontFamily="{StaticResource AwesomeFont}"
                             Placeholder="Add a short description"
                             HorizontalOptions="FillAndExpand"/>
@@ -55,11 +55,13 @@
                          HorizontalOptions="FillAndExpand">
 
                         <Label VerticalOptions="CenterAndExpand"
+                             FontSize="Medium"
                              FontFamily="{StaticResource AwesomeFont}"
-                             Text="  &#xf0d7; "/>
+                             Text=" &#xf0d7; "/>
 
                         <Picker x:Name="range"
                             Title="Select a range"
+                             FontSize="Small"
                             FontFamily="{StaticResource AwesomeFont}"
                             HorizontalOptions="FillAndExpand">
                             <Picker.Items>
@@ -72,31 +74,17 @@
                     </StackLayout>
                     
 
-              
-
-           
-
-            <!--<StackLayout Orientation="Horizontal"
-                         HorizontalOptions="FillAndExpand"
-                         IsVisible="False"
-                         HeightRequest="0">
-              <Label Text="Keep it alive until:"/>
-              <TimePicker x:Name="timePicker"
-                          Time="11:00"/>
-
-            </StackLayout>-->
-            
-
             <StackLayout Orientation="Horizontal"
                          VerticalOptions="CenterAndExpand"
                          HorizontalOptions="FillAndExpand">
                         <Label VerticalOptions="CenterAndExpand" 
                              FontFamily="{StaticResource AwesomeFont}"
-                             FontSize="Medium"
-                             Text="&#xf0c0; Target number of people:"/>
+                             FontSize="Small"
+                             Text=" &#xf0c0;  Target number of people:"/>
                 
               <Picker x:Name="targetNoPeople"
                   Title="Target number"
+                             FontSize="Small"
                   HorizontalOptions="FillAndExpand">
                 <Picker.Items>
                   <x:String>5</x:String>

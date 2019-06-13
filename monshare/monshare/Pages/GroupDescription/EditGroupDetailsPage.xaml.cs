@@ -53,7 +53,6 @@ namespace monshare.Pages
 
             buttonsStackLayout.Children.Add(discardChangesButton);
             buttonsStackLayout.Children.Add(saveChangesButton);
-            GroupDetailsLayout.Children.Add(buttonsStackLayout);
         }
 
         private async void DiscardChangesButtonPressed(object sender, EventArgs e)
@@ -82,6 +81,25 @@ namespace monshare.Pages
             }
 
             await Navigation.PopAsync();
+        }
+
+        private void SaveButtonFocused(object sender, FocusEventArgs e)
+        {
+            saveButton.BackgroundColor = Color.FromHex("392A31");
+        }
+
+        private void SaveButtonUnfocused(object sender, FocusEventArgs e)
+        {
+            saveButton.BackgroundColor = Color.Transparent;
+        }
+        private void DiscardButtonFocused(object sender, FocusEventArgs e)
+        {
+            discardButton.BackgroundColor = Color.FromHex("392A31");
+        }
+
+        private void DiscardButtonUnfocused(object sender, FocusEventArgs e)
+        {
+            discardButton.BackgroundColor = Color.Transparent;
         }
     }
 }
