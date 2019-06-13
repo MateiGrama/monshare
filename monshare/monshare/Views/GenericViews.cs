@@ -161,6 +161,27 @@ namespace monshare.Views
 
                 firstRowLayout.Children.Add(joinGroupButton);
             }
+            else
+            {
+                firstRowLayout.Children.Add(new Label()
+                {
+                    FontFamily = FontAwesome.GetFontAwsomeName(),
+                    VerticalOptions =LayoutOptions.CenterAndExpand,
+                    HorizontalOptions = LayoutOptions.EndAndExpand,
+                    Text = FontAwesome.Award,
+                    TextColor = Color.FromHex("a53a3b"),
+                    FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
+                });
+
+                firstRowLayout.Children.Add(new Label()
+                {
+                    VerticalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalOptions = LayoutOptions.End,
+                    Text = "Already\nmember",
+                    TextColor = Color.FromHex("a53a3b"),
+                    FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label))
+                }); ;
+            }
 
             labelStackLayout.Children.Add(firstRowLayout);
             labelStackLayout.Children.Add(new Label()
@@ -211,6 +232,29 @@ namespace monshare.Views
                 Margin = new Thickness(0, 10),
                 HorizontalOptions = LayoutOptions.Center
             };
+        }
+        public static Frame GetJoinGroupButton(EventHandler joinGroupButton)
+        {
+            Frame joinButton = new Frame()
+            {
+                Margin = new Thickness(0, 15, 0, 0),
+                HasShadow = false,
+                Padding = 0,
+                BorderColor = Color.FromHex("9e2a2b"),
+                CornerRadius = 20,
+                Content = new Label()
+                {
+                    Text = "Join Group",
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    VerticalOptions = LayoutOptions.CenterAndExpand,
+                    TextColor = Color.FromHex("9e2a2b"),
+                    FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
+                }
+            };
+            TapGestureRecognizer gestRec = new TapGestureRecognizer();
+            gestRec.Tapped += joinGroupButton;
+            joinButton.GestureRecognizers.Add(gestRec);
+            return joinButton;
         }
 
         //private static string getRandomEmoji()

@@ -7,26 +7,42 @@
              x:Class="monshare.Pages.MyAccountPage">
     <ContentPage.Content>
         <StackLayout>
-            <StackLayout Padding="0, 20, 0, 0">
-                <Label x:Name="LoggedInLabel"
-                   HorizontalOptions="CenterAndExpand"
-                   VerticalOptions="FillAndExpand"
-                   TextColor="Green"/>
+            <StackLayout Padding="0, 20, 0, 0"
+                         VerticalOptions="CenterAndExpand">
+                
+                <Label
+                       FontSize="100"
+                       Text="&#xf007;"   
+                       FontFamily="{StaticResource AwesomeFont}"
+                       HorizontalOptions="CenterAndExpand"
+                       VerticalOptions="Center"
+                       TextColor="#351e29"/>
 
                 <Label x:Name="userNameLabel"
-                   HorizontalOptions="CenterAndExpand"
-                   TextColor="Green"/>
-
-                <Label x:Name="userIDLabel"
-                   HorizontalOptions="CenterAndExpand"
-                   TextColor="Green"/>
+                   HorizontalOptions="Center"
+                   FontSize="Large"
+                   TextColor="#351e29"/>
 
             </StackLayout>
 
-            <Button 
-            Clicked="DeleteAccountButtonPressed"
-            Text="Delete your Account">
-            </Button>
+            <StackLayout
+                    HeightRequest="60"
+                    x:Name="CreateGroupButton"
+                    BackgroundColor="#a53a3b"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="EndAndExpand">
+
+                <Label Text="Delete account  &#xf503;"
+                       FontSize="Large"
+                       TextColor="#ECECEB"
+                       FontFamily="{StaticResource AwesomeFont}"
+                       HorizontalOptions="CenterAndExpand"
+                       VerticalOptions="CenterAndExpand"/>
+
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="DeleteAccountButtonPressed"/>
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
 
         </StackLayout>
 

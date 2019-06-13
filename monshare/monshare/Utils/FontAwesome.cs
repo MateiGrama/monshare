@@ -814,7 +814,8 @@ namespace monshare.Utils
         public const string Superpowers = "\uf2dd";
         public const string Wpexplorer = "\uf2de";
         public const string Meetup = "\uf2e0";
-        public const string Walking = "\uf554";
+        public const string Walking = "\uf554"; 
+        public const string Award = "\uf559"; 
 
     }
 }

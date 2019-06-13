@@ -2,6 +2,7 @@
 using monshare.Models;
 using monshare.Pages.GroupDescription;
 using monshare.Utils;
+using monshare.Views;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -20,16 +21,15 @@ namespace monshare.Pages
     {
         private string FontAwsomeName = FontAwesome.GetFontAwsomeName();
         private Group Group;
+        private Frame joinButton;
+
         List<User> Members;
-
-
         public GroupDescriptionPage(Group group)
         {
             InitializeComponent();
             Group = group;
             DisplayToolbarItems();
         }
-
         private Map GetMapView()
         {
             var map = new Map(
@@ -53,7 +53,6 @@ namespace monshare.Pages
             map.Pins.Add(pin);
             return map;
         }
-
         protected override bool OnBackButtonPressed()
         {
             if (ChatLayout.IsVisible)
@@ -63,7 +62,6 @@ namespace monshare.Pages
             }
             return base.OnBackButtonPressed();
         }
-
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -74,7 +72,6 @@ namespace monshare.Pages
             populateGroupDetailsView();
             loadMessagesAsync();
         }
-
         private async void populateGroupDetailsView()
         {
             StackLayout detailsStackLayout = new StackLayout()
@@ -140,6 +137,13 @@ namespace monshare.Pages
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label))
             });
 
+            if (!Group.HasJoined)
+            {
+                joinButton = GenericViews.GetJoinGroupButton(joinGroupButton);
+                joinButton.HorizontalOptions = LayoutOptions.FillAndExpand;
+                detailsStackLayout.Children.Add(joinButton);
+            }
+
             RelativeLayout detailsRelativeLayout = new RelativeLayout()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -181,12 +185,24 @@ namespace monshare.Pages
                     return parent.Width * 0.8;
                 }), Constraint.RelativeToParent((parent) =>
                 {
-                    return 0.6 * parent.Height;
+                    return 0.65 * parent.Height;
                 }));
 
             GroupDetailsLayout.Children.Clear();
             GroupDetailsLayout.Children.Add(detailsRelativeLayout);
 
+        }
+
+        private async void joinGroupButton(object sender, EventArgs e)
+        {
+            bool apiCallResult = await ServerCommunication.JoinGroup(Group.GroupId);
+            if (apiCallResult)
+            {
+                Group.HasJoined = true;
+                Utils.Utils.DisplayVisualElement(joinButton, false);
+                Utils.Utils.DisplayVisualElement(AnimationView, true);
+                GroupRelativeLayout.RaiseChild(AnimationView);
+            }
         }
 
         private async Task<string> getOwnerName()
@@ -201,7 +217,6 @@ namespace monshare.Pages
             return result;
 
         }
-
         private void DisplayToolbarItems()
         {
 
@@ -254,17 +269,14 @@ namespace monshare.Pages
 
 
         }
-
         private async void ViewChatButtonClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new ChatPage(Group));
         }
-
         private async void EditGroupButtonPressed(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new EditGroupDetailsPage(Group));
         }
-
         private async void LeaveGroupClicked(object sender, EventArgs e)
         {
             if (await Utils.Utils.ShowLeaveGroupDialog(this, "Leave group", "Are you sure you want to leave the group?"))
@@ -278,7 +290,6 @@ namespace monshare.Pages
                 }
             }
         }
-
         private async void GroupMembersClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new groupMembersPage(Group.GroupId));
@@ -351,7 +362,6 @@ namespace monshare.Pages
             }
             scrollToBottom();
         }
-
         public async void SendButtonPressed(object sender, EventArgs args)
         {
             if (await ServerCommunication.sendMessage(messageEntry.Text, Group.GroupId))
@@ -361,7 +371,6 @@ namespace monshare.Pages
             }
             messageEntry.Text = "";
         }
-
         private void addMessageInLayout(Message msg)
         {
             Thickness margin = msg.IsOwnMessage ? new Thickness(60, 5, 15, 0) : new Thickness(15, 5, 60, 0);
@@ -385,7 +394,6 @@ namespace monshare.Pages
             msgFrame.Content = stack;
             chatLayout.Children.Add(msgFrame);
         }
-
         private string getSenderName(int senderId)
         {
             foreach (User user in Members)
@@ -398,7 +406,6 @@ namespace monshare.Pages
 
             return "Random User";
         }
-
         private async void scrollToBottom()
         {
             await chatScrollView.ScrollToAsync(chatLayout, ScrollToPosition.End, false);

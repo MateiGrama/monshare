@@ -83,13 +83,6 @@
 
                     </Frame>
 
-                    <!--<Button 
-                        Margin="5"
-                        CornerRadius="10"
-	        			TextColor="AntiqueWhite"
-                        Text="Send" 
-                        BackgroundColor="#9e2a2b"
-                        Clicked="SendButtonPressed"/>-->
                 </StackLayout>
 
             </StackLayout>

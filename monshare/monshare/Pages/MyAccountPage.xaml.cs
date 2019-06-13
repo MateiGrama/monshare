@@ -20,11 +20,8 @@ namespace monshare.Pages
 
         protected override void OnAppearing()
         {
-            LoggedInLabel.Text = "Logged in";
-            userNameLabel.Text = "User name: " + LocalStorage.GetUserName();
-            userIDLabel.Text = "User ID: " + LocalStorage.GetUserId().ToString();
             base.OnAppearing();
-
+            userNameLabel.Text = LocalStorage.GetUserName();
         }
 
         private async void DeleteAccountButtonPressed(object sender, EventArgs e)
