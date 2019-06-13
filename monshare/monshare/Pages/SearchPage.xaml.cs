@@ -47,7 +47,7 @@ namespace monshare.Pages
 
             foreach (Group group in GroupsAround)
             {
-                View groupCard = await GenericViews.GroupCardList(group);
+                View groupCard = await GenericViews.GroupCardList(group, this);
                 groupCards.Add(groupCard);
                 if (addCardsOneByOne && groupCards.Count == 5)
                 {
@@ -179,7 +179,7 @@ namespace monshare.Pages
         internal async void AddNearbyGroup(Group createdGroup)
         {
             GroupsAround.Add(createdGroup);
-            View groupCard = await GenericViews.GroupCardList(createdGroup);
+            View groupCard = await GenericViews.GroupCardList(createdGroup, this);
             groupsAroundLayout.Children.Add(groupCard);
 
         }
@@ -299,6 +299,15 @@ namespace monshare.Pages
             ableToProcessInput = true;
 
             suggestionsLayouts.Add(suggestionsLayout);
+        }
+
+        internal async void UpdateCard(Frame groupCard, Group group)
+        {
+            int cardIndex = groupsAroundLayout.Children.IndexOf(groupCard);
+            if (cardIndex != -1)
+            {
+                groupsAroundLayout.Children[cardIndex] = await GenericViews.GroupCardList(group, this);
+            }
         }
 
         private void ToggleShownGroupList()

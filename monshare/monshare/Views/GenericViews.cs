@@ -98,7 +98,7 @@ namespace monshare.Views
 
         }
 
-        internal static async Task<View> GroupCardList(Group group)
+        internal static async Task<View> GroupCardList(Group group, SearchPage searchPage)
         {
             StackLayout detailStackLayout = new StackLayout()
             {
@@ -140,6 +140,24 @@ namespace monshare.Views
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
             });
 
+            StackLayout frameStackLayout = new StackLayout()
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+
+            Frame frame = new Frame()
+            {
+                CornerRadius = 15,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Padding = 20,
+                HeightRequest = Application.Current.MainPage.Height * 0.25,
+                WidthRequest = Application.Current.MainPage.Width * 0.65,
+                Margin = new Thickness(10, 20),
+                Content = frameStackLayout,
+                BackgroundColor = Color.FromHex("f0f0f0")
+            };
+
             if (!group.HasJoined)
             {
                 Button joinGroupButton = GetJoinGroupButton();
@@ -155,7 +173,8 @@ namespace monshare.Views
                         firstRowLayout.Children.Remove(joinGroupButton);
                         group.HasJoined = true;
                         group.MembersNumber++;
-                        detailsLabel.Text = group.MembersNumber + "/" + group.TargetNumberOfPeople + " " + FontAwesome.Group;
+                        searchPage.UpdateCard(frame, group);
+
                     }
                 };
 
@@ -191,27 +210,8 @@ namespace monshare.Views
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
             });
 
-            StackLayout frameStackLayout = new StackLayout()
-            {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            };
-
             frameStackLayout.Children.Add(labelStackLayout);
             frameStackLayout.Children.Add(detailStackLayout);
-            
-
-            Frame frame = new Frame()
-            {
-                CornerRadius = 15,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Padding = 20,
-                HeightRequest = Application.Current.MainPage.Height * 0.25,
-                WidthRequest = Application.Current.MainPage.Width * 0.65,
-                Margin = new Thickness(10, 20),
-                Content = frameStackLayout,
-                BackgroundColor = Color.FromHex("f0f0f0")
-            };
 
             TapGestureRecognizer gestureRecognizer = new TapGestureRecognizer();
             gestureRecognizer.Tapped += async (s, e) => await Application.Current.MainPage.Navigation.PushAsync(new GroupDescriptionPage(group));
