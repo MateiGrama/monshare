@@ -27,7 +27,6 @@
                         RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=0.87,Constant=0}"
                         RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.2,Constant=0}"
                         RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=0.1,Constant=0}">
-
                 <forms:AnimationView 
                          Rotation="180"
                          x:Name="AnimationView"
@@ -35,7 +34,13 @@
                          Loop="True"
                          AutoPlay="True"
                          VerticalOptions="FillAndExpand"
-                         HorizontalOptions="FillAndExpand" />
+                         HorizontalOptions="FillAndExpand" >
+                    
+                    <forms:AnimationView.GestureRecognizers>
+                        <SwipeGestureRecognizer Direction="Up" Swiped="OnSwipedUp" />
+                    </forms:AnimationView.GestureRecognizers>
+
+                </forms:AnimationView>
                 <Label Text="Swipe up"  FontSize="Micro" HorizontalOptions="Center" HorizontalTextAlignment="Center"></Label>
             </StackLayout>
             <StackLayout x:Name="ChatLayout" 
