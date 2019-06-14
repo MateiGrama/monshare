@@ -19,7 +19,8 @@ namespace monshare
             MainPage = new NavigationPage(new SearchPage())
             {
                 BarTextColor = Color.FromHex("#ececeb"),
-                BarBackgroundColor = Color.FromHex("#351E29")
+                BarBackgroundColor = Color.FromHex("#351E29"),
+                BackgroundColor = Color.FromHex("#d9d9d9")
             };
 
 
