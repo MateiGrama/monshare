@@ -13,7 +13,7 @@ DEBUG = False
 UPLOAD_FOLDER = '/home/site/wwwroot/uploads'
 
 # The default value in kilometres used when the user searches for groups.
-DEFAULT_RANGE = 2
+DEFAULT_RANGE = 7
 
 app = Flask(__name__)
 
