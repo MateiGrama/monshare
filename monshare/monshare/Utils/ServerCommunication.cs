@@ -300,6 +300,7 @@ namespace monshare.Utils
                     group.MembersNumber = 1;
                     group.CreationDateTime = DateTime.Now;
                     group.EndDateTime = time;
+                    group.HasJoined = true;
                 }
                 return group;
             }
