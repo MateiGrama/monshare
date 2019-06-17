@@ -87,6 +87,8 @@
                              FontSize="Small"
                   HorizontalOptions="FillAndExpand">
                 <Picker.Items>
+                  <x:String>2</x:String>
+                  <x:String>4</x:String>
                   <x:String>5</x:String>
                   <x:String>10</x:String>
                   <x:String>15</x:String>
